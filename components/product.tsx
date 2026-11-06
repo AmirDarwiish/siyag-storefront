@@ -15,8 +15,12 @@ function Price({variant}:{variant:Variant}){
   </span>;
 }
 
-function Sizes({product,selected,onSelect}:{product:Product;selected:Variant;onSelect:(v:Variant)=>void}){
+function Sizes({product,selected,onSelect,compact=false}:{product:Product;selected:Variant;onSelect:(v:Variant)=>void;compact?:boolean}){
   const {ar,tr}=useStore();
+  if(compact&&product.variants.length>4)return <select className="size-select" aria-label={tr("Choose a size","اختار الحجم")} value={selected.id}
+    onChange={event=>{const choice=product.variants.find(variant=>variant.id===event.target.value);if(choice?.inStock)onSelect(choice)}}>
+    {product.variants.map(variant=><option key={variant.id} value={variant.id} disabled={!variant.inStock}>{variant.sizeMl} {tr("ml","مل")} · {formats[variant.format][ar?1:0]}</option>)}
+  </select>;
   return <div className="sizes" role="group" aria-label={tr("Choose a size","اختار الحجم")}>
     {product.variants.map(v=><button type="button" aria-pressed={v.id===selected.id}
       disabled={!v.inStock} title={formats[v.format][ar?1:0]} key={v.id} onClick={()=>onSelect(v)}>
@@ -44,10 +48,16 @@ export function ProductCard({product,preferred}:{product:Product;preferred?:stri
       <button type="button" className="icon favorite" aria-pressed={liked} aria-label={liked?tr("Remove from wishlist","إزالة من المفضلة"):tr("Save to wishlist","حفظ في المفضلة")} onClick={()=>toggleSaved(product.slug)}><Heart size={17} fill={liked?"currentColor":"none"}/></button>
       {v.inStock&&<button type="button" className="photo-quick" onClick={()=>setQuick(true)}>{tr("Quick view","عرض سريع")}<ArrowUpRight size={14}/></button>}
     </div>
-    <div className="product-meta"><span>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
-    <div className="product-title"><Link href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
-    <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)}/>
-    <button className="card-add" type="button" disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{v.inStock?tr("Add to bag","أضف للحقيبة"):tr("Sold out","نفد المخزون")}</button>
+    <div className="product-card-body">
+      <div className="product-meta"><span>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
+      <div className="product-title"><Link href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
+      <p className="product-card-notes">{(product.topNotes.length?product.topNotes.slice(0,3).join(" · "):(ar?product.descriptionAr:product.descriptionEn))||" "}</p>
+      <div className="card-options">
+        <span>{tr("Choose a size","اختار الحجم")}</span>
+        <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)} compact/>
+      </div>
+      <button className="card-add" type="button" disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{v.inStock?tr("Add to bag","أضف للحقيبة"):tr("Sold out","نفد المخزون")}</button>
+    </div>
     <Modal open={quick} onOpenChange={setQuick} title={title} className="quick-modal">
       <img className="quick-image" src={imageUrl(product.images[0])} alt={title}/>
       <div className="quick-copy"><div className="eyebrow">SIYAG PARFUMS</div><h2>{title}</h2><Price variant={v}/>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import {useRouter,useSearchParams} from "next/navigation";
 import {useEffect,useState} from "react";
-import {ArrowLeft,ArrowRight,Search,SlidersHorizontal} from "lucide-react";
+import {ArrowLeft,ArrowRight,SlidersHorizontal} from "lucide-react";
 import {api,concentrations,families,formats,name,type Collection,type Page,type Product} from "@/lib/store";
 import {useStore} from "./store-context";
 import {ProductCard} from "./product";
@@ -21,8 +21,6 @@ export function Shop(){
   const [collections,setCollections]=useState<Collection[]>([]);
   const [error,setError]=useState(false);
   const [mobileFilters,setMobileFilters]=useState(false);
-  const [search,setSearch]=useState(query.get("q")??"");
-  useEffect(()=>setSearch(new URLSearchParams(queryString).get("q")??""),[queryString]);
   useEffect(()=>{
     const controller=new AbortController();
     api<Collection[]>("store/collections",{signal:controller.signal}).then(setCollections).catch(()=>{});
@@ -60,7 +58,6 @@ export function Shop(){
     <div className="shop-intro"><div className="container"><div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span>{tr("The collection","التشكيلة")}</div><span className="eyebrow">SIYAG PARFUMS</span><h1>{title}</h1><p>{tr("Explore by scent, concentration and size.","اختار حسب العائلة العطرية والتركيز والحجم.")}</p></div></div>
     <div className="container shop-content">
       {!savedOnly&&<div className="shop-tools">
-        <form onSubmit={e=>{e.preventDefault();change("q",search.trim())}}><label className="search-field"><Search size={18}/><input type="search" value={search} onChange={e=>setSearch(e.target.value)} maxLength={100} placeholder={tr("Search the collection","ابحث في التشكيلة")} aria-label={tr("Search the collection","ابحث في التشكيلة")}/></label></form>
         <div><button type="button" className="filter-toggle" onClick={()=>setMobileFilters(!mobileFilters)} aria-expanded={mobileFilters}><SlidersHorizontal size={17}/>{tr("Filters","الفلاتر")}</button><select className="sort-control" aria-label={tr("Sort","الترتيب")} value={query.get("sort")??""} onChange={e=>change("sort",e.target.value)}><option value="">{tr("Newest","الأحدث")}</option><option value="price-asc">{tr("Price, low to high","السعر من الأقل")}</option><option value="price-desc">{tr("Price, high to low","السعر من الأعلى")}</option></select></div>
       </div>}
       <div className={`shop-layout ${savedOnly?"saved-layout":""}`}>

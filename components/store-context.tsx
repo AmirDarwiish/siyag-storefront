@@ -23,7 +23,13 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
   const cartRef=useRef(EMPTY);
   const tokenRef=useRef("");
   const inProgress=useRef(false);
-  const set=useCallback((value:Cart)=>{cartRef.current=value;setCart(value)},[]);
+  const set=useCallback((value:Cart)=>{
+    cartRef.current=value;
+    setCart(value);
+    if(demo) {
+      try {sessionStorage.setItem("siyag-demo-cart",JSON.stringify(value))} catch {}
+    }
+  },[demo]);
   const tr=(en:string,ar:string)=>lang==="ar"?ar:en;
   const saveToken=(value:string)=>{
     tokenRef.current=value;
@@ -32,8 +38,15 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
   useEffect(()=>{
     if(localStorage.getItem("siyag-lang")==="ar") setLang("ar");
     try {const items=JSON.parse(localStorage.getItem("siyag-saved")||"[]");if(Array.isArray(items))setSaved(items)} catch {}
+    if(demo){
+      try {
+        const preview=JSON.parse(sessionStorage.getItem("siyag-demo-cart")||"null") as Cart|null;
+        if(preview?.currency==="EGP"&&Array.isArray(preview.lines)&&Number.isFinite(preview.subtotalMinor))set(preview);
+      } catch {}
+      return;
+    }
     const old=localStorage.getItem("siyag-cart");
-    if(!demo&&old){
+    if(old){
       tokenRef.current=old;
       inProgress.current=true;setBusy(true);
       api<Cart>("store/cart",{token:old}).then(set).catch(error=>{

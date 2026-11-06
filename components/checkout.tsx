@@ -3,7 +3,7 @@
 import Link from "next/link";
 import {useRouter} from "next/navigation";
 import {useEffect,useState,type FormEvent} from "react";
-import {ArrowUpRight,ShieldCheck} from "lucide-react";
+import {ArrowUpRight,Banknote,CreditCard,MapPin,PackageCheck,ShieldCheck,ShoppingBag} from "lucide-react";
 import {api,ApiError,imageUrl,money,name,type Quote,type Receipt,type Settings,type Shipping,type Tracking} from "@/lib/store";
 import {useStore} from "./store-context";
 
@@ -20,11 +20,17 @@ function Summary({quote,subtotal}:{quote?:Quote;subtotal:number}){
 
 const governorates:Record<string,[string,string]>={gharbia:["Gharbia","الغربية"],cairo:["Cairo","القاهرة"],giza:["Giza","الجيزة"],alexandria:["Alexandria","الإسكندرية"],dakahlia:["Dakahlia","الدقهلية"],sharqia:["Sharqia","الشرقية"],qalyubia:["Qalyubia","القليوبية"],menoufia:["Menoufia","المنوفية"],beheira:["Beheira","البحيرة"],sohag:["Sohag","سوهاج"]};
 
+const previewShipping: Shipping[] = [
+  {code:"preview-cairo",nameEn:"Standard delivery",nameAr:"توصيل عادي",governorate:"cairo",feeMinor:6500},
+  {code:"preview-gharbia",nameEn:"Standard delivery",nameAr:"توصيل عادي",governorate:"gharbia",feeMinor:5000},
+];
+const previewSettings: Settings = {name:"SIYAG Parfums",acceptOrders:false,paymentMethods:["cashOnDelivery"]};
+
 export function Checkout(){
   const {cart,token,clearCart,demo,busy,tr,lang,ar}=useStore();
   const router=useRouter();
-  const [settings,setSettings]=useState<Settings>();
-  const [shipping,setShipping]=useState<Shipping[]>([]);
+  const [settings,setSettings]=useState<Settings|undefined>(demo?previewSettings:undefined);
+  const [shipping,setShipping]=useState<Shipping[]>(demo?previewShipping:[]);
   const [governorate,setGovernorate]=useState("");
   const [ship,setShip]=useState("");
   const [promotion,setPromotion]=useState("");
@@ -35,7 +41,10 @@ export function Checkout(){
   const [pending,setPending]=useState(false);
   const [loading,setLoading]=useState(true);
   const key=JSON.stringify([governorate,ship,applied,cart.lines.map(l=>[l.variantId,l.quantity])]);
-  const activeQuote=quote?.key===key?quote.value:undefined;
+  const delivery=shipping.find(option=>option.code===ship && option.governorate===governorate);
+  const activeQuote:Quote|undefined=demo
+    ? delivery ? {subtotalMinor:cart.subtotalMinor,discountMinor:0,shippingMinor:delivery.feeMinor,taxMinor:0,taxIncluded:false,totalMinor:cart.subtotalMinor+delivery.feeMinor} : undefined
+    : quote?.key===key?quote.value:undefined;
   useEffect(()=>{
     if(demo){setLoading(false);return}
     const controller=new AbortController();
@@ -46,7 +55,7 @@ export function Checkout(){
     return()=>controller.abort();
   },[demo]);
   useEffect(()=>{
-    if(!ship||!governorate||!cart.lines.length)return;
+    if(demo||!ship||!governorate||!cart.lines.length)return;
     const controller=new AbortController();
     setError("");
     api<Quote>("store/cart/quote",{method:"POST",token:token(),data:{shippingCode:ship,governorate,promotionCode:applied||null},signal:controller.signal})
@@ -54,10 +63,10 @@ export function Checkout(){
     return()=>controller.abort();
     // The quote key includes the shipping option, coupon and cart lines.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[key]);
+  },[key,demo]);
   async function submit(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
-    if(!activeQuote||pending)return;
+    if(demo||!activeQuote||pending||!settings?.acceptOrders||cart.lines.some(line=>!line.available))return;
     const form=new FormData(event.currentTarget);
     setPending(true);setError("");
     try{
@@ -77,12 +86,22 @@ export function Checkout(){
       } else setError(e instanceof Error?e.message:tr("Could not place your order.","تعذر تسجيل الطلب."));
     }finally{setPending(false)}
   }
-  if(demo||(!cart.lines.length&&!busy))return <main className="container utility"><span className="eyebrow">SIYAG</span><h1>{tr("Checkout","إتمام الطلب")}</h1><p>{demo?tr("Checkout is disabled in this design preview.","الشراء متوقف في معاينة التصميم."):tr("Your bag is empty.","حقيبتك فاضية.")}</p><Link className="action ink" href="/shop">{tr("Explore the collection","استكشف التشكيلة")}</Link></main>;
-  return <main className="container utility">
-    <span className="eyebrow">SIYAG PARFUMS</span><h1>{tr("Checkout","إتمام الطلب")}</h1>
+  if(!cart.lines.length)return <main className="container utility checkout-page">
+    <div className="checkout-empty">
+      <ShoppingBag size={30}/><h1>{tr("Checkout","إتمام الطلب")}</h1>
+      <p role="status">{busy?tr("Loading your bag…","جاري تحميل الحقيبة…"):tr("Your bag is empty.","حقيبتك فاضية.")}</p>
+      {!busy&&<Link className="action ink" href="/shop">{tr("Explore the collection","استكشف التشكيلة")}</Link>}
+    </div>
+  </main>;
+  return <main className="container utility checkout-page">
+    <div className="checkout-heading">
+      <div><span className="eyebrow">SIYAG PARFUMS</span><h1>{tr("Checkout","إتمام الطلب")}</h1></div>
+      <span className="checkout-secure"><ShieldCheck size={19}/>{tr("Secure checkout","إتمام طلب آمن")}</span>
+    </div>
+    {demo&&<p className="checkout-preview">{tr("Design preview · delivery charges are illustrative. Order submission is disabled.","معاينة التصميم · رسوم التوصيل توضيحية وتأكيد الطلب متوقف.")}</p>}
     <div className="checkout-grid">
       <form className="checkout-form" onSubmit={submit}><fieldset disabled={pending||loading}>
-        <legend>{tr("Delivery details","بيانات التوصيل")}</legend>
+        <legend><MapPin size={21}/>{tr("Delivery details","بيانات التوصيل")}</legend>
         <div className="field-grid">
           <label>{tr("Full name","الاسم بالكامل")}<input name="name" autoComplete="name" required maxLength={120}/></label>
           <label>{tr("Mobile number","رقم الموبايل")}<input name="phone" type="tel" autoComplete="tel" required pattern="(?:01|\\+201)[0125][0-9]{8}"/></label>
@@ -93,16 +112,23 @@ export function Checkout(){
           <label className="wide">{tr("Street, building and apartment","الشارع والعمارة والشقة")}<input name="address" autoComplete="street-address" required maxLength={500}/></label>
           <label className="wide">{tr("Delivery notes · optional","ملاحظات التوصيل · اختياري")}<textarea name="notes" maxLength={500}/></label>
         </div>
-        <label>{tr("Payment method","طريقة الدفع")}<select value={method} onChange={e=>setMethod(e.target.value)}>{(settings?.paymentMethods??[]).map(m=><option key={m} value={m}>{m==="paymob"?tr("Pay online with Paymob","ادفع أونلاين عبر Paymob"):tr("Cash on delivery","الدفع عند الاستلام")}</option>)}</select></label>
-        {settings&&!settings.acceptOrders&&<p role="alert">{tr("Orders are temporarily paused.","الطلبات متوقفة مؤقتًا.")}</p>}
+        <div className="payment-options" role="group" aria-label={tr("Payment method","طريقة الدفع")}>
+          <h2>{tr("Payment method","طريقة الدفع")}</h2>
+          {(settings?.paymentMethods??[]).map(value=><label key={value} className="payment-choice" data-selected={method===value}>
+            {value==="paymob"?<CreditCard size={19}/>:<Banknote size={19}/>}
+            <span>{value==="paymob"?tr("Pay online with Paymob","ادفع أونلاين عبر Paymob"):tr("Cash on delivery","الدفع عند الاستلام")}</span>
+            <input type="radio" name="paymentMethod" value={value} checked={method===value} onChange={()=>setMethod(value)}/>
+          </label>)}
+        </div>
+        {!demo&&settings&&!settings.acceptOrders&&<p role="alert">{tr("Orders are temporarily paused.","الطلبات متوقفة مؤقتًا.")}</p>}
         {!loading&&!shipping.length&&<p role="alert">{tr("Delivery options haven’t been published yet.","خيارات التوصيل لسه مش متاحة.")}</p>}
         {error&&<p className="form-error" role="alert">{error}</p>}
-        <button type="submit" className="action gold" disabled={!activeQuote||pending||!settings?.acceptOrders||cart.lines.some(l=>!l.available)}>{pending?tr("Placing your order…","جاري تسجيل الطلب…"):tr("Place order","تأكيد الطلب")}<ArrowUpRight size={16}/></button>
+        <button type="submit" className="action ink" disabled={demo||!activeQuote||pending||!settings?.acceptOrders||cart.lines.some(l=>!l.available)}>{pending?tr("Placing your order…","جاري تسجيل الطلب…"):tr("Place order","تأكيد الطلب")}{activeQuote&&<strong>{money(activeQuote.totalMinor,lang)}</strong>}<ArrowUpRight size={16}/></button>
       </fieldset></form>
       <aside className="order-summary">
-        <h2>{tr("Order summary","ملخص الطلب")}</h2>
+        <h2><PackageCheck size={21}/>{tr("Order summary","ملخص الطلب")}</h2>
         {cart.lines.map(l=><div className="summary-line" key={l.variantId}><img src={imageUrl(l.image)} alt=""/><div><strong>{name(l,lang)}</strong><small>{l.sizeMl} {tr("ml","مل")} × {l.quantity}</small></div><span>{money(l.unitPriceMinor*l.quantity,lang)}</span></div>)}
-        <form className="promo" onSubmit={e=>{e.preventDefault();setApplied(promotion.trim())}}><input value={promotion} onChange={e=>setPromotion(e.target.value)} maxLength={100} placeholder={tr("Promo code","كود الخصم")} aria-label={tr("Promo code","كود الخصم")}/><button type="submit" disabled={!ship||pending}>{tr("Apply","تطبيق")}</button></form>
+        {!demo&&<form className="promo" onSubmit={e=>{e.preventDefault();setApplied(promotion.trim())}}><input value={promotion} onChange={e=>setPromotion(e.target.value)} maxLength={100} placeholder={tr("Promo code","كود الخصم")} aria-label={tr("Promo code","كود الخصم")}/><button type="submit" disabled={!ship||pending}>{tr("Apply","تطبيق")}</button></form>}
         {applied&&<button className="text-link" type="button" onClick={()=>{setApplied("");setPromotion("")}}>{tr("Remove promo code","إزالة كود الخصم")}</button>}
         <Summary quote={activeQuote} subtotal={cart.subtotalMinor}/>
       </aside>

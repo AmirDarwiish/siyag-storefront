@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import {useRouter} from "next/navigation";
 import {useEffect,useState,type ReactNode} from "react";
 import {ArrowDownLeft,ArrowRight,ArrowUpRight,Heart,Menu,Minus,Plus,Search,ShoppingBag,X} from "lucide-react";
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from "@/components/ui/dialog";
@@ -9,9 +10,9 @@ import {useStore} from "./store-context";
 
 export function Wordmark(){return <span className="wordmark"><span>SIYAG</span><small>PARFUMS</small></span>}
 
-export function Modal({open,onOpenChange,title,description,className,children}:{open:boolean;onOpenChange:(v:boolean)=>void;title:string;description?:string;className?:string;children:ReactNode}){
+export function Modal({open,onOpenChange,title,description,className,placement,children}:{open:boolean;onOpenChange:(v:boolean)=>void;title:string;description?:string;className?:string;placement?:"center"|"side";children:ReactNode}){
   const {tr}=useStore();
-  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className={`store-modal ${className??""}`} showCloseButton={false}>
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className={`store-modal ${className??""}`} showCloseButton={false} placement={placement}>
     <DialogTitle className="sr-only">{title}</DialogTitle><DialogDescription className="sr-only">{description??title}</DialogDescription>
     <button type="button" className="icon modal-close" aria-label={tr("Close","إغلاق")} onClick={()=>onOpenChange(false)}><X size={20}/></button>{children}
   </DialogContent></Dialog>;
@@ -58,11 +59,13 @@ function Campaign(){
 
 export function Header(){
   const {tr,ar,toggleLanguage,cart,setCartOpen,demo}=useStore();
+  const router=useRouter();
   const [search,setSearch]=useState(false);
   const [menu,setMenu]=useState(false);
   const [query,setQuery]=useState("");
   const [results,setResults]=useState<Product[]>([]);
   const [searchState,setSearchState]=useState<"idle"|"loading"|"done"|"error">("idle");
+  const resultsUrl="/shop?q="+encodeURIComponent(query.trim());
   useEffect(()=>{
     if(!search||query.trim().length<2)return;
     const controller=new AbortController();
@@ -86,7 +89,6 @@ export function Header(){
       </nav>
       <div className="nav-tools">
         <button type="button" className="language-switch" onClick={toggleLanguage} aria-label={tr("Switch to Arabic","التبديل للإنجليزية")}>{ar?"EN":"عربي"}</button>
-        <button type="button" className="icon" aria-label={tr("Search","البحث")} onClick={()=>setSearch(true)}><Search size={20}/></button>
         <Link className="icon desktop-heart" href="/shop?saved=1" aria-label={tr("Wishlist","المفضلة")}><Heart size={19}/></Link>
         <button type="button" className="icon bag-icon" aria-label={tr(`Bag, ${quantity} items`,`الحقيبة، ${quantity} منتجات`)} onClick={()=>setCartOpen(true)}><ShoppingBag size={20}/>{quantity>0&&<span>{quantity}</span>}</button>
       </div>
@@ -94,36 +96,54 @@ export function Header(){
     <Modal open={menu} onOpenChange={setMenu} title={tr("Menu","القائمة")} className="nav-modal">
       <Wordmark/><Link href="/shop" onClick={()=>setMenu(false)}>{tr("Shop all","كل العطور")}</Link><Link href="/shop?format=decant" onClick={()=>setMenu(false)}>{tr("Discovery","عينات التجربة")}</Link><Link href="/#maison" onClick={()=>setMenu(false)}>{tr("The house","دار سياج")}</Link><Link href="/shop?saved=1" onClick={()=>setMenu(false)}>{tr("Wishlist","المفضلة")}</Link>
     </Modal>
-    <Modal open={search} onOpenChange={setSearch} title={tr("Find your fragrance","ابحث عن عطرك")} className="search-modal">
-      <h2>{tr("Find your fragrance","ابحث عن عطرك")}</h2>
-      <label className="search-field"><Search size={20}/><input type="search" maxLength={100} placeholder={tr("Search by fragrance name…","ابحث باسم العطر…")} aria-label={tr("Search fragrances","البحث في العطور")} value={query} onChange={event=>{setQuery(event.target.value);setResults([]);setSearchState("idle")}}/></label>
-      {query.trim().length>=2&&<><div className="search-results" aria-live="polite">
-        {searchState==="loading"&&<p>{tr("Searching…","جاري البحث…")}</p>}
-        {searchState==="error"&&<p>{tr("Search is temporarily unavailable.","البحث غير متاح مؤقتًا.")}</p>}
-        {searchState==="done"&&!results.length&&<p>{tr("No fragrances found.","مفيش عطور مطابقة.")}</p>}
-        {results.map(p=>{const v=variantFor(p);return <Link key={p.id} href={productUrl(p,v)} onClick={()=>setSearch(false)}>
-          <img src={imageUrl(p.images[0])} alt=""/><span>{name(p,ar?"ar":"en")}</span>{v&&<small>{money(v.priceMinor,ar?"ar":"en")}</small>}
-        </Link>})}
-      </div><Link className="text-link" href={"/shop?q="+encodeURIComponent(query.trim())} onClick={()=>setSearch(false)}>{tr("View all results","كل النتائج")}<ArrowUpRight size={14}/></Link></>}
-    </Modal>
+    <div className="container header-search" onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))setSearch(false)}}
+      onKeyDown={event=>{if(event.key==="Escape")setSearch(false)}}>
+      <form className="header-search-form" role="search" onSubmit={event=>{
+        event.preventDefault();
+        setSearch(false);
+        router.push(query.trim()?resultsUrl:"/shop");
+      }}>
+        <Search size={19} aria-hidden="true"/>
+        <input type="search" maxLength={100} placeholder={tr("Search perfumes in Arabic or English…","ابحث عن عطر بالعربي أو بالإنجليزي…")}
+          aria-label={tr("Search fragrances","البحث في العطور")} value={query} onFocus={()=>setSearch(true)}
+          onChange={event=>{setQuery(event.target.value);setSearch(true);setResults([]);setSearchState("idle")}}/>
+        <button type="submit" aria-label={tr("Search","بحث")}><ArrowRight size={19}/></button>
+      </form>
+      {search&&query.trim().length>=2&&<div className="header-suggestions">
+        <div className="search-results" aria-live="polite">
+          {(searchState==="loading"||searchState==="idle")&&<p>{tr("Searching…","جاري البحث…")}</p>}
+          {searchState==="error"&&<p>{tr("Search is temporarily unavailable.","البحث غير متاح مؤقتًا.")}</p>}
+          {searchState==="done"&&!results.length&&<p>{tr("No fragrances found.","مفيش عطور مطابقة.")}</p>}
+          {results.map(product=>{
+            const variant=variantFor(product);
+            return <Link key={product.id} href={productUrl(product,variant)} onClick={()=>setSearch(false)}>
+              <img src={imageUrl(product.images[0])} alt=""/><span>{name(product,ar?"ar":"en")}</span>
+              {variant&&<small>{money(variant.priceMinor,ar?"ar":"en")}</small>}
+            </Link>;
+          })}
+        </div>
+        <Link className="text-link" href={resultsUrl} onClick={()=>setSearch(false)}>{tr("View all results","كل النتائج")}<ArrowUpRight size={14}/></Link>
+      </div>}
+    </div>
   </header>;
 }
 
 export function Bag(){
   const {cart,cartOpen,setCartOpen,busy,setQuantity,tr,lang,demo}=useStore();
-  return <Modal open={cartOpen} onOpenChange={setCartOpen} title={tr("Your bag","حقيبتك")} className="bag-modal">
-    <div className="eyebrow">SIYAG</div><h2>{tr("Your bag","حقيبتك")}</h2>
+  return <Modal open={cartOpen} onOpenChange={setCartOpen} title={tr("Your bag","حقيبتك")} className="bag-modal" placement="side">
+    <div className="bag-heading"><div className="eyebrow">SIYAG</div><h2>{tr("Your bag","حقيبتك")}</h2></div>
     {!cart.lines.length?<div className="bag-empty"><ShoppingBag size={28}/><p>{tr("Your bag is empty.","حقيبتك فاضية.")}</p><Link href="/shop" className="action ink" onClick={()=>setCartOpen(false)}>{tr("Explore the collection","استكشف التشكيلة")}</Link></div>:<>
-      <div className="bag-lines">{cart.lines.map(line=><div className="bag-line" key={line.variantId}>
+      <div className="bag-lines" aria-busy={busy}>{cart.lines.map(line=><div className="bag-line" key={line.variantId}>
         <Link href={"/products/"+line.slug+"?variant="+line.variantId} onClick={()=>setCartOpen(false)}><img src={imageUrl(line.image)} alt=""/></Link>
         <div><strong>{name(line,lang)}</strong><small>{line.sizeMl} {tr("ml","مل")}</small>
           <div className="quantity"><button type="button" disabled={busy} onClick={()=>setQuantity(line.variantId,line.quantity-1)} aria-label={tr("Decrease quantity","تقليل الكمية")}><Minus size={15}/></button><span>{line.quantity}</span><button type="button" disabled={busy||line.quantity>=20||!line.available} onClick={()=>setQuantity(line.variantId,line.quantity+1)} aria-label={tr("Increase quantity","زيادة الكمية")}><Plus size={15}/></button></div>
         </div>
         <div><strong>{money(line.quantity*line.unitPriceMinor,lang)}</strong><button className="text-link remove" type="button" disabled={busy} onClick={()=>setQuantity(line.variantId,0)}>{tr("Remove","حذف")}</button></div>
       </div>)}</div>
-      <div className="bag-total"><span>{tr("Subtotal","المجموع الفرعي")}</span><strong>{money(cart.subtotalMinor,lang)}</strong></div>
+      <div className="bag-footer"><div className="bag-total"><span>{tr("Subtotal","المجموع الفرعي")}</span><strong>{money(cart.subtotalMinor,lang)}</strong></div>
       <p className="muted">{demo?tr("Sample products are for design review.","المنتجات التجريبية لمراجعة التصميم."):tr("Shipping and eligible offers are calculated at checkout.","الشحن والعروض المستحقة بيتحسبوا عند إتمام الطلب.")}</p>
-      {demo?<Link href="/shop" className="action ink" onClick={()=>setCartOpen(false)}>{tr("Continue exploring","كمّل تصفح")}</Link>:<Link href="/checkout" className="action gold" onClick={()=>setCartOpen(false)}>{tr("Checkout","إتمام الطلب")}<ArrowRight size={16}/></Link>}
+      <Link href="/checkout" className="action ink" onClick={()=>setCartOpen(false)}>{demo?tr("Preview checkout","عاين إتمام الطلب"):tr("Checkout","إتمام الطلب")}<ArrowRight size={16}/></Link>
+      </div>
     </>}
   </Modal>;
 }

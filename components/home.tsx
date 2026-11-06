@@ -1,11 +1,54 @@
 "use client";
 
 import Link from "next/link";
-import {useEffect, useState} from "react";
-import {ArrowUpRight, Box, FlaskConical, Sparkles} from "lucide-react";
+import {useEffect, useRef, useState} from "react";
+import {ArrowUpRight, Box, ChevronLeft, ChevronRight, FlaskConical, Sparkles} from "lucide-react";
 import {api, imageUrl, name, type Collection, type Page, type Product} from "@/lib/store";
 import {useStore} from "./store-context";
 import {ProductCard} from "./product";
+
+function HeroSlider() {
+  const {tr, ar} = useStore();
+  const [active, setActive] = useState(0);
+  const touchStart = useRef<{x:number;y:number} | null>(null);
+  const slides = [
+    {title: tr("A scent that stays.", "عطر يسيب أثر."), label: tr("THE SIYAG COLLECTION", "تشكيلة سياج"), copy: tr("Warm woods, luminous amber and fresh citrus.", "أخشاب دافئة وعنبر وحمضيات منعشة."), image: "/brand/olive-hero.webp", href: "/shop", action: tr("Explore the collection", "استكشف التشكيلة")},
+    {title: tr("Find your notes.", "اكتشف نوتاتك."), label: tr("SCENT FAMILIES", "العائلات العطرية"), copy: tr("Explore the ingredients behind each fragrance.", "تعرّف على النوتات اللي بتميّز كل عطر."), image: "/brand/olive-notes.webp", href: "/#maison", action: tr("Explore the house", "اكتشف دار سياج")},
+    {title: tr("Start with a sample.", "ابدأ بعينة."), label: tr("DISCOVERY SIZES", "أحجام التجربة"), copy: tr("Try a smaller size before choosing your full bottle.", "جرّب حجم أصغر قبل ما تختار الزجاجة الكاملة."), image: "/brand/eclat.webp", href: "/shop?format=decant", action: tr("Explore discovery sizes", "شوف أحجام التجربة")},
+  ];
+  const slide = slides[active];
+  const move = (step: number) => setActive(index => (index + step + slides.length) % slides.length);
+  const PreviousIcon = ar ? ChevronRight : ChevronLeft;
+  const NextIcon = ar ? ChevronLeft : ChevronRight;
+
+  return <section className="container hero-carousel" aria-label={tr("Featured collections", "أبرز التشكيلات")} aria-roledescription="carousel">
+    <div className="hero" data-slide={active}
+      onTouchStart={event=>{touchStart.current={x:event.touches[0].clientX,y:event.touches[0].clientY}}}
+      onTouchEnd={event=>{
+        if(touchStart.current===null)return;
+        const distance=event.changedTouches[0].clientX-touchStart.current.x;
+        const vertical=event.changedTouches[0].clientY-touchStart.current.y;
+        touchStart.current=null;
+        if(Math.abs(distance)>55&&Math.abs(distance)>Math.abs(vertical))move((distance<0?1:-1)*(ar?-1:1));
+      }}
+      onTouchCancel={()=>{touchStart.current=null}}>
+      <div className="hero-content" aria-live="polite">
+        <div className="hero-kicker"><span/>{slide.label}</div>
+        <h1>{slide.title}</h1>
+        <p>{slide.copy}</p>
+        <Link href={slide.href} className="action gold">{slide.action}<ArrowUpRight size={17}/></Link>
+      </div>
+      <figure className="hero-visual"><img src={slide.image} alt="" width={1280} height={960} fetchPriority={active===0?"high":"auto"}/></figure>
+    </div>
+    <div className="hero-controls">
+      <button type="button" className="slider-arrow" aria-label={tr("Previous slide", "الشريحة السابقة")} onClick={()=>move(-1)}><PreviousIcon size={20}/></button>
+      <div className="slider-dots" role="group" aria-label={tr("Choose a slide", "اختار شريحة")}>
+        {slides.map((item,index)=><button type="button" key={item.href} aria-label={item.label} aria-current={active===index?"true":undefined} onClick={()=>setActive(index)}/>)}
+      </div>
+      <button type="button" className="slider-arrow" aria-label={tr("Next slide", "الشريحة التالية")} onClick={()=>move(1)}><NextIcon size={20}/></button>
+    </div>
+  </section>;
+}
 
 export function Home() {
   const {tr, lang} = useStore();
@@ -37,20 +80,7 @@ export function Home() {
     : fallbackCategories;
 
   return <main>
-    <section className="hero">
-      <div className="hero-content">
-        <div className="hero-kicker"><span/>{tr("AN EGYPTIAN FRAGRANCE HOUSE", "دار عطور مصرية")}</div>
-        <h1>{tr("A scent that", "عطر يسيب")}<br/><em>{tr("stays with you.", "أثر.")}</em></h1>
-        <p>{tr("Warm woods, luminous amber and fresh citrus. Discover the scent that feels like yours.", "أخشاب دافئة وعنبر وحمضيات منعشة. اكتشف العطر اللي يشبهك.")}</p>
-        <Link href="/shop" className="action ink">
-          {tr("Explore the collection", "استكشف التشكيلة")}<ArrowUpRight size={17}/>
-        </Link>
-      </div>
-      <figure className="hero-visual">
-        <img src="/brand/olive-hero.webp" alt="" width={1280} height={960} fetchPriority="high"/>
-        <figcaption><span>SIYAG PARFUMS</span><span>{tr("01 / THE HOUSE", "٠١ / الدار")}</span></figcaption>
-      </figure>
-    </section>
+    <HeroSlider/>
 
     <div className="brand-strip">
       <div><FlaskConical size={16}/>{tr("Eau de Parfum", "أو دو بارفان")}</div>

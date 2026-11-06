@@ -5,7 +5,7 @@ import {ArrowUpRight} from "lucide-react";
 import {useStore} from "@/components/store-context";
 
 export default function NotFound(){
-  const {tr}=useStore();
+  const tr=useStore()?.tr??((en:string)=>en);
   return <main className="container utility">
     <section className="catalog-notice">
       <span className="eyebrow">SIYAG PARFUMS</span>

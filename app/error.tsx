@@ -3,7 +3,7 @@
 import {useStore} from "@/components/store-context";
 
 export default function ErrorPage({reset}:{reset:()=>void}){
-  const {tr}=useStore();
+  const tr=useStore()?.tr??((en:string)=>en);
   return <main className="container utility">
     <section className="catalog-notice">
       <span className="eyebrow">SIYAG PARFUMS</span>

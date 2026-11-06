@@ -17,6 +17,7 @@ export function demoGet(path:string, query:URLSearchParams) {
     const q=query.get("q")?.toLowerCase().normalize("NFD").replace(/\p{M}/gu,"");
     const list=demoProducts.filter(product=>
       (!q || [product.nameEn,product.nameAr,product.descriptionEn].some(x=>x.toLowerCase().normalize("NFD").replace(/\p{M}/gu,"").includes(q))) &&
+      (query.get("featured")!=="true"||product.featured) &&
       (!query.get("collection") || product.collections.includes(query.get("collection")!)) &&
       (!query.get("family") || product.family===query.get("family")) &&
       (!query.get("concentration") || product.concentration===query.get("concentration")) &&

@@ -6,6 +6,7 @@ import {useEffect,useState,type FormEvent} from "react";
 import {ArrowUpRight,Banknote,CreditCard,MapPin,PackageCheck,ShieldCheck,ShoppingBag} from "lucide-react";
 import {api,ApiError,imageUrl,money,name,type Quote,type Receipt,type Settings,type Shipping,type Tracking} from "@/lib/store";
 import {useStore} from "./store-context";
+import {governorates} from "@/lib/governorates";
 
 function Summary({quote,subtotal}:{quote?:Quote;subtotal:number}){
   const {lang,tr}=useStore();
@@ -18,7 +19,6 @@ function Summary({quote,subtotal}:{quote?:Quote;subtotal:number}){
   </dl>;
 }
 
-const governorates:Record<string,[string,string]>={gharbia:["Gharbia","الغربية"],cairo:["Cairo","القاهرة"],giza:["Giza","الجيزة"],alexandria:["Alexandria","الإسكندرية"],dakahlia:["Dakahlia","الدقهلية"],sharqia:["Sharqia","الشرقية"],qalyubia:["Qalyubia","القليوبية"],menoufia:["Menoufia","المنوفية"],beheira:["Beheira","البحيرة"],sohag:["Sohag","سوهاج"]};
 
 const previewShipping: Shipping[] = [
   {code:"preview-cairo",nameEn:"Standard delivery",nameAr:"توصيل عادي",governorate:"cairo",feeMinor:6500},

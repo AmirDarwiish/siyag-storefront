@@ -2,8 +2,7 @@ import type {Metadata} from "next";
 import "./globals.css";
 import "./storefront.css";
 import "./editorial.css";
-import {StoreProvider} from "@/components/store-context";
-import {Bag,Footer,Header} from "@/components/shell";
+import {StorefrontFrame} from "@/components/storefront-frame";
 import {DEMO} from "@/lib/server-store";
 
 export const metadata:Metadata={
@@ -12,5 +11,5 @@ export const metadata:Metadata={
   ...(DEMO?{robots:{index:false,follow:false}}:{}),
 };
 export default function RootLayout({children}:{children:React.ReactNode}) {
-  return <html lang="en" dir="ltr" suppressHydrationWarning><body><StoreProvider demo={DEMO}><Header/>{children}<Footer/><Bag/></StoreProvider></body></html>;
+  return <html lang="en" dir="ltr" suppressHydrationWarning><body><StorefrontFrame demo={DEMO}>{children}</StorefrontFrame></body></html>;
 }

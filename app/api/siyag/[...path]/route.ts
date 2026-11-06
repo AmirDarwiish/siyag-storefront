@@ -1,0 +1,41 @@
+import { DEMO, demoGet, requestStore } from "@/lib/server-store";
+
+const readPaths=/^store\/(products(?:\/[a-z0-9-]+)?|collections(?:\/[a-z0-9-]+)?|content(?:\/[a-z0-9-]+)?|settings|shipping|cart)$/;
+const postPaths=/^store\/(carts|cart\/quote|orders(?:\/track|\/payment\/paymob)?)$/;
+const linePath=/^store\/cart\/lines\/[0-9a-f-]{36}$/i;
+const mediaPath=/^media\/[a-f0-9]{64}\.(jpg|png|webp)$/;
+
+async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}) {
+  const path=(await params).path.join("/");
+  const method=request.method;
+  const incoming=new URL(request.url);
+  const media=method==="GET"&&mediaPath.test(path);
+  const allowed=media||(method==="GET"&&readPaths.test(path))||(method==="POST"&&postPaths.test(path))||(method==="PUT"&&linePath.test(path));
+  if(!allowed) return Response.json({detail:"Route not found."},{status:404});
+  if(method!=="GET") {
+    const origin=request.headers.get("origin");
+    if(request.headers.get("sec-fetch-site")==="cross-site" || (origin && origin!==incoming.origin && origin!=="https://"+incoming.host)) {
+      return Response.json({detail:"Origin not allowed."},{status:403});
+    }
+  }
+  if(DEMO && !media) {
+    const value=method==="GET"?demoGet(path,incoming.searchParams):undefined;
+    return value===undefined?Response.json({detail:"Unavailable in preview."},{status:404}):Response.json(value);
+  }
+  try {
+    const headers=new Headers();
+    const token=request.headers.get("x-cart-token");
+    if(token) headers.set("X-Cart-Token",token);
+    const body=method==="GET"?undefined:await request.text();
+    if(body && body.length>16384) return Response.json({detail:"Request too large."},{status:413});
+    if(body) headers.set("Content-Type","application/json");
+    const response=await requestStore(media?"/"+path:"/api/v1/"+path,incoming.search,{method,headers,body:body||undefined});
+    return new Response(response.status===204?null:response.body,{status:response.status,headers:{
+      "Content-Type":response.headers.get("content-type")||"application/json",
+      "Cache-Control":media&&response.ok?"public, max-age=86400":"no-store","X-Content-Type-Options":"nosniff",
+    }});
+  } catch {
+    return Response.json({detail:"The store is temporarily unavailable."},{status:502});
+  }
+}
+export {proxy as GET,proxy as POST,proxy as PUT};

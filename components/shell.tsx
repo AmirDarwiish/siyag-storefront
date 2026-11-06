@@ -129,9 +129,9 @@ export function Header(){
 }
 
 export function Bag(){
-  const {cart,cartOpen,setCartOpen,busy,setQuantity,tr,lang,demo}=useStore();
+  const {cart,cartOpen,setCartOpen,busy,setQuantity,tr,lang,demo,bagNotice}=useStore();
   return <Modal open={cartOpen} onOpenChange={setCartOpen} title={tr("Your bag","حقيبتك")} className="bag-modal" placement="side">
-    <div className="bag-heading"><div className="eyebrow">SIYAG</div><h2>{tr("Your bag","حقيبتك")}</h2></div>
+    <div className="bag-heading"><div className="eyebrow">SIYAG</div><h2>{tr("Your bag","حقيبتك")}</h2><div role="status">{bagNotice&&<p className="bag-notice" data-kind={bagNotice.kind}>{bagNotice.text}</p>}</div></div>
     {!cart.lines.length?<div className="bag-empty"><ShoppingBag size={28}/><p>{tr("Your chosen fragrances will appear here.","ستظهر هنا العطور التي تضيفها إلى حقيبتك.")}</p><Link href="/shop" className="action ink" onClick={()=>setCartOpen(false)}>{tr("Explore the collection","استكشف التشكيلة")}</Link></div>:<>
       <div className="bag-lines" aria-busy={busy}>{cart.lines.map(line=><div className="bag-line" key={line.variantId}>
         <Link href={"/products/"+line.slug+"?variant="+line.variantId} onClick={()=>setCartOpen(false)}><img src={imageUrl(line.image)} alt=""/></Link>

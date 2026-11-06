@@ -2,13 +2,15 @@
 
 import {createContext,useCallback,useContext,useEffect,useRef,useState,type ReactNode} from "react";
 import {api,ApiError,type Language,type Cart,type Product,type Variant,name} from "@/lib/store";
+import {readLocal,writeLocal} from "@/lib/browser-storage";
 
 const EMPTY:Cart={lines:[],subtotalMinor:0,currency:"EGP"};
+type BagNotice={text:string;kind:"success"|"error"};
 type Store = {
   lang:Language; ar:boolean; tr:(en:string,ar:string)=>string; toggleLanguage:()=>void; demo:boolean;
   cart:Cart; cartOpen:boolean; setCartOpen:(open:boolean)=>void; busy:boolean; token:()=>string;
   add:(product:Product,variant:Variant,quantity:number)=>Promise<boolean>; setQuantity:(id:string,quantity:number)=>Promise<boolean>;
-  saved:string[]; toggleSaved:(slug:string)=>void; clearCart:()=>void;
+  bagNotice:BagNotice|null; saved:string[]; toggleSaved:(slug:string)=>void; clearCart:()=>void;
 };
 const Context=createContext<Store|null>(null);
 export const useStore=()=>useContext(Context)!;
@@ -19,7 +21,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
   const [cartOpen,setCartOpen]=useState(false);
   const [busy,setBusy]=useState(false);
   const [saved,setSaved]=useState<string[]>([]);
-  const [message,setMessage]=useState("");
+  const [bagNotice,setBagNotice]=useState<BagNotice|null>(null);
   const cartRef=useRef(EMPTY);
   const tokenRef=useRef("");
   const inProgress=useRef(false);
@@ -33,19 +35,30 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
   const tr=(en:string,ar:string)=>lang==="ar"?ar:en;
   const saveToken=(value:string)=>{
     tokenRef.current=value;
-    if(value) localStorage.setItem("siyag-cart",value); else localStorage.removeItem("siyag-cart");
+    writeLocal("siyag-cart",value||null);
   };
   useEffect(()=>{
-    if(localStorage.getItem("siyag-lang")==="ar") setLang("ar");
-    try {const items=JSON.parse(localStorage.getItem("siyag-saved")||"[]");if(Array.isArray(items))setSaved(items)} catch {}
+    if(readLocal("siyag-lang")==="ar") setLang("ar");
+    function restoreSaved(){
+      try{
+        const items:unknown=JSON.parse(readLocal("siyag-saved")||"[]");
+        setSaved(Array.isArray(items)?items.filter((item):item is string=>typeof item==="string"&&/^[a-z0-9-]+$/.test(item)):[]);
+      }catch{setSaved([])}
+    }
+    restoreSaved();
+    function syncSaved(event:StorageEvent){
+      if(event.key==="siyag-saved"||event.key===null)restoreSaved();
+    }
+    window.addEventListener("storage",syncSaved);
+    const cleanup=()=>window.removeEventListener("storage",syncSaved);
     if(demo){
       try {
         const preview=JSON.parse(sessionStorage.getItem("siyag-demo-cart")||"null") as Cart|null;
         if(preview?.currency==="EGP"&&Array.isArray(preview.lines)&&Number.isFinite(preview.subtotalMinor))set(preview);
       } catch {}
-      return;
+      return cleanup;
     }
-    const old=localStorage.getItem("siyag-cart");
+    const old=readLocal("siyag-cart");
     if(old){
       tokenRef.current=old;
       inProgress.current=true;setBusy(true);
@@ -53,12 +66,14 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
         if(error instanceof ApiError && [404,409].includes(error.status)) saveToken("");
       }).finally(()=>{inProgress.current=false;setBusy(false)});
     }
+    return cleanup;
   },[demo,set]);
   useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr"},[lang]);
-  useEffect(()=>{if(!message)return; const timeout=setTimeout(()=>setMessage(""),4000);return()=>clearTimeout(timeout)},[message]);
+  useEffect(()=>{if(!bagNotice)return;const timeout=setTimeout(()=>setBagNotice(null),4000);return()=>clearTimeout(timeout)},[bagNotice]);
+  function openBag(open:boolean){if(!open)setBagNotice(null);setCartOpen(open)}
   async function update(id:string,quantity:number,product?:Product,variant?:Variant){
     if(inProgress.current) return false;
-    if(quantity>20){setMessage(tr("Maximum 20 per size.","الحد الأقصى ٢٠ قطعة للمقاس."));return false}
+    if(quantity>20){setBagNotice({kind:"error",text:tr("Maximum 20 per size.","الحد الأقصى ٢٠ قطعة للمقاس.")});return false}
     inProgress.current=true;setBusy(true);
     try{
       if(demo){
@@ -79,17 +94,17 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
           await create();set(await send());
         }
       }
-      if(product){setMessage(tr(`${name(product,lang)} added to bag`,"اتضاف العطر للحقيبة"));setCartOpen(true)}
+      if(product){setBagNotice({kind:"success",text:tr(`${name(product,lang)} added to bag`,"اتضاف العطر للحقيبة")});setCartOpen(true)}
       return true;
-    }catch(error){setMessage(lang==="ar"?"تعذر تحديث الحقيبة. راجع توافر المقاس وحاول مرة أخرى.":error instanceof Error?error.message:"Could not update your bag.");return false}
+    }catch(error){setBagNotice({kind:"error",text:lang==="ar"?"تعذر تحديث الحقيبة. راجع توافر المقاس وحاول مرة أخرى.":error instanceof Error?error.message:"Could not update your bag."});return false}
     finally{inProgress.current=false;setBusy(false)}
   }
-  const value:Store={lang,ar:lang==="ar",tr,demo,cart,cartOpen,setCartOpen,busy,token:()=>tokenRef.current,
-    toggleLanguage:()=>{const next=lang==="ar"?"en":"ar";localStorage.setItem("siyag-lang",next);setLang(next)},
+  const value:Store={lang,ar:lang==="ar",tr,demo,cart,cartOpen,setCartOpen:openBag,busy,bagNotice,token:()=>tokenRef.current,
+    toggleLanguage:()=>{const next=lang==="ar"?"en":"ar";writeLocal("siyag-lang",next);setLang(next)},
     add:(p,v,q)=>update(v.id,(cartRef.current.lines.find(l=>l.variantId===v.id)?.quantity??0)+q,p,v),
     setQuantity:update,
-    saved,toggleSaved:(slug)=>setSaved(old=>{const next=old.includes(slug)?old.filter(s=>s!==slug):[...old,slug];localStorage.setItem("siyag-saved",JSON.stringify(next));return next}),
+    saved,toggleSaved:(slug)=>setSaved(old=>{const next=old.includes(slug)?old.filter(s=>s!==slug):[...old,slug];writeLocal("siyag-saved",JSON.stringify(next));return next}),
     clearCart:()=>{saveToken("");set(EMPTY)},
   };
-  return <Context.Provider value={value}>{children}<div className="toast-live" aria-live="polite">{message&&<div>{message}</div>}</div></Context.Provider>;
+  return <Context.Provider value={value}>{children}<div className="toast-live" aria-live="polite">{!cartOpen&&bagNotice&&<div>{bagNotice.text}</div>}</div></Context.Provider>;
 }

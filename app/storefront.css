@@ -76,6 +76,8 @@
 }
 .bag-heading {padding:23px 22px 12px;border-bottom:1px solid var(--line)}
 .bag-heading h2 {margin-bottom:5px}
+.bag-notice {margin-top:8px;padding:7px 10px;background:var(--stone);color:var(--ink);font-size:13px}
+.bag-notice[data-kind="error"] {background:#f8ece5;color:#773722}
 .bag-modal .modal-close {background:var(--stone);top:15px;inset-inline-end:16px}
 .bag-lines {flex:1;min-height:0;overflow:auto;padding-inline:20px;overscroll-behavior:contain}
 .bag-line {grid-template-columns:68px minmax(0,1fr) auto;gap:10px;padding-block:15px}
@@ -91,7 +93,7 @@
 .checkout-empty {display:grid;justify-items:center;gap:12px;text-align:center;padding:44px 18px;background:var(--white);border:1px solid var(--line);border-radius:12px}
 .checkout-page :is(.checkout-form,.order-summary) {background:var(--white);border-radius:12px}
 .checkout-page .checkout-form legend {display:flex;align-items:center;gap:8px}
-.checkout-page .checkout-form :is(input:not([type="radio"]),textarea,select) {min-height:45px;border-radius:6px}
+.checkout-page .checkout-form :is(input:not([type="radio"]):not([type="checkbox"]),textarea,select) {min-height:45px;border-radius:6px}
 .checkout-page .checkout-form>.action,.checkout-page .checkout-form fieldset>.action {width:100%}
 .checkout-page .order-summary {position:sticky;top:18px}
 .checkout-page .summary-line {padding-block:11px}
@@ -101,6 +103,9 @@
 .payment-options h2 {font-size:23px;margin-bottom:3px}
 .checkout-form .payment-choice {display:grid;grid-template-columns:20px 1fr auto;align-items:center;gap:10px;border:1px solid var(--line);border-radius:7px;padding:10px}
 .payment-choice[data-selected="true"] {background:var(--stone);border-color:var(--moss)}
+.checkout-form .remember-delivery {display:grid;grid-template-columns:18px minmax(0,1fr);gap:9px;align-items:start}
+.checkout-form .remember-delivery input {width:16px;height:16px;min-height:0;margin-top:3px;accent-color:var(--ink)}
+.remember-delivery small {display:block;color:var(--muted);font-size:11px;font-weight:400}
 .checkout-form .payment-choice input {width:17px;min-height:17px;accent-color:var(--ink)}
 
 @media(max-width:760px) {

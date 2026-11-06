@@ -7,6 +7,7 @@ import {ArrowUpRight,Banknote,CreditCard,MapPin,PackageCheck,ShieldCheck,Shoppin
 import {api,ApiError,imageUrl,money,name,type Quote,type Receipt,type Settings,type Shipping,type Tracking} from "@/lib/store";
 import {useStore} from "./store-context";
 import {governorates} from "@/lib/governorates";
+import {emptyCheckoutDetails,readCheckoutDetails,storeCheckoutDetails,type CheckoutDetails} from "@/lib/checkout-details";
 
 function Summary({quote,subtotal}:{quote?:Quote;subtotal:number}){
   const {lang,tr}=useStore();
@@ -31,7 +32,12 @@ export function Checkout(){
   const router=useRouter();
   const [settings,setSettings]=useState<Settings|undefined>(demo?previewSettings:undefined);
   const [shipping,setShipping]=useState<Shipping[]>(demo?previewShipping:[]);
-  const [governorate,setGovernorate]=useState("");
+  const [details,setDetails]=useState(emptyCheckoutDetails);
+  const [rememberDetails,setRememberDetails]=useState(false);
+  const {governorate}=details;
+  function changeDetail(field:keyof CheckoutDetails,value:string){
+    setDetails(previous=>({...previous,[field]:value}));
+  }
   const [ship,setShip]=useState("");
   const [promotion,setPromotion]=useState("");
   const [applied,setApplied]=useState("");
@@ -47,13 +53,20 @@ export function Checkout(){
     : quote?.key===key?quote.value:undefined;
   useEffect(()=>{
     if(demo){setLoading(false);return}
+    const stored=readCheckoutDetails();
+    setRememberDetails(Boolean(stored));
+    if(stored)setDetails(stored);
     const controller=new AbortController();
     const options={signal:controller.signal};
     Promise.all([api<Settings>("store/settings",options),api<Shipping[]>("store/shipping",options)]).then(([settings,shipping])=>{
       setSettings(settings);setShipping(shipping);setMethod(settings.paymentMethods[0]??"cashOnDelivery");
+      if(stored?.governorate)setShip(shipping.find(option=>option.governorate===stored.governorate)?.code??"");
     }).catch(()=>{if(!controller.signal.aborted)setError("Could not load delivery and payment options.")}).finally(()=>{if(!controller.signal.aborted)setLoading(false)});
     return()=>controller.abort();
   },[demo]);
+  useEffect(()=>{
+    if(!demo&&rememberDetails)storeCheckoutDetails(details);
+  },[demo,rememberDetails,details]);
   useEffect(()=>{
     if(demo||!ship||!governorate||!cart.lines.length)return;
     const controller=new AbortController();
@@ -76,9 +89,12 @@ export function Checkout(){
         deliveryNotes:form.get("notes")||null,shippingCode:ship,governorate,promotionCode:applied||null,
         expectedTotalMinor:activeQuote.totalMinor,paymentMethod:method,
       }});
-      sessionStorage.setItem("siyag-receipt",JSON.stringify(receipt));
+      const tracking="/track?order="+encodeURIComponent(receipt.number);
+      let fallback="";
+      try{sessionStorage.setItem("siyag-receipt",JSON.stringify(receipt))}
+      catch{fallback="#token="+encodeURIComponent(receipt.trackingToken)}
       clearCart();
-      router.push("/track?order="+encodeURIComponent(receipt.number));
+      router.push(tracking+fallback);
     }catch(e){
       if(e instanceof ApiError && e.code==="price-changed") {
         try {setQuote({key,value:await api<Quote>("store/cart/quote",{method:"POST",token:token(),data:{shippingCode:ship,governorate,promotionCode:applied||null}})});} catch {}
@@ -103,15 +119,25 @@ export function Checkout(){
       <form className="checkout-form" onSubmit={submit}><fieldset disabled={pending||loading}>
         <legend><MapPin size={21}/>{tr("Delivery details","بيانات التوصيل")}</legend>
         <div className="field-grid">
-          <label>{tr("Full name","الاسم بالكامل")}<input name="name" autoComplete="name" required maxLength={120}/></label>
-          <label>{tr("Mobile number","رقم الموبايل")}<input name="phone" type="tel" autoComplete="tel" required pattern="(?:01|\\+201)[0125][0-9]{8}"/></label>
-          <label>{tr("Email","البريد الإلكتروني")}<input name="email" type="email" autoComplete="email" required={method==="paymob"} maxLength={254}/></label>
-          <label>{tr("Governorate","المحافظة")}<select required value={governorate} onChange={e=>{const next=e.target.value;setGovernorate(next);setShip(shipping.find(s=>s.governorate===next)?.code??"")}}><option value="">{tr("Choose governorate","اختر المحافظة")}</option>{[...new Set(shipping.map(s=>s.governorate))].map(x=><option value={x} key={x}>{governorates[x]?.[ar?1:0]??x}</option>)}</select></label>
-          <label>{tr("City / district","المدينة / المنطقة")}<input name="city" autoComplete="address-level2" required maxLength={100}/></label>
+          <label>{tr("Full name","الاسم بالكامل")}<input name="name" value={details.name} onChange={e=>changeDetail("name",e.target.value)} autoComplete="name" required maxLength={120}/></label>
+          <label>{tr("Mobile number","رقم الموبايل")}<input name="phone" value={details.phone} onChange={e=>changeDetail("phone",e.target.value)} type="tel" autoComplete="tel" required maxLength={13} pattern={"(?:01|\\+201)[0125][0-9]{8}"}/></label>
+          <label>{tr("Email","البريد الإلكتروني")}<input name="email" value={details.email} onChange={e=>changeDetail("email",e.target.value)} type="email" autoComplete="email" required={method==="paymob"} maxLength={254}/></label>
+          <label>{tr("Governorate","المحافظة")}<select required value={governorate} onChange={e=>{const next=e.target.value;changeDetail("governorate",next);setShip(shipping.find(s=>s.governorate===next)?.code??"")}}><option value="">{tr("Choose governorate","اختر المحافظة")}</option>{[...new Set(shipping.map(s=>s.governorate))].map(x=><option value={x} key={x}>{governorates[x]?.[ar?1:0]??x}</option>)}</select></label>
+          <label>{tr("City / district","المدينة / المنطقة")}<input name="city" value={details.city} onChange={e=>changeDetail("city",e.target.value)} autoComplete="address-level2" required maxLength={100}/></label>
           <label>{tr("Delivery option","طريقة التوصيل")}<select required value={ship} onChange={e=>setShip(e.target.value)}><option value="">{tr("Choose delivery","اختر طريقة التوصيل")}</option>{shipping.filter(s=>s.governorate===governorate).map(s=><option value={s.code} key={s.code}>{name(s,lang)} · {money(s.feeMinor,lang)}</option>)}</select></label>
-          <label className="wide">{tr("Street, building and apartment","الشارع والعمارة والشقة")}<input name="address" autoComplete="street-address" required maxLength={500}/></label>
+          <label className="wide">{tr("Street, building and apartment","الشارع والعمارة والشقة")}<input name="address" value={details.address} onChange={e=>changeDetail("address",e.target.value)} autoComplete="street-address" required maxLength={500}/></label>
           <label className="wide">{tr("Delivery notes · optional","ملاحظات التوصيل · اختياري")}<textarea name="notes" maxLength={500}/></label>
         </div>
+        {!demo&&<label className="remember-delivery">
+          <input type="checkbox" checked={rememberDetails} onChange={event=>{
+            const checked=event.target.checked;
+            setRememberDetails(checked);
+            if(!checked)storeCheckoutDetails(null);
+          }}/>
+          <span>{tr("Remember delivery details on this browser","افتكر بيانات التوصيل على المتصفح ده")}
+            <small>{tr("Uncheck to remove the saved details.","شيل العلامة لو عايز تمسح البيانات المحفوظة.")}</small>
+          </span>
+        </label>}
         <div className="payment-options" role="group" aria-label={tr("Payment method","طريقة الدفع")}>
           <h2>{tr("Payment method","طريقة الدفع")}</h2>
           {(settings?.paymentMethods??[]).map(value=><label key={value} className="payment-choice" data-selected={method===value}>

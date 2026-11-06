@@ -104,7 +104,7 @@ export function Header(){
         router.push(query.trim()?resultsUrl:"/shop");
       }}>
         <Search size={19} aria-hidden="true"/>
-        <input type="search" maxLength={100} placeholder={tr("Search perfumes in Arabic or English…","ابحث عن عطر بالعربي أو بالإنجليزي…")}
+        <input type="search" enterKeyHint="search" maxLength={100} placeholder={tr("Search fragrances","ابحث عن عطر")}
           aria-label={tr("Search fragrances","البحث في العطور")} value={query} onFocus={()=>setSearch(true)}
           onChange={event=>{setQuery(event.target.value);setSearch(true);setResults([]);setSearchState("idle")}}/>
         <button type="submit" aria-label={tr("Search","بحث")}><ArrowRight size={19}/></button>

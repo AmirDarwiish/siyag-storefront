@@ -106,45 +106,79 @@ h1,h2,h3 {letter-spacing:-.026em}
   .story {width:calc(100% - 58px)}
 }
 @media(max-width:760px) {
+  html {-webkit-text-size-adjust:100%;text-size-adjust:100%}
   body {font-size:13px}
-  .site-header .nav-wrap {min-height:55px}
-  .wordmark>span {font-size:31px}
+  .site-header {background:var(--paper);color:var(--ink)}
+  .site-header .nav-wrap {min-height:58px}
+  .site-header :is(.icon:hover,nav a:hover) {color:var(--muted)}
+  .site-header .nav-tools .icon,.site-header .mobile-menu {width:44px;height:44px}
+  .wordmark>span {font-size:32px}
+  .header-search {padding-block:0 10px}
+  .header-search-form {
+    min-height:46px;padding-inline:12px 0;gap:9px;background:transparent;
+    border:0;border-bottom:1px solid var(--line);border-radius:0;
+  }
+  .header-search-form input {font-size:16px}
+  .header-search-form button {width:44px;height:44px;background:transparent;color:var(--ink)}
   .hero-carousel {
-    margin-block:12px 14px;border-radius:10px;background:var(--hero-panel);
-    box-shadow:0 5px 16px #24302114;
+    width:100%;margin-block:0;position:relative;isolation:isolate;
+    background:var(--hero-panel);
   }
   .hero-carousel .hero {
-    grid-template-areas:"visual" "content";border-radius:10px 10px 0 0;
+    grid-template-areas:"visual" "content";border-radius:0;overflow:visible;
   }
-  .hero-carousel .hero-visual {min-height:0;aspect-ratio:1.24;max-height:420px}
-  .hero-carousel .hero-visual img {object-position:center}
+  .hero-carousel .hero-visual {min-height:0;height:clamp(245px,82vw,405px);aspect-ratio:auto}
+  .hero-carousel .hero-visual img {object-position:center 51%}
   .hero-carousel[data-slide="2"] .hero-visual img {object-position:center 44%}
+  .hero-carousel .hero-visual::after {
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(to bottom,transparent 75%,var(--hero-panel) 100%);
+  }
   .hero-carousel .hero-content {
-    display:flex;flex-direction:column;align-items:center;text-align:center;
-    padding:20px clamp(15px,5vw,28px) 0;
+    z-index:1;align-self:start;margin-top:-12px;padding:0 clamp(20px,6vw,38px);
   }
   .hero-carousel .hero-kicker {gap:8px;font-size:11px}
-  .hero-carousel .hero-kicker span,.hero-carousel .hero-kicker::after {
-    content:"";inline-size:14px;block-size:1px;background:currentColor;opacity:.75;
-  }
+  .hero-carousel .hero-kicker span {inline-size:17px}
   .hero-carousel .hero h1,[dir=rtl] .hero-carousel .hero h1 {
-    max-width:20ch;margin:7px 0 6px;line-height:1.13;
-    font-size:clamp(29px,7.9vw,43px);text-wrap:balance;
+    max-width:20ch;margin:7px 0 6px;line-height:1.19;font-size:clamp(29px,8.5vw,46px);
   }
   .hero-carousel .hero p {
-    max-width:34ch;margin:0 0 15px;line-height:1.55;font-size:13px;text-wrap:pretty;
+    max-width:34ch;margin:0 0 16px;line-height:1.6;font-size:14px;color:#fdfcf4df;
   }
-  .hero-carousel .hero .action {min-height:44px;padding-inline:15px}
-  .hero-carousel .hero-controls {margin:0;padding:9px 12px 12px;gap:10px}
+  .hero-carousel .hero .action {
+    min-height:44px;padding-inline:15px;color:var(--ink);
+    background:var(--white);border-color:var(--white);
+  }
+  .hero-carousel .hero .action:focus-visible,.hero-carousel .hero-controls button:focus-visible {
+    outline-color:var(--yellow);
+  }
+  .hero-carousel .hero-controls {
+    justify-content:flex-end;margin:0;padding:0 clamp(15px,5vw,32px) 9px;gap:2px;
+  }
   .hero-carousel .slider-arrow {
-    inline-size:44px;block-size:44px;border-color:transparent;background:transparent;color:var(--yellow);
+    inline-size:44px;block-size:44px;border:0;background:transparent;color:var(--white);
   }
   .hero-carousel .slider-arrow:hover {background:#ffffff14}
-  .hero-carousel .slider-dots button {inline-size:28px;block-size:44px}
-  .hero-carousel .slider-dots button::before {inline-size:5px;block-size:5px;background:#f7f4e78a}
-  .hero-carousel .slider-dots button[aria-current="true"]::before {inline-size:16px;background:var(--yellow)}
-  .hero-carousel .hero-controls button:focus-visible {outline-color:var(--yellow)}
-  .brand-strip>div {font-size:9px}
+  .hero-carousel .slider-dots button {inline-size:25px;block-size:44px}
+  .hero-carousel .slider-dots button::before {
+    inline-size:12px;block-size:2px;border-radius:0;background:#fdfcf470;
+  }
+  .hero-carousel .slider-dots button[aria-current="true"]::before {inline-size:18px;background:var(--yellow)}
+  .brand-strip {display:none}
+  .collections-section {padding-block:29px 38px}
+  .collections-section .section-head {flex-direction:row;align-items:end;gap:10px}
+  .collections-section .section-head h2 {font-size:clamp(24px,6.8vw,34px)}
+  .collections-section .section-head>a {margin-bottom:1px;flex:none}
+  .collections-section .collections-grid {gap:12px}
+  .collections-section .collection-card {border:0;border-radius:0;background:transparent}
+  .collections-section .collection-visual {aspect-ratio:1.14}
+  .collections-section .collection-caption {
+    grid-template-columns:minmax(0,1fr) auto;min-height:48px;padding:8px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .collections-section .collection-caption>span:first-child {display:none}
+  .collections-section .collection-caption h3 {font-size:22px}
+  .collections-section .circle-arrow {width:31px;height:31px;border:0}
   .section-head {margin-bottom:14px}
   .story {width:calc(100% - 32px)}
   .story>img {max-height:260px}

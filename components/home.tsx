@@ -91,8 +91,8 @@ export function Home() {
     <section className="container section collections-section" id="collections">
       <div className="section-head">
         <div>
-          <span className="eyebrow">{tr("THE COLLECTIONS", "التشكيلات")}</span>
-          <h2>{tr("Ways to discover SIYAG", "تعرّف إلى عطور سياج")}</h2>
+          <span className="eyebrow">{tr("SIYAG PARFUMS", "دار سياج للعطور")}</span>
+          <h2>{tr("Explore the collections", "تشكيلات سياج")}</h2>
         </div>
         <Link className="text-link" href="/shop">
           {tr("Explore all fragrances", "كل العطور")}<ArrowUpRight size={16}/>

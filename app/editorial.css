@@ -109,11 +109,41 @@ h1,h2,h3 {letter-spacing:-.026em}
   body {font-size:13px}
   .site-header .nav-wrap {min-height:55px}
   .wordmark>span {font-size:31px}
-  .hero-carousel {margin-block:9px 6px}
-  .hero-carousel .hero-content {padding:22px 18px}
-  .hero-carousel .hero h1,[dir=rtl] .hero-carousel .hero h1 {max-width:none;font-size:clamp(32px,8.1vw,53px);margin:9px 0}
-  .hero-carousel .hero p {font-size:13px;margin-bottom:12px}
-  .hero-carousel .hero-visual {min-height:0;aspect-ratio:1.65}
+  .hero-carousel {
+    margin-block:12px 14px;border-radius:10px;background:var(--hero-panel);
+    box-shadow:0 5px 16px #24302114;
+  }
+  .hero-carousel .hero {
+    grid-template-areas:"visual" "content";border-radius:10px 10px 0 0;
+  }
+  .hero-carousel .hero-visual {min-height:0;aspect-ratio:1.24;max-height:420px}
+  .hero-carousel .hero-visual img {object-position:center}
+  .hero-carousel[data-slide="2"] .hero-visual img {object-position:center 44%}
+  .hero-carousel .hero-content {
+    display:flex;flex-direction:column;align-items:center;text-align:center;
+    padding:20px clamp(15px,5vw,28px) 0;
+  }
+  .hero-carousel .hero-kicker {gap:8px;font-size:11px}
+  .hero-carousel .hero-kicker span,.hero-carousel .hero-kicker::after {
+    content:"";inline-size:14px;block-size:1px;background:currentColor;opacity:.75;
+  }
+  .hero-carousel .hero h1,[dir=rtl] .hero-carousel .hero h1 {
+    max-width:20ch;margin:7px 0 6px;line-height:1.13;
+    font-size:clamp(29px,7.9vw,43px);text-wrap:balance;
+  }
+  .hero-carousel .hero p {
+    max-width:34ch;margin:0 0 15px;line-height:1.55;font-size:13px;text-wrap:pretty;
+  }
+  .hero-carousel .hero .action {min-height:44px;padding-inline:15px}
+  .hero-carousel .hero-controls {margin:0;padding:9px 12px 12px;gap:10px}
+  .hero-carousel .slider-arrow {
+    inline-size:44px;block-size:44px;border-color:transparent;background:transparent;color:var(--yellow);
+  }
+  .hero-carousel .slider-arrow:hover {background:#ffffff14}
+  .hero-carousel .slider-dots button {inline-size:28px;block-size:44px}
+  .hero-carousel .slider-dots button::before {inline-size:5px;block-size:5px;background:#f7f4e78a}
+  .hero-carousel .slider-dots button[aria-current="true"]::before {inline-size:16px;background:var(--yellow)}
+  .hero-carousel .hero-controls button:focus-visible {outline-color:var(--yellow)}
   .brand-strip>div {font-size:9px}
   .section-head {margin-bottom:14px}
   .story {width:calc(100% - 32px)}

@@ -21,8 +21,8 @@ function HeroSlider() {
   const PreviousIcon = ar ? ChevronRight : ChevronLeft;
   const NextIcon = ar ? ChevronLeft : ChevronRight;
 
-  return <section className="container hero-carousel" aria-label={tr("Featured collections", "أبرز التشكيلات")} aria-roledescription="carousel">
-    <div className="hero" data-slide={active}
+  return <section className="container hero-carousel" data-slide={active} aria-label={tr("Featured collections", "أبرز التشكيلات")} aria-roledescription="carousel">
+    <div className="hero"
       onTouchStart={event=>{touchStart.current={x:event.touches[0].clientX,y:event.touches[0].clientY}}}
       onTouchEnd={event=>{
         if(touchStart.current===null)return;
@@ -32,13 +32,13 @@ function HeroSlider() {
         if(Math.abs(distance)>55&&Math.abs(distance)>Math.abs(vertical))move((distance<0?1:-1)*(ar?-1:1));
       }}
       onTouchCancel={()=>{touchStart.current=null}}>
+      <figure className="hero-visual"><img src={slide.image} alt="" width={1280} height={960} fetchPriority={active===0?"high":"auto"}/></figure>
       <div className="hero-content" aria-live="polite">
         <div className="hero-kicker"><span/>{slide.label}</div>
         <h1>{slide.title}</h1>
         <p>{slide.copy}</p>
         <Link href={slide.href} className="action gold">{slide.action}<ArrowUpRight size={17}/></Link>
       </div>
-      <figure className="hero-visual"><img src={slide.image} alt="" width={1280} height={960} fetchPriority={active===0?"high":"auto"}/></figure>
     </div>
     <div className="hero-controls">
       <button type="button" className="slider-arrow" aria-label={tr("Previous slide", "الشريحة السابقة")} onClick={()=>move(-1)}><PreviousIcon size={20}/></button>

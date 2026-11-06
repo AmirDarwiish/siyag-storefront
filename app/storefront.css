@@ -24,16 +24,19 @@
 .header-suggestions .search-results>a:hover {background:var(--stone)}
 
 /* Homepage carousel */
-.hero-carousel {margin-block:18px 13px}
-.hero-carousel .hero {overflow:hidden;border-radius:14px;background:var(--ink);color:var(--white);width:100%;touch-action:pan-y}
-.hero-carousel .hero[data-slide="1"] {background:var(--dark)}
-.hero-carousel .hero[data-slide="2"] {background:#47533c}
-.hero-carousel .hero-content {padding:clamp(30px,5vw,72px)}
+.hero-carousel {--hero-panel:var(--ink);margin-block:18px 13px}
+.hero-carousel .hero {
+  grid-template-areas:"content visual";overflow:hidden;border-radius:14px;
+  background:var(--hero-panel);color:var(--white);width:100%;touch-action:pan-y
+}
+.hero-carousel[data-slide="1"] {--hero-panel:var(--dark)}
+.hero-carousel[data-slide="2"] {--hero-panel:#47533c}
+.hero-carousel .hero-content {grid-area:content;padding:clamp(30px,5vw,72px)}
 .hero-carousel .hero-kicker,.hero-carousel .hero p {color:var(--yellow)}
 .hero-carousel .hero-kicker span {background:var(--yellow)}
 .hero-carousel .hero h1 {font-size:clamp(46px,5.6vw,84px);max-width:8.8ch;line-height:1}
 [dir=rtl] .hero-carousel .hero h1 {max-width:12ch;line-height:1.16}
-.hero-carousel .hero-visual {min-height:clamp(330px,34vw,480px)}
+.hero-carousel .hero-visual {grid-area:visual;min-height:clamp(330px,34vw,480px)}
 .hero-carousel .hero-visual img {object-position:center 51%}
 .hero-controls {display:flex;align-items:center;justify-content:center;gap:15px;margin-top:10px}
 .slider-arrow {
@@ -106,16 +109,6 @@
   .header-search-form {min-height:47px}
   .header-search-form button {width:37px;height:37px}
   .header-search-form input {font-size:13px}
-  .hero-carousel {margin-block:10px}
-  .hero-carousel .hero {grid-template-columns:minmax(0,1fr)}
-  .hero-carousel .hero-content {padding:22px 19px 21px}
-  .hero-carousel .hero h1 {font-size:clamp(38px,9vw,55px);max-width:none;margin:9px 0}
-  [dir=rtl] .hero-carousel .hero h1 {max-width:none}
-  .hero-carousel .hero p {margin-bottom:12px}
-  .hero-carousel .hero .action {min-height:42px;padding-block:8px}
-  .hero-carousel .hero-visual {min-height:0;aspect-ratio:1.65}
-  .hero-controls {margin-top:6px}
-  .slider-arrow {width:34px;height:34px}
   .collection-caption {padding-inline:10px}
   .product-card-body {padding:9px}
   .product-card .price {font-size:13px}

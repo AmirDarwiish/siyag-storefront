@@ -6,6 +6,8 @@ import {useEffect,useState,type FormEvent} from "react";
 import {ArrowUpRight,Banknote,CreditCard,MapPin,PackageCheck,ShieldCheck,ShoppingBag} from "lucide-react";
 import {api,ApiError,imageUrl,money,name,type Quote,type Receipt,type Settings,type Shipping,type Tracking} from "@/lib/store";
 import {useStore} from "./store-context";
+import {ReviewButton} from "./reviews";
+import type {OrderProof} from "@/lib/reviews";
 import {governorates} from "@/lib/governorates";
 import {emptyCheckoutDetails,readCheckoutDetails,storeCheckoutDetails,type CheckoutDetails} from "@/lib/checkout-details";
 
@@ -165,15 +167,20 @@ export function Checkout(){
 export function Track({returning=false}:{returning?:boolean}){
   const {tr,lang}=useStore();
   const [number,setNumber]=useState("");
-  const [secret,setSecret]=useState("");
+  const [phone,setPhone]=useState("");
+  const [proof,setProof]=useState<OrderProof>();
   const [order,setOrder]=useState<Tracking>();
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
-  async function find(orderNumber:string,token:string){
+  async function find(credentials:OrderProof){
     setBusy(true);setError("");
-    try{setOrder(await api<Tracking>("store/orders/track",{method:"POST",data:{number:orderNumber.trim(),token:token.trim()}}))}
-    catch(e){setOrder(undefined);setError(e instanceof Error?e.message:"Order unavailable.")}
-    finally{setBusy(false)}
+    try{
+      const result=await api<Tracking>("store/orders/track",{method:"POST",data:credentials});
+      setOrder(result);setProof(credentials);
+    }catch{
+      setOrder(undefined);setProof(undefined);
+      setError(tr("We couldn’t find the order. Check the order number and mobile.","ملقيناش الطلب. راجع رقم الطلب ورقم الموبايل."));
+    }finally{setBusy(false)}
   }
   useEffect(()=>{
     const query=new URLSearchParams(location.search);
@@ -182,14 +189,14 @@ export function Track({returning=false}:{returning?:boolean}){
     try {receipt=JSON.parse(sessionStorage.getItem("siyag-receipt")||"null")??undefined} catch {}
     const orderNumber=query.get("order")||receipt?.number||"";
     const token=fragment.get("token")||(receipt?.number===orderNumber?receipt?.trackingToken:"")||"";
-    setNumber(orderNumber);setSecret(token);
-    if(orderNumber&&token)void find(orderNumber,token);
+    setNumber(orderNumber);
+    if(orderNumber&&token)void find({number:orderNumber,token});
     if(fragment.has("token"))window.history.replaceState(window.history.state,"",location.pathname+location.search);
   },[]);
   async function pay(){
     setBusy(true);setError("");
     try{
-      const result=await api<{checkoutUrl:string}>("store/orders/payment/paymob",{method:"POST",data:{number,token:secret}});
+      const result=await api<{checkoutUrl:string}>("store/orders/payment/paymob",{method:"POST",data:{number,token:proof?.token}});
       const url=new URL(result.checkoutUrl);
       if(url.protocol!=="https:"||url.hostname!=="accept.paymob.com")throw new Error("Invalid payment link.");
       location.assign(url.href);
@@ -197,17 +204,18 @@ export function Track({returning=false}:{returning?:boolean}){
   }
   return <main className="container utility track-page">
     <span className="eyebrow">SIYAG PARFUMS</span><h1>{returning?tr("Payment status","حالة الدفع"):tr("Track your order","تتبّع طلبك")}</h1>
-    <p>{tr("Enter your order number and the tracking code from your receipt.","ادخل رقم الطلب وكود التتبع من الإيصال.")}</p>
-    <form className="checkout-form" onSubmit={e=>{e.preventDefault();void find(number,secret)}}>
-      <div className="field-grid"><label>{tr("Order number","رقم الطلب")}<input required value={number} onChange={e=>{setNumber(e.target.value);setOrder(undefined)}}/></label><label>{tr("Tracking code","كود التتبع")}<input required value={secret} onChange={e=>{setSecret(e.target.value);setOrder(undefined)}}/></label></div>
+    <p>{tr("Enter your order number and the mobile number you used at checkout.","ادخل رقم الطلب ورقم الموبايل اللي استخدمته وقت الطلب.")}</p>
+    <form className="checkout-form" onSubmit={e=>{e.preventDefault();void find({number:number.trim(),phone:phone.trim()})}}>
+      <div className="field-grid"><label>{tr("Order number","رقم الطلب")}<input required maxLength={20} dir="ltr" value={number} onChange={e=>{setNumber(e.target.value);setOrder(undefined)}}/></label><label>{tr("Mobile number","رقم الموبايل")}<input type="tel" autoComplete="tel" dir="ltr" maxLength={13} pattern={"(?:01|\\+201)[0125][0-9]{8}"} required value={phone} onChange={e=>{setPhone(e.target.value);setOrder(undefined)}}/></label></div>
       <button type="submit" className="action ink" disabled={busy}>{busy?tr("Checking…","جاري التحقق…"):tr("Check status","راجع الحالة")}</button>
     </form>
     {error&&<p role="alert" className="form-error">{error}</p>}
     {order&&<section className="order-summary"><h2><ShieldCheck size={21}/> {order.number}</h2>
       <p>{tr("Order","الطلب")} · {order.status} <br/>{tr("Payment","الدفع")} · {order.paymentStatus}</p>
       <Summary quote={order.total} subtotal={order.total.subtotalMinor}/>
+      {(order.status==="delivered"||order.status==="returned")&&<ReviewButton proof={proof}/>}
       {order.carrierTrackingUrl?.startsWith("https://")&&<a className="text-link" href={order.carrierTrackingUrl} rel="noreferrer" target="_blank">{tr("Track shipment","تتبّع الشحنة")}<ArrowUpRight size={15}/></a>}
-      {order.paymentMethod==="paymob"&&order.paymentStatus==="unpaid"&&order.status==="pending"&&<button type="button" className="action gold" disabled={busy} onClick={pay}>{tr("Continue to Paymob","كمّل الدفع مع Paymob")}<ArrowUpRight size={15}/></button>}
+      {proof?.token&&order.paymentMethod==="paymob"&&order.paymentStatus==="unpaid"&&order.status==="pending"&&<button type="button" className="action gold" disabled={busy} onClick={pay}>{tr("Continue to Paymob","كمّل الدفع مع Paymob")}<ArrowUpRight size={15}/></button>}
     </section>}
   </main>;
 }

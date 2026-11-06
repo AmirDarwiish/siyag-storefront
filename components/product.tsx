@@ -7,6 +7,7 @@ import {Accordion,AccordionContent,AccordionItem,AccordionTrigger} from "@/compo
 import {api,concentrations,families,formats,imageUrl,money,name,productUrl,variantFor,type Page,type Product,type Variant} from "@/lib/store";
 import {useStore} from "./store-context";
 import {Modal} from "./shell";
+import {Reviews} from "./reviews";
 
 function Price({variant}:{variant:Variant}){
   const {lang}=useStore();
@@ -147,6 +148,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
         </div>
       </div>
     </div>
+    <Reviews key={product.slug} product={product.slug}/>
     {related.length>0&&<section className="container section"><div className="section-head"><div><span className="eyebrow">SIYAG PARFUMS</span><h2>{tr("Explore related fragrances","اكتشف عطور ذات طابع مشابه")}</h2></div></div><div className="product-grid">{related.map(p=><ProductCard key={p.id} product={p}/>)}</div></section>}
     {sticky&&v.inStock&&<div className="sticky-buy"><img src={imageUrl(product.images[0])} alt=""/><span><strong>{title}</strong><small>{v.sizeMl} {tr("ml","مل")}</small></span><Price variant={v}/><button type="button" className="action ink" disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}>{tr("Add to bag","أضف إلى الحقيبة")}</button></div>}
   </main>;

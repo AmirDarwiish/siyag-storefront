@@ -1,12 +1,13 @@
 "use client";
 import Link from "next/link";
 import {useEffect,useState,type FormEvent} from "react";
-import {ArrowUpRight,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Truck,Users} from "lucide-react";
+import {ArrowUpRight,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Star,Truck,Users} from "lucide-react";
 import {office,roleNames,type StaffUser} from "@/lib/admin";
 import {Collections,Products} from "./catalog";
 import {Orders} from "./orders";
 import {ShippingOptions} from "./shipping";
 import {Staff} from "./staff";
+import {ReviewModeration} from "./reviews";
 import {Message} from "./shared";
 
 const panels=[
@@ -14,6 +15,7 @@ const panels=[
   {id:"products",label:"العطور",description:"أدر بيانات العطور والصور والأحجام والأسعار والمخزون.",icon:Boxes,component:Products,roles:["Owner","Catalog"]},
   {id:"shipping",label:"التوصيل",description:"اضبط المحافظات ورسوم التوصيل قبل استقبال الطلبات.",icon:Truck,component:ShippingOptions,roles:["Owner","Fulfillment"]},
   {id:"collections",label:"التصنيفات",description:"أدر مجموعات العطور وترتيب ظهورها في المتجر.",icon:FolderOpen,component:Collections,roles:["Owner","Catalog"]},
+  {id:"reviews",label:"التقييمات",description:"راجع تعليقات العملاء وصورهم قبل نشرها.",icon:Star,component:ReviewModeration,roles:["Owner","Catalog"]},
   {id:"staff",label:"الموظفون",description:"أضف موظفين وحدد صلاحياتهم وأدر حالة الحساب.",icon:Users,component:Staff,roles:["Owner"]},
 ];
 

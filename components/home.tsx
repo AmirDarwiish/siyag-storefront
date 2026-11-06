@@ -6,6 +6,7 @@ import {ArrowUpRight, Box, ChevronLeft, ChevronRight, FlaskConical, Sparkles} fr
 import {api, imageUrl, name, type Collection, type Page, type Product} from "@/lib/store";
 import {useStore} from "./store-context";
 import {ProductCard} from "./product";
+import {StoreReviewsLink} from "./reviews";
 
 function HeroSlider() {
   const {tr, ar} = useStore();
@@ -129,5 +130,6 @@ export function Home() {
         <Link href="/shop" className="action ink">{tr("Discover the scents", "اكتشف العطور")}<ArrowUpRight size={16}/></Link>
       </div>
     </section>
+    <StoreReviewsLink/>
   </main>;
 }

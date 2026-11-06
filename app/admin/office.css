@@ -106,3 +106,9 @@
   .office-header h1 {font-size:28px}
   .office-table :is(th,td) {padding:8px 9px}
 }
+
+.office-review {display:grid;gap:7px;border-bottom:1px solid var(--line);padding:16px 0;overflow-wrap:anywhere}
+.office-review p {white-space:pre-wrap}
+.office-review>div,.office-review-pages {display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.office-review>div:first-child {justify-content:space-between}
+.office-review-pages {margin-top:16px}

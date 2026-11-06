@@ -153,7 +153,7 @@ export function Footer(){
   return <footer className="site-footer"><div className="footer-inner">
     <div><Wordmark/><p>{tr("An Egyptian fragrance house.","دار عطور مصرية.")}</p></div>
     <div><div className="eyebrow">{tr("Explore","استكشف")}</div><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/shop?format=decant">{tr("Discovery sizes","أحجام التجربة")}</Link></div>
-    <div><div className="eyebrow">{tr("Client care","خدمة العملاء")}</div><Link href="/track">{tr("Track your order","تتبّع طلبك")}</Link><Link href="/shop?saved=1">{tr("Your wishlist","مفضلتك")}</Link></div>
+    <div><div className="eyebrow">{tr("Client care","خدمة العملاء")}</div><Link href="/track">{tr("Track your order","تتبّع طلبك")}</Link><Link href="/reviews">{tr("Store reviews","تقييمات المتجر")}</Link><Link href="/shop?saved=1">{tr("Your wishlist","مفضلتك")}</Link></div>
     <a href="#" className="back-to-top" aria-label={tr("Back to top","العودة لأعلى")}><ArrowDownLeft size={19}/></a>
   </div><div className="footer-end"><span>© {new Date().getFullYear()} SIYAG PARFUMS</span><span>{tr("EGYPT · EGP","مصر · جنيه مصري")}</span></div></footer>;
 }

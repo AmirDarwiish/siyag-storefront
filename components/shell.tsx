@@ -47,7 +47,7 @@ function Campaign(){
   return <>
     <Link className="campaign-strip" href={action}>{ar?offer.titleAr:offer.titleEn}<ArrowUpRight size={12}/></Link>
     <Modal open={open} onOpenChange={setOpen} title={ar?offer.titleAr:offer.titleEn} className="campaign-modal">
-      <Wordmark/><div className="gold-rule"/><div className="eyebrow">{demo?tr("CAMPAIGN PREVIEW","معاينة الحملة"):tr("THE SIYAG EDIT","مختارات سياج")}</div>
+      <Wordmark/><div className="campaign-rule"/><div className="eyebrow">{demo?tr("CAMPAIGN PREVIEW","معاينة الحملة"):tr("THE SIYAG EDIT","مختارات سياج")}</div>
       <h2>{ar?offer.titleAr:offer.titleEn}</h2><p>{message.description}</p>
       {message.tiers.length>0&&<div className="campaign-tiers">{message.tiers.map(t=><div key={t.value+t.label}><strong>{t.value}</strong><small>{t.label}</small></div>)}</div>}
       {message.footnote&&<small className="campaign-note">{message.footnote}</small>}
@@ -130,7 +130,7 @@ export function Bag(){
 
 export function Footer(){
   const {tr}=useStore();
-  return <footer className="site-footer" id="maison"><div className="footer-inner">
+  return <footer className="site-footer"><div className="footer-inner">
     <div><Wordmark/><p>{tr("An Egyptian fragrance house.","دار عطور مصرية.")}</p></div>
     <div><div className="eyebrow">{tr("Explore","استكشف")}</div><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/shop?format=decant">{tr("Discovery sizes","أحجام التجربة")}</Link></div>
     <div><div className="eyebrow">{tr("Client care","خدمة العملاء")}</div><Link href="/track">{tr("Track your order","تتبّع طلبك")}</Link><Link href="/shop?saved=1">{tr("Your wishlist","مفضلتك")}</Link></div>

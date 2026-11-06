@@ -1,11 +1,8 @@
 import {createCipheriv, createDecipheriv, createHash, randomBytes} from "node:crypto";
 import {NextRequest} from "next/server";
-import {requestStore} from "./server-store";
 
-export type AdminRole = "Owner" | "Catalog" | "Fulfillment";
-type Session = {key:string;role:AdminRole;expires:number};
+type Session = {token:string;expires:number};
 export const sessionCookie = "siyag-office";
-export const sessionSeconds = 8 * 60 * 60;
 const localQa=process.env.VERCEL!=="1"&&process.env.SIYAG_LOCAL_ADMIN_QA==="1";
 export const sessionOptions = {
   path:"/api/office", httpOnly:true, sameSite:"strict" as const,
@@ -18,12 +15,12 @@ function encryptionKey() {
 }
 export const adminConfigured=()=>Boolean(encryptionKey());
 
-export function createSession(key:string,role:AdminRole) {
+export function createSession(token:string,expires:number) {
   const secret=encryptionKey();
   if(!secret)throw new Error("Admin session is not configured.");
   const iv=randomBytes(12);
   const cipher=createCipheriv("aes-256-gcm",secret,iv);
-  const plain=JSON.stringify({key,role,expires:Date.now()+sessionSeconds*1000} satisfies Session);
+  const plain=JSON.stringify({token,expires} satisfies Session);
   return Buffer.concat([iv,cipher.update(plain,"utf8"),cipher.final(),cipher.getAuthTag()]).toString("base64url");
 }
 
@@ -38,7 +35,7 @@ export function readSession(request:NextRequest):Session|null {
     decipher.setAuthTag(bytes.subarray(-16));
     const plain=Buffer.concat([decipher.update(bytes.subarray(12,-16)),decipher.final()]);
     const session=JSON.parse(plain.toString("utf8")) as Session;
-    return session.expires>Date.now()&&["Owner","Catalog","Fulfillment"].includes(session.role)?session:null;
+    return session.expires>Date.now()&&/^[a-f0-9]{64}$/i.test(session.token)?session:null;
   }catch{return null}
 }
 
@@ -51,17 +48,4 @@ export function sameOrigin(request:NextRequest) {
     return url.origin===request.nextUrl.origin||
       (url.host===request.headers.get("host")&&(url.protocol==="https:"||localQa));
   }catch{return false}
-}
-
-export async function checkOperator(key:string):Promise<AdminRole|null> {
-  const headers={Authorization:"Bearer "+key};
-  const [catalog,orders]=await Promise.all([
-    requestStore("/api/v1/admin/products","?pageSize=1",{headers}),
-    requestStore("/api/v1/admin/orders","?pageSize=1",{headers}),
-  ]);
-  if(catalog.ok&&orders.ok)return "Owner";
-  if(catalog.ok&&orders.status===403)return "Catalog";
-  if(orders.ok&&catalog.status===403)return "Fulfillment";
-  if([catalog.status,orders.status].some(status=>status>=500))throw new Error("Admin API unavailable.");
-  return null;
 }

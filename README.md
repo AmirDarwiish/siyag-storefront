@@ -20,7 +20,7 @@ Campaign and product photographs under `public/brand` are visual concepts. The l
 
 ## SIYAG Office
 
-Visit `/admin` and sign in with an existing SIYAG API operator key. The dashboard supports `Owner`, `Catalog`, and `Fulfillment` roles. Set a distinct random server-only `SIYAG_ADMIN_SESSION_SECRET` (at least 32 characters) on the storefront host before deploying the office. Configure operator accounts on the API host using `Operators__<name>__Key` and `Operators__<name>__Role`. Restart the API after changes and distribute operator keys through an approved password manager.
+Visit `/admin` to sign in with a staff email and password. The API issues a revocable session token that stays in an encrypted HTTP-only cookie. The owner can create Catalog and Fulfillment employees and assign their permissions in the dashboard. Set `SIYAG_ADMIN_SESSION_SECRET` (at least 32 random characters) on the storefront host. Provision the first owner with `StaffBootstrap__Email` and `StaffBootstrap__Password` on the API host, then remove the bootstrap variables after the first sign-in.
 
 Catalog operators can create drafts, upload product photos, create collections, add variants, adjust stock, and publish. Use JPEG, PNG, or WebP up to 3 MB through the dashboard. Fulfillment operators can see incoming orders, inspect delivery details, and update status. Valid transitions and inventory changes are enforced by the API. Production order submission also needs active shipping methods.
 

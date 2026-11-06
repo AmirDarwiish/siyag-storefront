@@ -1,2 +1,17 @@
+"use client";
+
 import Link from "next/link";
-export default function NotFound(){return <main className="container utility"><span className="eyebrow">SIYAG PARFUMS</span><h1>Fragrance unavailable.</h1><p>This page may have moved or the fragrance may have left the collection.</p><Link className="action ink" href="/shop">Explore the collection</Link></main>}
+import {ArrowUpRight} from "lucide-react";
+import {useStore} from "@/components/store-context";
+
+export default function NotFound(){
+  const {tr}=useStore();
+  return <main className="container utility">
+    <section className="catalog-notice">
+      <span className="eyebrow">SIYAG PARFUMS</span>
+      <h1>{tr("This page isn’t available","هذه الصفحة غير متاحة")}</h1>
+      <p>{tr("Visit the collection to continue exploring SIYAG.","تصفّح المجموعة لمواصلة استكشاف عطور سياج.")}</p>
+      <Link className="action ink" href="/shop">{tr("Browse the collection","تصفّح المجموعة")}<ArrowUpRight size={16}/></Link>
+    </section>
+  </main>;
+}

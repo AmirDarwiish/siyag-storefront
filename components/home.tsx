@@ -12,9 +12,9 @@ function HeroSlider() {
   const [active, setActive] = useState(0);
   const touchStart = useRef<{x:number;y:number} | null>(null);
   const slides = [
-    {title: tr("A scent that stays.", "عطر يسيب أثر."), label: tr("THE SIYAG COLLECTION", "تشكيلة سياج"), copy: tr("Warm woods, luminous amber and fresh citrus.", "أخشاب دافئة وعنبر وحمضيات منعشة."), image: "/brand/olive-hero.webp", href: "/shop", action: tr("Explore the collection", "استكشف التشكيلة")},
-    {title: tr("Find your notes.", "اكتشف نوتاتك."), label: tr("SCENT FAMILIES", "العائلات العطرية"), copy: tr("Explore the ingredients behind each fragrance.", "تعرّف على النوتات اللي بتميّز كل عطر."), image: "/brand/olive-notes.webp", href: "/#maison", action: tr("Explore the house", "اكتشف دار سياج")},
-    {title: tr("Start with a sample.", "ابدأ بعينة."), label: tr("DISCOVERY SIZES", "أحجام التجربة"), copy: tr("Try a smaller size before choosing your full bottle.", "جرّب حجم أصغر قبل ما تختار الزجاجة الكاملة."), image: "/brand/eclat.webp", href: "/shop?format=decant", action: tr("Explore discovery sizes", "شوف أحجام التجربة")},
+    {title: tr("A quiet presence", "عطور بحضور هادئ"), label: tr("THE SIYAG COLLECTION", "تشكيلة سياج"), copy: tr("Warm woods, luminous amber and fresh citrus.", "أخشاب دافئة وعنبر وحمضيات منعشة."), image: "/brand/olive-hero.webp", href: "/shop", action: tr("Explore the collection", "استكشف التشكيلة")},
+    {title: tr("The notes behind the scent", "ما وراء الرائحة"), label: tr("SCENT FAMILIES", "العائلات العطرية"), copy: tr("Explore the ingredients behind each fragrance.", "تعرّف إلى النوتات التي تمنح كل عطر طابعه."), image: "/brand/olive-notes.webp", href: "/#maison", action: tr("Explore the house", "اكتشف دار سياج")},
+    {title: tr("Discover in smaller sizes", "اكتشف العطر بحجم أصغر"), label: tr("DISCOVERY SIZES", "أحجام التجربة"), copy: tr("Try a smaller size before choosing your full bottle.", "تجربة تتيح لك اختيار عطرك قبل اقتناء الزجاجة الكاملة."), image: "/brand/eclat.webp", href: "/shop?format=decant", action: tr("Explore discovery sizes", "استكشف أحجام التجربة")},
   ];
   const slide = slides[active];
   const move = (step: number) => setActive(index => (index + step + slides.length) % slides.length);
@@ -92,7 +92,7 @@ export function Home() {
       <div className="section-head">
         <div>
           <span className="eyebrow">{tr("THE COLLECTIONS", "التشكيلات")}</span>
-          <h2>{tr("Find your signature.", "اختار عطرك المميز.")}</h2>
+          <h2>{tr("Ways to discover SIYAG", "تعرّف إلى عطور سياج")}</h2>
         </div>
         <Link className="text-link" href="/shop">
           {tr("Explore all fragrances", "كل العطور")}<ArrowUpRight size={16}/>
@@ -114,8 +114,8 @@ export function Home() {
 
     {products.length > 0 && <section className="catalog-home"><div className="container section">
       <div className="section-head">
-        <div><span className="eyebrow">{tr("FROM THE HOUSE", "من دار سياج")}</span><h2>{tr("The SIYAG edit.", "مختارات سياج.")}</h2></div>
-        <Link className="text-link" href="/shop">{tr("View the collection", "شوف التشكيلة")}<ArrowUpRight size={16}/></Link>
+        <div><span className="eyebrow">{tr("FROM THE HOUSE", "من دار سياج")}</span><h2>{tr("Selected from SIYAG", "مختارات سياج")}</h2></div>
+        <Link className="text-link" href="/shop">{tr("View the collection", "تصفّح المجموعة")}<ArrowUpRight size={16}/></Link>
       </div>
       <div className="product-grid">{products.map(product => <ProductCard product={product} key={product.id}/>)}</div>
     </div></section>}
@@ -124,8 +124,8 @@ export function Home() {
       <img src="/brand/olive-notes.webp" alt="" width={1140} height={855} loading="lazy"/>
       <div>
         <span className="eyebrow">{tr("THE HOUSE OF SIYAG", "دار سياج")}</span>
-        <h2>{tr("From the first note.", "من أول نوتة.")}</h2>
-        <p>{tr("Get to know the opening, heart and base of each fragrance before choosing the one you’ll wear.", "تعرّف على افتتاحية كل عطر وقلبه وقاعدته قبل ما تختار العطر المناسب لك.")}</p>
+        <h2>{tr("From the first note", "من النوتة الأولى")}</h2>
+        <p>{tr("A fragrance unfolds in stages. Citrus is often the first impression, followed by the heart and the woods that linger on skin.", "يتكشّف العطر على مراحل. تبدأ الحمضيات غالبًا، ثم يظهر قلب العطر، وتبقى الأخشاب على البشرة.")}</p>
         <Link href="/shop" className="action ink">{tr("Discover the scents", "اكتشف العطور")}<ArrowUpRight size={16}/></Link>
       </div>
     </section>

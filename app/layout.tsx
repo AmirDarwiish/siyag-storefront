@@ -1,6 +1,7 @@
 import type {Metadata} from "next";
 import "./globals.css";
 import "./storefront.css";
+import "./editorial.css";
 import {StoreProvider} from "@/components/store-context";
 import {Bag,Footer,Header} from "@/components/shell";
 import {DEMO} from "@/lib/server-store";

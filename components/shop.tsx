@@ -3,11 +3,12 @@
 import Link from "next/link";
 import {useRouter,useSearchParams} from "next/navigation";
 import {useEffect,useState} from "react";
-import {ArrowLeft,ArrowRight,SlidersHorizontal} from "lucide-react";
+import {ArrowLeft,ArrowRight,ArrowUpRight,Heart,Search,SlidersHorizontal} from "lucide-react";
 import {api,concentrations,families,formats,name,type Collection,type Page,type Product} from "@/lib/store";
 import {useStore} from "./store-context";
 import {ProductCard} from "./product";
 
+type CatalogResult = {page: Page<Product>; catalogEmpty: boolean};
 const filters=["q","collection","family","concentration","format","sizeMl","maxPriceMinor","inStock","sort","pageNumber"] as const;
 
 export function Shop(){
@@ -17,7 +18,10 @@ export function Shop(){
   const queryString=query.toString();
   const savedOnly=query.get("saved")==="1";
   const savedKey=saved.join("|");
-  const [page,setPage]=useState<Page<Product>>();
+  const [result,setResult]=useState<CatalogResult>();
+  const [catalogAvailable,setCatalogAvailable]=useState(false);
+  const [retry,setRetry]=useState(0);
+  const page=result?.page;
   const [collections,setCollections]=useState<Collection[]>([]);
   const [error,setError]=useState(false);
   const [mobileFilters,setMobileFilters]=useState(false);
@@ -31,7 +35,7 @@ export function Shop(){
     const current=new URLSearchParams(queryString);
     const data=new URLSearchParams({pageSize:"12"});
     for(const key of filters){const value=current.get(key);if(value)data.set(key,value)}
-    setPage(undefined);setError(false);
+    setResult(undefined);setError(false);
     const options={signal:controller.signal};
     const request=current.get("saved")==="1"
       ? Promise.allSettled(savedKey.split("|").filter(Boolean).map(slug=>api<Product>("store/products/"+encodeURIComponent(slug),options))).then(items=>{
@@ -40,11 +44,20 @@ export function Shop(){
         return {data,totalCount:data.length,totalPages:1,pageNumber:1,pageSize:data.length};
       })
       : api<Page<Product>>("store/products?"+data,options);
-    request.then(result=>{if(!controller.signal.aborted)setPage(result)}).catch(()=>{if(!controller.signal.aborted)setError(true)});
+    request.then(async page=>{
+      const narrowed=filters.some(key=>key!=="sort"&&current.has(key));
+      const catalogEmpty=!savedOnly&&page.totalCount===0&&(!narrowed||
+        (await api<Page<Product>>("store/products?pageSize=1",options)).totalCount===0);
+      if(!controller.signal.aborted){setResult({page,catalogEmpty});if(!savedOnly)setCatalogAvailable(!catalogEmpty)}
+    }).catch(()=>{if(!controller.signal.aborted)setError(true)});
     return()=>controller.abort();
-  },[queryString,savedKey]);
+  },[queryString,savedKey,savedOnly,retry]);
   const collection=collections.find(c=>c.slug===query.get("collection"));
-  const title=savedOnly?tr("Your wishlist.","مفضلتك."):collection?name(collection,lang):tr("The collection.","تشكيلة سياج.");
+  const term=query.get("q")?.trim();
+  const title=savedOnly?tr("Your favourites","عطورك المفضّلة"):collection?name(collection,lang):term?tr("Search results","نتائج البحث"):tr("The fragrance collection","مجموعة سياج");
+  const hasTools=!savedOnly&&catalogAvailable&&!error;
+  const status=error?"error":result?.catalogEmpty?"launch":savedOnly?"wishlist":"filtered";
+  const showState=error||Boolean(page&&!page.data.length);
   function change(key:string,value:string){
     const params=new URLSearchParams(queryString);
     if(value)params.set(key,value);else params.delete(key);
@@ -55,13 +68,13 @@ export function Shop(){
     return <label className="filter-control">{label}<select value={query.get(key)??""} onChange={e=>change(key,e.target.value)}><option value="">{tr("All","الكل")}</option>{options.map(([value,text])=><option key={value} value={value}>{text}</option>)}</select></label>;
   }
   return <main className="shop-page">
-    <div className="shop-intro"><div className="container"><div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span>{tr("The collection","التشكيلة")}</div><span className="eyebrow">SIYAG PARFUMS</span><h1>{title}</h1><p>{tr("Explore by scent, concentration and size.","اختار حسب العائلة العطرية والتركيز والحجم.")}</p></div></div>
+    <div className="shop-intro"><div className="container"><div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span>{tr("The collection","التشكيلة")}</div><span className="eyebrow">SIYAG PARFUMS</span><h1>{title}</h1><p>{term?tr(`Search for “${term}”`,`البحث عن «${term}»`):savedOnly?tr("A place for the fragrances you’d like to revisit.","مساحة للعطور التي تودّ العودة إليها."):tr("Explore by scent family, concentration and size.","تصفّح العطور بحسب العائلة العطرية والتركيز والحجم.")}</p></div></div>
     <div className="container shop-content">
-      {!savedOnly&&<div className="shop-tools">
-        <div><button type="button" className="filter-toggle" onClick={()=>setMobileFilters(!mobileFilters)} aria-expanded={mobileFilters}><SlidersHorizontal size={17}/>{tr("Filters","الفلاتر")}</button><select className="sort-control" aria-label={tr("Sort","الترتيب")} value={query.get("sort")??""} onChange={e=>change("sort",e.target.value)}><option value="">{tr("Newest","الأحدث")}</option><option value="price-asc">{tr("Price, low to high","السعر من الأقل")}</option><option value="price-desc">{tr("Price, high to low","السعر من الأعلى")}</option></select></div>
+      {hasTools&&<div className="shop-tools">
+        <div><button type="button" className="filter-toggle" onClick={()=>setMobileFilters(!mobileFilters)} aria-expanded={mobileFilters}><SlidersHorizontal size={17}/>{tr("Filters","التصفية")}</button><select className="sort-control" aria-label={tr("Sort","الترتيب")} value={query.get("sort")??""} onChange={e=>change("sort",e.target.value)}><option value="">{tr("Newest","الأحدث")}</option><option value="price-asc">{tr("Price, low to high","السعر من الأقل")}</option><option value="price-desc">{tr("Price, high to low","السعر من الأعلى")}</option></select></div>
       </div>}
-      <div className={`shop-layout ${savedOnly?"saved-layout":""}`}>
-        {!savedOnly&&<aside className={`filters ${mobileFilters?"filters-open":""}`}><div className="filter-title"><strong>{tr("Filters","الفلاتر")}</strong><Link href="/shop">{tr("Clear","مسح")}</Link></div>
+      <div className={`shop-layout ${hasTools?"":"saved-layout"}`}>
+        {hasTools&&<aside className={`filters ${mobileFilters?"filters-open":""}`}><div className="filter-title"><strong>{tr("Filters","التصفية")}</strong><Link href="/shop">{tr("Reset","إعادة ضبط")}</Link></div>
           {select("collection",tr("Collection","التشكيلة"),collections.map(c=>[c.slug,name(c,lang)]))}
           {select("family",tr("Fragrance family","العائلة العطرية"),Object.entries(families).map(([k,v])=>[k,v[ar?1:0]]))}
           {select("concentration",tr("Concentration","التركيز"),Object.entries(concentrations).map(([k,v])=>[k,v[ar?1:0]]))}
@@ -71,13 +84,40 @@ export function Shop(){
           <label className="stock-filter"><input type="checkbox" checked={query.get("inStock")==="true"} onChange={e=>change("inStock",e.target.checked?"true":"")}/>{tr("In stock only","المتوفر فقط")}</label>
         </aside>}
         <div className="shop-results" aria-live="polite">
-          {page&&<p className="results-count">{page.totalCount} {tr("fragrances","عطر")}</p>}
-          {error?<p className="empty-state">{tr("The collection is temporarily unavailable. Refresh to try again.","التشكيلة غير متاحة مؤقتًا. جرّب تحديث الصفحة.")}</p>:!page?<div className="product-grid">{[1,2,3].map(x=><div className="skeleton" key={x}/>)}</div>:!page.data.length?
-            <div className="empty-state">{tr("No fragrances found.","مفيش عطور مطابقة.")} <Link href="/shop" className="text-link">{tr("Explore all","اعرض الكل")}</Link></div>:
+          {!!page?.totalCount&&<p className="results-count">{page.totalCount} {tr(page.totalCount===1?"fragrance":"fragrances","عطر")}</p>}
+          {showState?<CatalogNotice status={status} onRetry={()=>setRetry(value=>value+1)}/>:!page?
+            <div className="product-grid" aria-busy="true">{[1,2,3].map(x=><div className="skeleton" key={x}/>)}</div>:
             <div className="product-grid">{page.data.map(p=><ProductCard key={p.id+queryString} product={p} preferred={p.variants.find(v=>(!query.get("format")||v.format===query.get("format"))&&(!query.get("sizeMl")||v.sizeMl===Number(query.get("sizeMl")))&&v.inStock)?.id}/>)}</div>}
           {page&&page.totalPages>1&&<div className="pagination"><button type="button" aria-label={tr("Previous page","الصفحة السابقة")} disabled={page.pageNumber<=1} onClick={()=>change("pageNumber",String(page.pageNumber-1))}><ArrowLeft size={17}/></button><span>{page.pageNumber} / {page.totalPages}</span><button type="button" aria-label={tr("Next page","الصفحة التالية")} disabled={page.pageNumber>=page.totalPages} onClick={()=>change("pageNumber",String(page.pageNumber+1))}><ArrowRight size={17}/></button></div>}
         </div>
       </div>
     </div>
   </main>;
+}
+
+function CatalogNotice({status,onRetry}:{status:"launch"|"wishlist"|"filtered"|"error";onRetry:()=>void}){
+  const {tr}=useStore();
+  if(status==="launch")return <article className="catalog-launch">
+    <img src="/brand/olive-hero.webp" alt="" width={1280} height={960}/>
+    <div>
+      <span className="eyebrow">{tr("A NEW CHAPTER","فصل جديد")}</span>
+      <h2>{tr("The collection is in preparation","مجموعة سياج قيد التحضير")}</h2>
+      <p>{tr("Meet the house and discover the woods, amber and citrus that inspire our fragrances.",
+        "تعرّف إلى دار سياج، واكتشف الأخشاب والعنبر والحمضيات التي تُلهم عطورنا.")}</p>
+      <Link className="action ink" href="/#maison">{tr("Discover the house","تعرّف إلى دار سياج")}<ArrowUpRight size={16}/></Link>
+    </div>
+  </article>;
+
+  const wishlist=status==="wishlist";
+  const error=status==="error";
+  return <section className="catalog-notice">
+    <span className="notice-icon">{wishlist?<Heart size={23}/>:<Search size={23}/>}</span>
+    <h2>{error?tr("We couldn’t load the collection","تعذّر عرض المجموعة"):
+      wishlist?tr("Make this collection yours","عطورك المفضّلة، في مكان واحد"):tr("No matches for these filters","لا توجد نتائج بهذه الخيارات")}</h2>
+    <p>{error?tr("Try again in a moment.","يمكنك إعادة المحاولة بعد لحظات."):
+      wishlist?tr("Save a fragrance using the heart on its card. It will be here when you return.","اضغط على القلب بجانب العطر الذي يعجبك لتجده هنا عند العودة."):
+      tr("Try a different fragrance name, or reset the filters to see the full collection.","جرّب اسم عطر آخر، أو أعد ضبط خيارات التصفية لعرض المجموعة كاملة.")}</p>
+    {error?<button className="action ink" type="button" onClick={onRetry}>{tr("Try again","إعادة المحاولة")}</button>:
+      <Link className="action ink" href="/shop">{wishlist?tr("Browse fragrances","تصفّح العطور"):tr("Reset filters","إعادة ضبط التصفية")}<ArrowUpRight size={16}/></Link>}
+  </section>;
 }

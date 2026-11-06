@@ -89,7 +89,7 @@ export function Checkout(){
   if(!cart.lines.length)return <main className="container utility checkout-page">
     <div className="checkout-empty">
       <ShoppingBag size={30}/><h1>{tr("Checkout","إتمام الطلب")}</h1>
-      <p role="status">{busy?tr("Loading your bag…","جاري تحميل الحقيبة…"):tr("Your bag is empty.","حقيبتك فاضية.")}</p>
+      <p role="status">{busy?tr("Loading your bag…","جاري تحميل الحقيبة…"):tr("Add a fragrance to your bag to continue.","أضف عطرًا إلى حقيبتك لتتابع إتمام الطلب.")}</p>
       {!busy&&<Link className="action ink" href="/shop">{tr("Explore the collection","استكشف التشكيلة")}</Link>}
     </div>
   </main>;
@@ -106,9 +106,9 @@ export function Checkout(){
           <label>{tr("Full name","الاسم بالكامل")}<input name="name" autoComplete="name" required maxLength={120}/></label>
           <label>{tr("Mobile number","رقم الموبايل")}<input name="phone" type="tel" autoComplete="tel" required pattern="(?:01|\\+201)[0125][0-9]{8}"/></label>
           <label>{tr("Email","البريد الإلكتروني")}<input name="email" type="email" autoComplete="email" required={method==="paymob"} maxLength={254}/></label>
-          <label>{tr("Governorate","المحافظة")}<select required value={governorate} onChange={e=>{const next=e.target.value;setGovernorate(next);setShip(shipping.find(s=>s.governorate===next)?.code??"")}}><option value="">{tr("Choose governorate","اختار المحافظة")}</option>{[...new Set(shipping.map(s=>s.governorate))].map(x=><option value={x} key={x}>{governorates[x]?.[ar?1:0]??x}</option>)}</select></label>
+          <label>{tr("Governorate","المحافظة")}<select required value={governorate} onChange={e=>{const next=e.target.value;setGovernorate(next);setShip(shipping.find(s=>s.governorate===next)?.code??"")}}><option value="">{tr("Choose governorate","اختر المحافظة")}</option>{[...new Set(shipping.map(s=>s.governorate))].map(x=><option value={x} key={x}>{governorates[x]?.[ar?1:0]??x}</option>)}</select></label>
           <label>{tr("City / district","المدينة / المنطقة")}<input name="city" autoComplete="address-level2" required maxLength={100}/></label>
-          <label>{tr("Delivery option","طريقة التوصيل")}<select required value={ship} onChange={e=>setShip(e.target.value)}><option value="">{tr("Choose delivery","اختار التوصيل")}</option>{shipping.filter(s=>s.governorate===governorate).map(s=><option value={s.code} key={s.code}>{name(s,lang)} · {money(s.feeMinor,lang)}</option>)}</select></label>
+          <label>{tr("Delivery option","طريقة التوصيل")}<select required value={ship} onChange={e=>setShip(e.target.value)}><option value="">{tr("Choose delivery","اختر طريقة التوصيل")}</option>{shipping.filter(s=>s.governorate===governorate).map(s=><option value={s.code} key={s.code}>{name(s,lang)} · {money(s.feeMinor,lang)}</option>)}</select></label>
           <label className="wide">{tr("Street, building and apartment","الشارع والعمارة والشقة")}<input name="address" autoComplete="street-address" required maxLength={500}/></label>
           <label className="wide">{tr("Delivery notes · optional","ملاحظات التوصيل · اختياري")}<textarea name="notes" maxLength={500}/></label>
         </div>
@@ -121,7 +121,7 @@ export function Checkout(){
           </label>)}
         </div>
         {!demo&&settings&&!settings.acceptOrders&&<p role="alert">{tr("Orders are temporarily paused.","الطلبات متوقفة مؤقتًا.")}</p>}
-        {!loading&&!shipping.length&&<p role="alert">{tr("Delivery options haven’t been published yet.","خيارات التوصيل لسه مش متاحة.")}</p>}
+        {!loading&&!shipping.length&&<p role="alert">{tr("Delivery options haven’t been published yet.","خيارات التوصيل غير متاحة حاليًا.")}</p>}
         {error&&<p className="form-error" role="alert">{error}</p>}
         <button type="submit" className="action ink" disabled={demo||!activeQuote||pending||!settings?.acceptOrders||cart.lines.some(l=>!l.available)}>{pending?tr("Placing your order…","جاري تسجيل الطلب…"):tr("Place order","تأكيد الطلب")}{activeQuote&&<strong>{money(activeQuote.totalMinor,lang)}</strong>}<ArrowUpRight size={16}/></button>
       </fieldset></form>

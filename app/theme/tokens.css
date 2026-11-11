@@ -29,6 +29,8 @@
   --motion-reveal: 650ms;
   --motion-image: 1200ms;
   --ease-out: cubic-bezier(.2,.65,.3,1);
+  --control-padding-card: 12px 10px;
+  --type-action-card: 13px;
   --radius-pill: 999px;
   --radius-badge: 3px;
   --store-header-offset: var(--store-header-height,116px);

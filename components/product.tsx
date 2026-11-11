@@ -25,7 +25,7 @@ const previewProduct=(product:Product)=>product.variants.length>0&&product.varia
 function Sizes({product,selected,onSelect,compact=false}:{product:Product;selected:Variant;onSelect:(v:Variant)=>void;compact?:boolean}){
   const {ar,tr}=useStore();
   const preview=previewProduct(product);
-  if(compact&&product.variants.length>4)return <select className="size-select" aria-label={tr("Choose a size","اختر الحجم")} value={selected.id}
+  if(compact&&product.variants.length>3)return <select className="size-select" aria-label={tr("Choose a size","اختر الحجم")} value={selected.id}
     onChange={event=>{const choice=product.variants.find(variant=>variant.id===event.target.value);if(choice&&(preview||choice.inStock))onSelect(choice)}}>
     {product.variants.map(variant=><option key={variant.id} value={variant.id} disabled={!preview&&!variant.inStock}>{variant.sizeMl} {tr("ml","مل")} · {formats[variant.format][ar?1:0]}</option>)}
   </select>;
@@ -67,14 +67,14 @@ export function ProductCard({product,preferred}:{product:Product;preferred?:stri
         <span>{tr("Choose a size","اختر الحجم")}</span>
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)} compact/>
       </div>
-      <button className="card-add" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
+      <button className="card-add" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
     </div>
     <Modal open={quick} onOpenChange={setQuick} title={title} className="quick-modal">
       <img className="quick-image" src={imageUrl(product.images[0])} alt={title}/>
       <div className="quick-copy"><div className="eyebrow">SIYAG PARFUMS</div><h2>{title}</h2><Price variant={v}/>
         <p>{ar?product.descriptionAr:product.descriptionEn}</p>
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)}/>
-        <button className="action ink" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={async()=>{setQuick(false);await add(product,v,1)}}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
+        <button className="action ink" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={async()=>{setQuick(false);await add(product,v,1)}}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
         <Link className="text-link" href={productUrl(product,v)} onClick={()=>setQuick(false)}>{tr("View fragrance details","تفاصيل العطر")}<ArrowUpRight size={15}/></Link>
       </div>
     </Modal>

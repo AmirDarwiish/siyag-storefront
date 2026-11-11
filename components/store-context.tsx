@@ -120,7 +120,8 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
     }catch(error){setBagNotice({kind:"error",text:error instanceof Error?error.message:tr("Could not start checkout.","تعذر بدء الطلب.")});return false}
     finally{inProgress.current=false;setBusy(false)}
   }
-  const value:Store={lang,ar:lang==="ar",tr,demo,cart,cartOpen,setCartOpen:openBag,busy,bagNotice,buyNow,dismissNotice:()=>setBagNotice(null),token:()=>tokenRef.current,
+  const dismissNotice=useCallback(()=>setBagNotice(null),[]);
+  const value:Store={lang,ar:lang==="ar",tr,demo,cart,cartOpen,setCartOpen:openBag,busy,bagNotice,buyNow,dismissNotice,token:()=>tokenRef.current,
     toggleLanguage:()=>{const next=lang==="ar"?"en":"ar";writeLocal("siyag-lang",next);setLang(next)},
     add:(p,v,q)=>update(v.id,(cartRef.current.lines.find(l=>l.variantId===v.id)?.quantity??0)+q,p,v),
     setQuantity:update,

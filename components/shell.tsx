@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import {track} from "@/lib/analytics";
-import {useRouter} from "next/navigation";
-import {useEffect,useState,type ReactNode} from "react";
+import {useRouter,usePathname} from "next/navigation";
+import {useEffect,useRef,useState,type ReactNode} from "react";
 import {ArrowDownLeft,ArrowRight,ArrowUpRight,Heart,Menu,Minus,Plus,Search,ShoppingBag,X} from "lucide-react";
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from "@/components/ui/dialog";
 import {api,imageUrl,money,name,productUrl,variantFor,type Page,type Product,type Content} from "@/lib/store";
@@ -12,8 +12,9 @@ import {useStore} from "./store-context";
 export function Wordmark(){return <span className="wordmark"><span>SIYAG</span><small>PARFUMS</small></span>}
 
 export function Modal({open,onOpenChange,title,description,className,placement,children}:{open:boolean;onOpenChange:(v:boolean)=>void;title:string;description?:string;className?:string;placement?:"center"|"side";children:ReactNode}){
-  const {tr}=useStore();
-  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className={`store-modal ${className??""}`} showCloseButton={false} placement={placement}>
+  const {tr,dismissNotice}=useStore();
+  useEffect(()=>{if(open)dismissNotice()},[open,dismissNotice]);
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className={`store-modal ${className??""}`} showCloseButton={false} placement={placement??(className==="impression-modal"||className==="filter-modal"?"side":"center")}>
     <DialogTitle className="sr-only">{title}</DialogTitle><DialogDescription className="sr-only">{description??title}</DialogDescription>
     <button type="button" className="icon modal-close" aria-label={tr("Close","إغلاق")} onClick={()=>onOpenChange(false)}><X size={20}/></button>{children}
   </DialogContent></Dialog>;
@@ -60,6 +61,10 @@ function Campaign(){
 export function Header(){
   const {tr,ar,toggleLanguage,cart,setCartOpen,demo}=useStore();
   const router=useRouter();
+  const path=usePathname();
+  const checkoutRoute=path==="/checkout"||path==="/payment/result";
+  const headerRef=useRef<HTMLElement>(null);
+  useEffect(()=>{const element=headerRef.current;if(!element)return;const update=()=>document.documentElement.style.setProperty("--store-header-height",`${element.getBoundingClientRect().height}px`);update();const observer=new ResizeObserver(update);observer.observe(element);return()=>{observer.disconnect();document.documentElement.style.removeProperty("--store-header-height")}},[]);
   const [search,setSearch]=useState(false);
   const [menu,setMenu]=useState(false);
   const [query,setQuery]=useState("");
@@ -78,7 +83,7 @@ export function Header(){
     return()=>{controller.abort();clearTimeout(timer)};
   },[query,search]);
   const quantity=cart.lines.reduce((sum,line)=>sum+line.quantity,0);
-  return <header className="site-header">
+  return <header ref={headerRef} className="site-header" data-checkout={checkoutRoute}>
     {demo&&<div className="preview-notice">{tr("PRIVATE DESIGN PREVIEW · SAMPLE PRODUCTS","معاينة خاصة · منتجات تجريبية")}</div>}
     <Campaign/>
     <div className="nav-wrap">

@@ -10,6 +10,7 @@ import {api,concentrations,families,formats,imageUrl,money,name,productUrl,varia
 import {useStore} from "./store-context";
 import {Modal} from "./shell";
 import {Reviews} from "./reviews";
+import {ScentSignature} from "./scent-signature";
 
 function Price({variant}:{variant:Variant}){
   const {lang}=useStore();
@@ -87,13 +88,13 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
   const [selection,setSelection]=useState(initial?.id);
   const [activeImage,setActiveImage]=useState(0);
   const [quantity,setQuantity]=useState(1);
-  const [sticky,setSticky]=useState(false);
+  const [sticky,setSticky]=useState(true);
   const [related,setRelated]=useState<Product[]>([]);
-  const buy=useRef<HTMLDivElement>(null);
+  const buy=useRef<HTMLButtonElement>(null);
   const v=variantFor(product,selection);
   useEffect(()=>{
     if(!buy.current)return;
-    const observer=new IntersectionObserver(([entry])=>setSticky(!entry.isIntersecting&&entry.boundingClientRect.bottom<0));
+    const observer=new IntersectionObserver(([entry])=>setSticky(entry.intersectionRatio<.98),{threshold:[0,1],rootMargin:"0px 0px -12px 0px"});
     observer.observe(buy.current);
     return()=>observer.disconnect();
   },[]);
@@ -119,8 +120,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
     url.searchParams.set("variant",value.id);
     window.history.replaceState(window.history.state,"",url);
   }
-  const notes=[[tr("Opening","الافتتاحية"),product.topNotes],[tr("Heart","القلب"),product.heartNotes],[tr("Base","القاعدة"),product.baseNotes]] as const;
-  return <main>
+  return <main className="product-detail-main">
     <div className="container product-page">
       <div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span><Link href="/shop">{tr("Fragrances","العطور")}</Link><span>/</span><span>{title}</span></div>
       <div className="product-layout">
@@ -133,30 +133,32 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
           <div className="product-detail-meta">{concentrations[product.concentration]?.[ar?1:0]} <span>·</span> {families[product.family]?.[ar?1:0]}</div>
           <Price variant={v}/>
           <p>{ar?product.descriptionAr:product.descriptionEn}</p>
-          <div className="buy-zone" ref={buy}>
+          <div className="buy-zone">
             <div className="variant-label">{tr("Select size","اختر الحجم")} <span>{formats[v.format][ar?1:0]}</span></div>
             <Sizes product={product} selected={v} onSelect={choose}/>
             {v.format!=="fullBottle"&&<p className="muted">{tr("A smaller format for discovering the fragrance.","حجم أصغر لتجربة العطر.")}</p>}
             <div className="buy-row">
               <div className="quantity"><button type="button" aria-label={tr("Decrease quantity","تقليل الكمية")} disabled={quantity===1} onClick={()=>setQuantity(quantity-1)}><Minus size={16}/></button><span>{quantity}</span><button type="button" aria-label={tr("Increase quantity","زيادة الكمية")} disabled={quantity===20} onClick={()=>setQuantity(quantity+1)}><Plus size={16}/></button></div>
-              <button type="button" className="action ink" disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={17}/>{v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
+              <button ref={buy} type="button" className="action ink" disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={17}/>{v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
               <button type="button" className="icon detail-heart" aria-label={tr("Toggle wishlist","تغيير حالة المفضلة")} aria-pressed={saved.includes(product.slug)} onClick={()=>toggleSaved(product.slug)}><Heart size={20} fill={saved.includes(product.slug)?"currentColor":"none"}/></button>
             </div>
             <button type="button" className="action buy-now" disabled={busy||!v.inStock} onClick={express}>{busy?tr("Please wait…","لحظة…"):tr("Buy now","اشتري الآن")}<ArrowUpRight size={17}/></button>
             <p className="purchase-note">{tr("Guest checkout · delivery calculated before you order","اطلب بدون حساب · تكلفة التوصيل بتظهر قبل التأكيد")}</p>
           </div>
-          <Accordion type="multiple" defaultValue={["notes"]} className="product-accordion">
-            {notes.some(([,list])=>list.length>0)&&<AccordionItem value="notes"><AccordionTrigger>{tr("The fragrance notes","النوتات العطرية")}</AccordionTrigger><AccordionContent>
-              <dl>{notes.filter(([,list])=>list.length>0).map(([label,list])=><div key={label}><dt>{label}</dt><dd>{list.join(" · ")}</dd></div>)}</dl>
-            </AccordionContent></AccordionItem>}
+          <Accordion type="multiple" className="product-accordion">
             <AccordionItem value="shipping"><AccordionTrigger>{tr("Shipping & delivery","الشحن والتوصيل")}</AccordionTrigger><AccordionContent>{tr("Available delivery options and charges are shown at checkout for your governorate.","خيارات التوصيل وتكلفته بتظهر عند إتمام الطلب حسب محافظتك.")}</AccordionContent></AccordionItem>
             <AccordionItem value="returns"><AccordionTrigger>{tr("Returns","الاسترجاع")}</AccordionTrigger><AccordionContent>{tr("Use the tracking details on your receipt to look up your order and its available return options.","استخدم بيانات التتبع في إيصالك لمراجعة طلبك وخيارات الاسترجاع المتاحة.")}</AccordionContent></AccordionItem>
           </Accordion>
         </div>
       </div>
     </div>
+    <ScentSignature key={product.slug+"-signature"} product={product}/>
     <Reviews key={product.slug} product={product.slug}/>
     {related.length>0&&<section className="container section"><div className="section-head"><div><span className="eyebrow">SIYAG PARFUMS</span><h2>{tr("Explore related fragrances","اكتشف عطور ذات طابع مشابه")}</h2></div></div><div className="product-grid">{related.map(p=><ProductCard key={p.id} product={p}/>)}</div></section>}
-    {sticky&&v.inStock&&<div className="sticky-buy"><img src={imageUrl(product.images[0])} alt=""/><span><strong>{title}</strong><small>{v.sizeMl} {tr("ml","مل")}</small></span><Price variant={v}/><button type="button" className="action ink" disabled={busy||!v.inStock} onClick={express}>{tr("Buy now","اشتري الآن")}</button></div>}
+    {sticky&&<section className="product-purchase-dock" aria-label={tr("Purchase options","خيارات الشراء")}>
+      <div className="dock-selection"><strong>{title}</strong><small>{v.sizeMl} {tr("ml","مل")} · {money(v.priceMinor,lang)}</small></div>
+      <button type="button" className="dock-add" disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={16}/>{v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
+      {v.inStock&&<button type="button" className="dock-buy" disabled={busy} onClick={express}>{tr("Buy now","اشتري الآن")}<ArrowUpRight size={15}/></button>}
+    </section>}
   </main>;
 }

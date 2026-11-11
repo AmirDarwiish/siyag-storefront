@@ -1434,13 +1434,14 @@ textarea {
   border:1px solid var(--ink);
   font-family:var(--sans);
   gap:var(--space-4);
-  font-size:var(--type-action);
   font-weight:var(--weight-action);
   line-height:var(--leading-control);
   min-height:var(--control-height);
-  padding:var(--control-padding);
   border-radius:var(--radius-control);
-  letter-spacing:var(--tracking-action)}
+  letter-spacing:var(--tracking-action);
+  padding:var(--control-padding-card);
+  font-size:var(--type-action-card);
+  white-space:nowrap}
 .product-card .card-add:hover:not(:disabled) {
   background:var(--dark)}
 .product-card .photo-quick {
@@ -2495,7 +2496,8 @@ textarea {
   font-size:var(--type-label);
   line-height:1.5;
   min-height:42px;
-  padding-inline:var(--space-4)}
+  min-width:0;
+  padding-inline:var(--space-2)}
 .product-card .sizes button[aria-pressed=true] {
   background:transparent;
   color:var(--ink);
@@ -2953,6 +2955,12 @@ html[data-header-hidden=true] {
   color:var(--muted)}
 [data-reveal][data-revealed=true] {
   animation:section-arrive var(--motion-reveal) var(--ease-out) both}
+.product-card .sizes {
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:minmax(0,1fr);
+  gap:var(--space-2);
+  width:100%}
 @media (hover:hover) {
   .product-visual:hover .product-hover {
   opacity:1}

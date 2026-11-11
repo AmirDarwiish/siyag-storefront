@@ -45,7 +45,7 @@ function HeroSlider() {
         <Link href={slide.href} className="action gold">{slide.action}<ArrowUpRight size={17}/></Link>
       </div>
     </div>
-    <div className="hero-controls"><span className="hero-slide-count" aria-hidden="true">0{active+1}<span> / 0{slides.length}</span></span>
+    <div className="hero-controls"><span className="hero-slide-count" aria-hidden="true" dir="ltr">0{active+1}<span> / 0{slides.length}</span></span>
       <button type="button" className="slider-arrow" aria-label={tr("Previous slide", "الشريحة السابقة")} onClick={()=>move(-1)}><PreviousIcon size={20}/></button>
       <div className="slider-dots" role="group" aria-label={tr("Choose a slide", "اختار شريحة")}>
         {slides.map((item,index)=><button type="button" key={item.href} aria-label={item.label} aria-current={active===index?"true":undefined} onClick={()=>{setPlaying(false);setActive(index)}}/>)}

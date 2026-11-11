@@ -124,7 +124,7 @@ export function Home() {
         <div><span className="eyebrow">{tr("FROM THE HOUSE", "من دار سياج")}</span><h2>{tr("Meet your signature", "ممكن يكون ده عطرك")}</h2></div>
         <Link className="text-link" href="/shop">{tr("View the collection", "تصفّح المجموعة")}<ArrowUpRight size={16}/></Link>
       </div>
-      <div className="home-rail-controls"><span>{tr('A scent for every side of you.','لكل جانب فيك… عطر.')}</span><div><button type="button" aria-label={tr('Previous fragrances','العطور السابقة')} onClick={()=>moveRail(-1)}><ChevronLeft size={19}/></button><button type="button" aria-label={tr('Next fragrances','العطور التالية')} onClick={()=>moveRail(1)}><ChevronRight size={19}/></button></div></div>
+      <div className="home-rail-controls"><span>{tr('A scent for every side of you.','لكل جانب فيك… عطر.')}</span><div><button type="button" aria-label={tr('Previous fragrances','العطور السابقة')} onClick={()=>moveRail(-1)}>{ar?<ChevronRight size={19}/>:<ChevronLeft size={19}/>}</button><button type="button" aria-label={tr('Next fragrances','العطور التالية')} onClick={()=>moveRail(1)}>{ar?<ChevronLeft size={19}/>:<ChevronRight size={19}/>}</button></div></div>
       <div className="product-grid home-product-rail" ref={railRef} aria-busy={loading}>{loading?[1,2,3,4].map(i=><div className="skeleton" key={i}/>):products.map(product => <ProductCard product={product} key={product.id}/>)}</div>
     </div></section>}
 

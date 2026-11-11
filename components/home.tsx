@@ -17,8 +17,8 @@ function HeroSlider() {
   useEffect(()=>{if(!playing||interacting)return;const tick=setInterval(()=>{if(document.visibilityState==='visible')setActive(index=>(index+1)%3)},6500);return()=>clearInterval(tick)},[playing,interacting,active]);
   const touchStart = useRef<{x:number;y:number} | null>(null);
   const slides = [
-    {title: tr("Make it your signature", "حضور يشبهك"), label: tr("THE SIYAG COLLECTION", "تشكيلة سياج"), copy: tr("Find the scent that feels like you. Then make it yours.", "من أول انطباع لآخر أثر… اختار العطر اللي يعبّر عنك."), image: "/brand/olive-hero.webp", href: "/shop", action: tr("Explore the collection", "استكشف التشكيلة")},
-    {title: tr("The notes behind the scent", "ما وراء الرائحة"), label: tr("SCENT FAMILIES", "العائلات العطرية"), copy: tr("Explore the ingredients behind each fragrance.", "تعرّف إلى النوتات التي تمنح كل عطر طابعه."), image: "/brand/olive-notes.webp", href: "/#maison", action: tr("Explore the house", "اكتشف دار سياج")},
+    {title: tr("Make it your signature", "حضور يشبهك"), label: tr("THE SIYAG COLLECTION", "تشكيلة SIYAG"), copy: tr("Find the scent that feels like you. Then make it yours.", "من أول انطباع لآخر أثر… اختار العطر اللي يعبّر عنك."), image: "/brand/olive-hero.webp", href: "/shop", action: tr("Explore the collection", "استكشف التشكيلة")},
+    {title: tr("The notes behind the scent", "ما وراء الرائحة"), label: tr("SCENT FAMILIES", "العائلات العطرية"), copy: tr("Explore the ingredients behind each fragrance.", "تعرّف إلى النوتات التي تمنح كل عطر طابعه."), image: "/brand/olive-notes.webp", href: "/#maison", action: tr("Explore the house", "اكتشف دار SIYAG")},
     {title: tr("Discover in smaller sizes", "اكتشف العطر بحجم أصغر"), label: tr("DISCOVERY SIZES", "أحجام التجربة"), copy: tr("Try a smaller size before choosing your full bottle.", "تجربة تتيح لك اختيار عطرك قبل اقتناء الزجاجة الكاملة."), image: "/brand/eclat.webp", href: "/shop?format=decant", action: tr("Explore discovery sizes", "استكشف أحجام التجربة")},
   ];
   const slide = slides[active];
@@ -98,7 +98,7 @@ export function Home() {
     <section className="container section collections-section" id="collections" data-reveal>
       <div className="section-head">
         <div>
-          <span className="eyebrow">{tr("SIYAG PARFUMS", "دار سياج للعطور")}</span>
+          <span className="eyebrow">{tr("SIYAG PARFUMS", "دار SIYAG للعطور")}</span>
           <h2>{tr("Find your next obsession", "كل عطر… حكاية")}</h2>
         </div>
         <Link className="text-link" href="/shop">
@@ -121,7 +121,7 @@ export function Home() {
 
     {(loading||products.length>0) && <section className="catalog-home" data-reveal><div className="container section">
       <div className="section-head">
-        <div><span className="eyebrow">{tr("FROM THE HOUSE", "من دار سياج")}</span><h2>{tr("Meet your signature", "ممكن يكون ده عطرك")}</h2></div>
+        <div><span className="eyebrow">{tr("FROM THE HOUSE", "من دار SIYAG")}</span><h2>{tr("Meet your signature", "ممكن يكون ده عطرك")}</h2></div>
         <Link className="text-link" href="/shop">{tr("View the collection", "تصفّح المجموعة")}<ArrowUpRight size={16}/></Link>
       </div>
       <div className="home-rail-controls"><span>{tr('A scent for every side of you.','لكل جانب فيك… عطر.')}</span><div><button type="button" aria-label={tr('Previous fragrances','العطور السابقة')} onClick={()=>moveRail(-1)}>{ar?<ChevronRight size={19}/>:<ChevronLeft size={19}/>}</button><button type="button" aria-label={tr('Next fragrances','العطور التالية')} onClick={()=>moveRail(1)}>{ar?<ChevronLeft size={19}/>:<ChevronRight size={19}/>}</button></div></div>
@@ -132,7 +132,7 @@ export function Home() {
     <section className="story" id="maison" data-reveal>
       <img src="/brand/olive-notes.webp" alt="" width={1140} height={855} loading="lazy"/>
       <div>
-        <span className="eyebrow">{tr("THE HOUSE OF SIYAG", "دار سياج")}</span>
+        <span className="eyebrow">{tr("THE HOUSE OF SIYAG", "دار SIYAG")}</span>
         <h2>{tr("More than a fragrance. A feeling.", "مش مجرد عطر… إحساس")}</h2>
         <p>{tr("A fragrance unfolds in stages. Citrus is often the first impression, followed by the heart and the woods that linger on skin.", "يتكشّف العطر على مراحل. تبدأ الحمضيات غالبًا، ثم يظهر قلب العطر، وتبقى الأخشاب على البشرة.")}</p>
         <Link href="/shop" className="action ink">{tr("Discover the scents", "اكتشف العطور")}<ArrowUpRight size={16}/></Link>

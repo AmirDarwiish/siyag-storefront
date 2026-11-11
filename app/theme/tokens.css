@@ -32,7 +32,9 @@
   --control-padding-card: 12px 10px;
   --type-action-card: 13px;
   --radius-pill: 999px;
-  --radius-badge: 3px;
+  --radius-badge: 999px;
+  --badge-background: color-mix(in srgb, var(--white) 94%, transparent);
+  --badge-padding: 6px 10px;
   --store-header-offset: var(--store-header-height,116px);
   --hero-surface: var(--color-forest);
   --hero-ink: var(--white);

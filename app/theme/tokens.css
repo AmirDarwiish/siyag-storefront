@@ -1,0 +1,127 @@
+/* SIYAG design system: the only source of colors, typography and shared sizing. */
+@font-face {
+  font-family: Newsreader;
+  src: url("/brand/type/newsreader.woff2") format("woff2");
+  font-weight: 400 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: Manrope;
+  src: url("/brand/type/manrope.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Plex Arabic";
+  src: url("/brand/type/plex-arabic-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Plex Arabic";
+  src: url("/brand/type/plex-arabic-semibold.woff2") format("woff2");
+  font-weight: 600 800;
+  font-display: swap;
+}
+:root {
+  --color-paper: #faf8f2;
+  --color-white: #fffefa;
+  --color-stone: #f0eee5;
+  --color-ink: #252e26;
+  --color-forest: #2b3a2e;
+  --color-muted: #626b5e;
+  --color-line: #d9dbcf;
+  --color-sage: #b2bd7e;
+  --color-olive: #8e9162;
+  --color-yellow: #d9d28b;
+  --color-danger: #964f3b;
+  --paper: var(--color-paper);
+  --white: var(--color-white);
+  --stone: var(--color-stone);
+  --ink: var(--color-ink);
+  --dark: var(--color-forest);
+  --muted: var(--color-muted);
+  --line: var(--color-line);
+  --sage: var(--color-sage);
+  --olive: var(--color-olive);
+  --yellow: var(--color-yellow);
+  --moss: var(--color-olive);
+  --space-1: 2px;
+  --space-2: 4px;
+  --space-3: 6px;
+  --space-4: 8px;
+  --space-5: 12px;
+  --space-6: 16px;
+  --space-7: 20px;
+  --space-8: 24px;
+  --space-9: 32px;
+  --space-10: 40px;
+  --space-11: 48px;
+  --space-12: 64px;
+  --space-13: 80px;
+  --space-14: 96px;
+  --sans: Manrope, Arial, sans-serif;
+  --serif: Newsreader, Georgia, serif;
+  --type-micro: 11px;
+  --type-caption: 12px;
+  --type-label: 13px;
+  --type-action: 13px;
+  --type-body: 15px;
+  --type-input: 16px;
+  --type-lead: 18px;
+  --type-subtitle: 24px;
+  --type-product: 30px;
+  --type-product-ar: 25px;
+  --type-section: clamp(32px, 3.5vw, 48px);
+  --type-page: clamp(44px, 5vw, 68px);
+  --type-display: clamp(48px, 5.3vw, 80px);
+  --type-display-ar: clamp(40px, 4.6vw, 68px);
+  --type-grand: 72px;
+  --leading-body: 1.85;
+  --leading-heading: 1.2;
+  --leading-heading-ar: 1.5;
+  --leading-display: 1.05;
+  --leading-control: 1.5;
+  --weight-action: 500;
+  --tracking-action: .01em;
+  --control-height: 48px;
+  --control-padding: 13px 20px;
+  --radius-control: 0px;
+  --radius-surface: 3px;
+  --surface-radius: var(--radius-surface);
+  --border-fine: 1px solid var(--line);
+  --shadow-float: 0 12px 40px color-mix(in srgb, var(--ink) 12%, transparent);
+  --content-width: 1320px;
+  --hero-width: 1520px;
+  --page-gutter: clamp(24px, 4vw, 64px);
+  --section-space: clamp(64px, 7vw, 104px);
+  --panel-space: clamp(32px, 5vw, 64px);
+  --product-gap: 48px 28px;
+  --hero-image-height: clamp(480px, 43vw, 660px);
+  --hero-content-space: clamp(32px, 6vw, 88px);
+  --hero-panel: var(--paper);
+}
+[dir=rtl] {
+  --sans: "Plex Arabic", Manrope, sans-serif;
+  --serif: "Plex Arabic", Manrope, sans-serif;
+  --type-action: 14px;
+}
+@media (max-width:767px) {
+  :root {
+    --page-gutter: 20px;
+    --section-space: 52px;
+    --panel-space: 28px;
+    --type-body: 14px;
+    --type-product: 25px;
+    --type-product-ar: 22px;
+    --type-section: 32px;
+    --type-page: 44px;
+    --type-display: 42px;
+    --type-display-ar: 34px;
+    --product-gap: 32px 16px;
+    --hero-image-height: clamp(300px, 98vw, 440px);
+    --hero-content-space: 28px 24px 20px;
+    --control-padding: 12px 14px;
+  }
+  [dir=rtl] {--type-body:15px}
+}

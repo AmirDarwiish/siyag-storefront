@@ -1,11 +1,7 @@
 import type {Metadata} from "next";
 import "./globals.css";
-import "./storefront.css";
-import "./editorial.css";
-import "./reviews.css";
-import "./conversion.css";
-import "./scent-signature.css";
-import "./refinement.css";
+import "./theme/tokens.css";
+import "./theme/storefront.css";
 import {StorefrontFrame} from "@/components/storefront-frame";
 import {DEMO} from "@/lib/server-store";
 

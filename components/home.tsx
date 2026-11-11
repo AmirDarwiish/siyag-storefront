@@ -37,7 +37,7 @@ function HeroSlider() {
         if(Math.abs(distance)>55&&Math.abs(distance)>Math.abs(vertical))move((distance<0?1:-1)*(ar?-1:1));
       }}
       onTouchCancel={()=>{touchStart.current=null}}>
-      <figure className="hero-visual" key={slide.image}><span className="hero-image-index" aria-hidden="true">SIYAG — 0{active+1}</span><img src={slide.image} alt="" width={1280} height={960} fetchPriority={active===0?"high":"auto"}/></figure>
+      <figure className="hero-visual" key={slide.image}><img src={slide.image} alt="" width={1280} height={960} fetchPriority={active===0?"high":"auto"}/></figure>
       <div className="hero-content" key={slide.title} aria-live={playing?"off":"polite"}>
         <div className="hero-kicker"><span/>{slide.label}</div>
         <span className="hero-edition">{tr("AN EGYPTIAN FRAGRANCE HOUSE", "دار عطور مصرية")}</span><h1>{slide.title}</h1>

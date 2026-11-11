@@ -2774,16 +2774,6 @@ html[data-header-hidden=true] {
   border:0;
   margin-inline-start:var(--space-4);
   color:var(--hero-ink)}
-.hero-image-index {
-  position:absolute;
-  top:var(--space-7);
-  inset-inline-end:var(--space-7);
-  z-index:2;
-  font-size:var(--type-micro);
-  letter-spacing:.16em;
-  color:var(--ink);
-  background:var(--paper);
-  padding:var(--space-4) var(--space-5)}
 .scent-shortcuts {
   display:flex;
   gap:var(--space-5);

@@ -37,7 +37,8 @@ function Sizes({product,selected,onSelect,compact=false}:{product:Product;select
 }
 
 export function ProductCard({product,preferred}:{product:Product;preferred?:string}){
-  const {lang,ar,tr,busy,add,saved,toggleSaved}=useStore();
+  const {lang,ar,tr,pendingVariants,add,saved,toggleSaved}=useStore();
+  const busy=product.variants.some(v=>pendingVariants.includes(v.id));
   const initial=variantFor(product,preferred);
   const [selection,setSelection]=useState(initial?.id);
   const [quick,setQuick]=useState(false);
@@ -65,14 +66,14 @@ export function ProductCard({product,preferred}:{product:Product;preferred?:stri
         <span>{tr("Choose a size","اختر الحجم")}</span>
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)} compact/>
       </div>
-      <button className="card-add" type="button" disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
+      <button className="card-add" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
     </div>
     <Modal open={quick} onOpenChange={setQuick} title={title} className="quick-modal">
       <img className="quick-image" src={imageUrl(product.images[0])} alt={title}/>
       <div className="quick-copy"><div className="eyebrow">SIYAG PARFUMS</div><h2>{title}</h2><Price variant={v}/>
         <p>{ar?product.descriptionAr:product.descriptionEn}</p>
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)}/>
-        <button className="action ink" type="button" disabled={busy||!v.inStock} onClick={async()=>{setQuick(false);await add(product,v,1)}}><ShoppingBag size={16}/>{v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
+        <button className="action ink" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={async()=>{setQuick(false);await add(product,v,1)}}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
         <Link className="text-link" href={productUrl(product,v)} onClick={()=>setQuick(false)}>{tr("View fragrance details","تفاصيل العطر")}<ArrowUpRight size={15}/></Link>
       </div>
     </Modal>
@@ -80,7 +81,8 @@ export function ProductCard({product,preferred}:{product:Product;preferred?:stri
 }
 
 export function ProductDetail({product,variantId}:{product:Product;variantId?:string}){
-  const {tr,ar,lang,add,buyNow,busy,saved,toggleSaved}=useStore();
+  const {tr,ar,lang,add,buyNow,pendingVariants,saved,toggleSaved}=useStore();
+  const busy=product.variants.some(v=>pendingVariants.includes(v.id));
   const router=useRouter();
   async function express(){if(v&&await buyNow(product,v,quantity))router.push("/checkout?express=1")}
   useEffect(()=>{const selected=variantFor(product,variantId);if(selected)track("view_item",itemData(product,selected))},[product,variantId]);
@@ -139,10 +141,10 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
             {v.format!=="fullBottle"&&<p className="muted">{tr("A smaller format for discovering the fragrance.","حجم أصغر لتجربة العطر.")}</p>}
             <div className="buy-row">
               <div className="quantity"><button type="button" aria-label={tr("Decrease quantity","تقليل الكمية")} disabled={quantity===1} onClick={()=>setQuantity(quantity-1)}><Minus size={16}/></button><span>{quantity}</span><button type="button" aria-label={tr("Increase quantity","زيادة الكمية")} disabled={quantity===20} onClick={()=>setQuantity(quantity+1)}><Plus size={16}/></button></div>
-              <button ref={buy} type="button" className="action ink" disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={17}/>{v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
+              <button ref={buy} type="button" className="action ink" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={17}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
               <button type="button" className="icon detail-heart" aria-label={tr("Toggle wishlist","تغيير حالة المفضلة")} aria-pressed={saved.includes(product.slug)} onClick={()=>toggleSaved(product.slug)}><Heart size={20} fill={saved.includes(product.slug)?"currentColor":"none"}/></button>
             </div>
-            <button type="button" className="action buy-now" disabled={busy||!v.inStock} onClick={express}>{busy?tr("Please wait…","لحظة…"):tr("Buy now","اشتري الآن")}<ArrowUpRight size={17}/></button>
+            <button type="button" className="action buy-now" aria-busy={busy} disabled={busy||!v.inStock} onClick={express}>{busy?tr("Please wait…","لحظة…"):tr("Buy now","اشتري الآن")}<ArrowUpRight size={17}/></button>
             <p className="purchase-note">{tr("Guest checkout · delivery calculated before you order","اطلب بدون حساب · تكلفة التوصيل بتظهر قبل التأكيد")}</p>
           </div>
           <Accordion type="multiple" className="product-accordion">
@@ -157,7 +159,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
     {related.length>0&&<section className="container section"><div className="section-head"><div><span className="eyebrow">SIYAG PARFUMS</span><h2>{tr("Explore related fragrances","اكتشف عطور ذات طابع مشابه")}</h2></div></div><div className="product-grid">{related.map(p=><ProductCard key={p.id} product={p}/>)}</div></section>}
     {sticky&&<section className="product-purchase-dock" aria-label={tr("Purchase options","خيارات الشراء")}>
       <div className="dock-selection"><strong>{title}</strong><small>{v.sizeMl} {tr("ml","مل")} · {money(v.priceMinor,lang)}</small></div>
-      <button type="button" className="dock-add" disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={16}/>{v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
+      <button type="button" className="dock-add" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
       {v.inStock&&<button type="button" className="dock-buy" disabled={busy} onClick={express}>{tr("Buy now","اشتري الآن")}<ArrowUpRight size={15}/></button>}
     </section>}
   </main>;

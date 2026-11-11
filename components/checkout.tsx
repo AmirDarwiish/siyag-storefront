@@ -5,7 +5,7 @@ import {useRouter} from "next/navigation";
 import {useEffect,useRef,useState,type FormEvent} from "react";
 import {ArrowUpRight,Banknote,CreditCard,MapPin,PackageCheck,ShieldCheck,ShoppingBag} from "lucide-react";
 import {api,ApiError,imageUrl,money,name,type Quote,type Receipt,type Settings,type Shipping,type Tracking,type Cart} from "@/lib/store";
-import {track,cartData} from "@/lib/analytics";
+import {track,cartData,allowed} from "@/lib/analytics";
 import {useStore} from "./store-context";
 import {ReviewButton} from "./reviews";
 import type {OrderProof} from "@/lib/reviews";
@@ -49,11 +49,12 @@ export function Checkout(){
     let value="";try{value=sessionStorage.getItem("siyag-express-token")||""}catch{}
     if(!value){setExpressError(true);setExpressLoading(false);return}
     expressToken.current=value;
+    if(demo){try{const preview=JSON.parse(sessionStorage.getItem("siyag-express-preview")||"null") as Cart|null;if(preview?.lines?.length)setExpressCart(preview);else setExpressError(true)}catch{setExpressError(true)}setExpressLoading(false);return}
     const controller=new AbortController();
     api<Cart>("store/cart",{token:value,signal:controller.signal}).then(setExpressCart).catch(()=>{if(!controller.signal.aborted)setExpressError(true)}).finally(()=>{if(!controller.signal.aborted)setExpressLoading(false)});
     return()=>controller.abort();
-  },[]);
-  useEffect(()=>{if(!expressLoading&&cart.lines.length&&!began.current){began.current=true;track("begin_checkout",{...cartData(cart),step:express?"express":"bag"})}},[cart,express,expressLoading]);
+  },[demo]);
+  useEffect(()=>{if(allowed()&&!expressLoading&&cart.lines.length&&!began.current){began.current=true;track("begin_checkout",{...cartData(cart),step:express?"express":"bag"})}},[cart,express,expressLoading]);
   useEffect(()=>{const exit=()=>{if(began.current&&!completed.current)track("checkout_exit",{step:"incomplete"})};window.addEventListener("pagehide",exit);return()=>window.removeEventListener("pagehide",exit)},[]);
   const router=useRouter();
   const [settings,setSettings]=useState<Settings|undefined>(demo?previewSettings:undefined);

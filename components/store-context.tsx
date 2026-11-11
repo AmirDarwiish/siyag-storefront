@@ -98,7 +98,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
         }
       }
       if(!product&&previous&&quantity<previous.quantity)track("remove_from_cart",{items:[{item_id:id,item_name:previous.nameEn,item_variant:String(previous.sizeMl),price:previous.unitPriceMinor/100,quantity:previous.quantity-quantity}],value:previous.unitPriceMinor*(previous.quantity-quantity)/100});
-      if(product&&variant){setBagNotice({kind:"success",text:tr(`${name(product,lang)} added to bag`,"اتضاف العطر للحقيبة")});track("add_to_cart",{...itemData(product,variant,quantity),value:variant.priceMinor*quantity/100})}
+      if(product&&variant){setBagNotice({kind:"success",text:tr(`${name(product,lang)} added to bag`,"اتضاف العطر للحقيبة")});track("add_to_cart",itemData(product,variant,quantity-(previous?.quantity??0)))}
       return true;
     }catch(error){setBagNotice({kind:"error",text:lang==="ar"?"تعذر تحديث الحقيبة. راجع توافر المقاس وحاول مرة أخرى.":error instanceof Error?error.message:"Could not update your bag."});return false}
     finally{inProgress.current=false;setBusy(false)}
@@ -107,7 +107,10 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
     if(inProgress.current||!variant.inStock||quantity<1||quantity>20)return false;
     inProgress.current=true;setBusy(true);setBagNotice(null);
     try{
-      if(demo)throw new Error(tr("Direct purchase is unavailable in preview.","الشراء المباشر غير متاح في المعاينة."));
+      if(demo){
+        const preview:Cart={currency:"EGP",subtotalMinor:variant.priceMinor*quantity,lines:[{variantId:variant.id,slug:product.slug,nameEn:product.nameEn,nameAr:product.nameAr,image:product.images[0],sizeMl:variant.sizeMl,format:variant.format,quantity,unitPriceMinor:variant.priceMinor,available:true}]};
+        sessionStorage.setItem("siyag-express-token","preview");sessionStorage.setItem("siyag-express-preview",JSON.stringify(preview));return true;
+      }
       const created=await api<{token:string;cart:Cart}>("store/carts",{method:"POST"});
       await api<Cart>("store/cart/lines/"+variant.id,{method:"PUT",token:created.token,data:{quantity}});
       sessionStorage.setItem("siyag-express-token",created.token);

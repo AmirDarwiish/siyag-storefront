@@ -38,8 +38,7 @@ function Campaign(){
     api<Content[]>("store/content?area=campaign",{signal:controller.signal}).then(([item])=>{
       if(!item)return;
       setOffer(item);
-      if(!location.pathname.startsWith("/checkout")&&!location.pathname.startsWith("/payment")&&!sessionStorage.getItem("siyag-campaign:"+item.slug))
-        timer=setTimeout(()=>{sessionStorage.setItem("siyag-campaign:"+item.slug,"1");setOpen(true)},1100);
+
     }).catch(()=>{});
     return()=>{controller.abort();clearTimeout(timer)};
   },[]);

@@ -37,7 +37,7 @@ export function Pagination({data,go}:{data?:Page<unknown>;go:(page:number)=>void
     <span>{data.pageNumber} / {data.totalPages}</span><button type="button" disabled={data.pageNumber>=data.totalPages} onClick={()=>go(data.pageNumber+1)} aria-label="الصفحة التالية"><ChevronLeft size={18}/></button></div>;
 }
 export function Panel({title,description,onClose,children}:{title:string;description:string;onClose:()=>void;children:ReactNode}){
-  return <Dialog open onOpenChange={open=>{if(!open)onClose()}}><DialogContent className="office-modal" showCloseButton={false}>
+  return <Dialog open onOpenChange={open=>{if(!open)onClose()}}><DialogContent placement="side" className="office-modal" showCloseButton={false}>
     <div className="office-modal-head"><div><DialogTitle>{title}</DialogTitle><DialogDescription>{description}</DialogDescription></div>
       <button type="button" className="office-icon" aria-label="إغلاق" onClick={onClose}><X size={20}/></button></div>
     <div className="office-modal-body" dir="rtl">{children}</div>

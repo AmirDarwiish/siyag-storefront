@@ -196,6 +196,6 @@ export function StoreReviewsLink(){
   const {tr}=useStore();
   return <section className="container store-reviews-link"><div><span className="eyebrow">SIYAG PARFUMS</span>
     <h2>{tr("The SIYAG experience","تجارب عملاء SIYAG")}</h2></div>
-    <Link className="text-link" href="/reviews">{tr("Read store reviews","شوف تقييمات المتجر")}<ArrowUpRight size={16}/></Link>
+    <Link className="text-link" href="/reviews">{tr("Read store reviews","شوف تقييمات المتجر")}</Link>
   </section>;
 }

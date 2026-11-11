@@ -57,7 +57,7 @@ export function ProductCard({product,preferred}:{product:Product;preferred?:stri
       </Link>
       <div className="product-labels">{!v.inStock?<span className="product-badge" data-state="unavailable">{availability}</span>:(v.compareAtMinor??0)>v.priceMinor?<span className="product-badge" data-state="sale"><strong>{tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`)}</strong></span>:product.featured?<span className="product-badge" data-state="featured">{tr('SIYAG edit','مختاراتنا')}</span>:null}</div>
       <button type="button" className="icon favorite" aria-pressed={liked} aria-label={liked?tr("Remove from wishlist","إزالة من المفضلة"):tr("Save to wishlist","حفظ في المفضلة")} onClick={()=>toggleSaved(product.slug)}><Heart size={17} fill={liked?"currentColor":"none"}/></button>
-      {(preview||v.inStock)&&<button type="button" className="photo-quick" onClick={()=>setQuick(true)}>{tr("Quick view","عرض سريع")}<ArrowUpRight size={14}/></button>}
+      {(preview||v.inStock)&&<button type="button" className="photo-quick" onClick={()=>setQuick(true)}>{tr("Quick view","عرض سريع")}</button>}
     </div>
     <div className="product-card-body">
       <div className="product-meta"><span className="family-tag" data-family={product.family}>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>

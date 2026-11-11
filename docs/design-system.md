@@ -23,3 +23,7 @@ Keep main as the permanent frontend branch. Merge temporary work branches, confi
 ## Storefront motion
 
 The header reveals on upward scrolling and hides on downward scrolling, with a deadband to avoid jitter. Search, menu, keyboard focus, bag and checkout keep navigation visible. Slideshow autoplay pauses on interaction and background tabs; manual navigation stops autoplay. Respect reduced-motion preferences for autoplay, reveal animations and smooth rail movement. Product labels reflect real featured flags, stock and selected-variant discount data; never invent best-seller or popularity claims.
+
+## Explicit homepage constraints
+
+Do not reintroduce decorative arrows on homepage cards/links, product-rail arrow buttons, hero navigation/count controls or visible Pause/Resume buttons unless the user explicitly asks. Use direct card links and native touch/keyboard scrolling. Keep all layout and appearance changes in the canonical component rules and shared tokens.

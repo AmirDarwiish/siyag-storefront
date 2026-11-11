@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import {useEffect, useRef, useState} from "react";
-import {ArrowUpRight, ChevronLeft, ChevronRight, Pause, Play, Sun, Leaf, Flower2, Moon} from "lucide-react";
+import {Sun, Leaf, Flower2, Moon} from "lucide-react";
 import {api, imageUrl, name, type Collection, type Page, type Product} from "@/lib/store";
 import {useStore} from "./store-context";
 import {ProductCard} from "./product";
@@ -23,8 +23,6 @@ function HeroSlider() {
   ];
   const slide = slides[active];
   const move = (step: number) => {setPlaying(false);setActive(index => (index + step + slides.length) % slides.length)};
-  const PreviousIcon = ar ? ChevronRight : ChevronLeft;
-  const NextIcon = ar ? ChevronLeft : ChevronRight;
 
   return <section className="container hero-carousel" data-slide={active} aria-label={tr("Featured collections", "أبرز التشكيلات")} aria-roledescription="carousel" data-playing={playing&&!interacting} onMouseEnter={()=>setInteracting(true)} onMouseLeave={()=>setInteracting(false)} onFocusCapture={()=>setInteracting(true)} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))setInteracting(false)}}>
     <div className="hero"
@@ -42,26 +40,17 @@ function HeroSlider() {
         <div className="hero-kicker"><span/>{slide.label}</div>
         <span className="hero-edition">{tr("AN EGYPTIAN FRAGRANCE HOUSE", "دار عطور مصرية")}</span><h1>{slide.title}</h1>
         <p>{slide.copy}</p>
-        <Link href={slide.href} className="action gold">{slide.action}<ArrowUpRight size={17}/></Link>
+        <Link href={slide.href} className="action gold">{slide.action}</Link>
       </div>
     </div>
-    <div className="hero-controls"><span className="hero-slide-count" aria-hidden="true" dir="ltr">0{active+1}<span> / 0{slides.length}</span></span>
-      <button type="button" className="slider-arrow" aria-label={tr("Previous slide", "الشريحة السابقة")} onClick={()=>move(-1)}><PreviousIcon size={20}/></button>
-      <div className="slider-dots" role="group" aria-label={tr("Choose a slide", "اختار شريحة")}>
-        {slides.map((item,index)=><button type="button" key={item.href} aria-label={item.label} aria-current={active===index?"true":undefined} onClick={()=>{setPlaying(false);setActive(index)}}/>)}
-      </div>
-      <button type="button" className="slider-arrow" aria-label={tr("Next slide", "الشريحة التالية")} onClick={()=>move(1)}><NextIcon size={20}/></button>
-      <button type="button" className="slider-play" aria-label={playing?tr("Pause slideshow","إيقاف عرض الشرائح"):tr("Play slideshow","تشغيل عرض الشرائح")} onClick={()=>setPlaying(value=>!value)}>{playing?<Pause size={15}/>:<Play size={15}/>}</button>
-    </div>
+
   </section>;
 }
 
 export function Home() {
-  const {tr, lang,ar} = useStore();
+  const {tr, lang} = useStore();
   const homeRef=useRef<HTMLElement>(null);
-  const railRef=useRef<HTMLDivElement>(null);
   useEffect(()=>{const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){(entry.target as HTMLElement).dataset.revealed='true';observer.unobserve(entry.target)}},{threshold:.12});homeRef.current?.querySelectorAll('[data-reveal]').forEach(el=>observer.observe(el));return()=>observer.disconnect()},[]);
-  function moveRail(direction:number){railRef.current?.scrollBy({left:direction*(ar?-1:1)*railRef.current.clientWidth*.8,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'})}
   const moods=[{family:'fresh',title:tr('A fresh start','بداية منعشة'),copy:tr('Citrus & light','حمضيات وانتعاش'),icon:Sun},{family:'woody',title:tr('A deeper side','عمق مختلف'),copy:tr('Woods & character','أخشاب بطابع خاص'),icon:Leaf},{family:'floral',title:tr('A softer touch','لمسة ناعمة'),copy:tr('Petals & elegance','زهور وأناقة'),icon:Flower2},{family:'amber',title:tr('A little warmth','دفء أقرب'),copy:tr('Amber & spice','عنبر وتوابل'),icon:Moon}];
   const [products, setProducts] = useState<Product[]>([]);
   const [loading,setLoading]=useState(true);
@@ -94,7 +83,7 @@ export function Home() {
   return <main className="home-experience" ref={homeRef}>
     <HeroSlider/>
 
-    <nav className="scent-shortcuts container" aria-label={tr('Discover your scent','اكتشف طابعك')}>{moods.map(({family,title,icon:Icon})=><Link href={'/shop?family='+family} key={family}><Icon size={18} strokeWidth={1.3}/>{title}<ArrowUpRight size={13}/></Link>)}</nav>
+    <nav className="scent-shortcuts container" aria-label={tr('Discover your scent','اكتشف طابعك')}>{moods.map(({family,title,icon:Icon})=><Link href={'/shop?family='+family} key={family}><Icon size={18} strokeWidth={1.3}/>{title}</Link>)}</nav>
     <section className="container section collections-section" id="collections" data-reveal>
       <div className="section-head">
         <div>
@@ -102,7 +91,7 @@ export function Home() {
           <h2>{tr("Find your next obsession", "كل عطر… حكاية")}</h2>
         </div>
         <Link className="text-link" href="/shop">
-          {tr("Explore all fragrances", "كل العطور")}<ArrowUpRight size={16}/>
+          {tr("Explore all fragrances", "كل العطور")}
         </Link>
       </div>
       <div className="collections-grid home-collection-mosaic">
@@ -113,7 +102,6 @@ export function Home() {
           <div className="collection-caption">
             <span className="collection-index">THE SIYAG EDIT / 0{index + 1}</span>
             <h3>{category.title}</h3>
-            <span className="circle-arrow"><ArrowUpRight size={19}/></span>
           </div>
         </Link>)}
       </div>
@@ -122,20 +110,20 @@ export function Home() {
     {(loading||products.length>0) && <section className="catalog-home" data-reveal><div className="container section">
       <div className="section-head">
         <div><span className="eyebrow">{tr("FROM THE HOUSE", "من دار SIYAG")}</span><h2>{tr("Meet your signature", "ممكن يكون ده عطرك")}</h2></div>
-        <Link className="text-link" href="/shop">{tr("View the collection", "تصفّح المجموعة")}<ArrowUpRight size={16}/></Link>
+        <Link className="text-link" href="/shop">{tr("View the collection", "تصفّح المجموعة")}</Link>
       </div>
-      <div className="home-rail-controls"><span>{tr('A scent for every side of you.','لكل جانب فيك… عطر.')}</span><div><button type="button" aria-label={tr('Previous fragrances','العطور السابقة')} onClick={()=>moveRail(-1)}>{ar?<ChevronRight size={19}/>:<ChevronLeft size={19}/>}</button><button type="button" aria-label={tr('Next fragrances','العطور التالية')} onClick={()=>moveRail(1)}>{ar?<ChevronLeft size={19}/>:<ChevronRight size={19}/>}</button></div></div>
-      <div className="product-grid home-product-rail" ref={railRef} aria-busy={loading}>{loading?[1,2,3,4].map(i=><div className="skeleton" key={i}/>):products.map(product => <ProductCard product={product} key={product.id}/>)}</div>
+      <p className="home-rail-caption">{tr('A scent for every side of you.','لكل جانب فيك… عطر.')}</p>
+      <div className="product-grid home-product-rail" tabIndex={0} aria-label={tr("Selected fragrances","مختارات العطور")} aria-busy={loading}>{loading?[1,2,3,4].map(i=><div className="skeleton" key={i}/>):products.map(product => <ProductCard product={product} key={product.id}/>)}</div>
     </div></section>}
 
-    <section className="scent-pathways container section" data-reveal><div className="section-head"><div><span className="eyebrow">{tr('FOLLOW YOUR INSTINCT','اتبع إحساسك')}</span><h2>{tr('What’s your mood?','مزاجك إيه النهارده؟')}</h2></div><p>{tr('Explore a different side of scent.','اكتشف جانب جديد من عالم العطور.')}</p></div><div className="mood-grid">{moods.map(({family,title,copy,icon:Icon},index)=><Link href={'/shop?family='+family} className="mood-card" data-family={family} key={family}><span className="mood-number">0{index+1}</span><Icon size={38} strokeWidth={1}/><h3>{title}</h3><p>{copy}</p><span className="mood-action">{tr('Explore','اكتشف')}<ArrowUpRight size={17}/></span></Link>)}</div></section>
+    <section className="scent-pathways container section" data-reveal><div className="section-head"><div><span className="eyebrow">{tr('FOLLOW YOUR INSTINCT','اتبع إحساسك')}</span><h2>{tr('What’s your mood?','مزاجك إيه النهارده؟')}</h2></div><p>{tr('Explore a different side of scent.','اكتشف جانب جديد من عالم العطور.')}</p></div><div className="mood-grid">{moods.map(({family,title,copy,icon:Icon},index)=><Link href={'/shop?family='+family} className="mood-card" data-family={family} key={family}><span className="mood-number">0{index+1}</span><Icon size={38} strokeWidth={1}/><h3>{title}</h3><p>{copy}</p><span className="mood-action">{tr('Explore','اكتشف')}</span></Link>)}</div></section>
     <section className="story" id="maison" data-reveal>
       <img src="/brand/olive-notes.webp" alt="" width={1140} height={855} loading="lazy"/>
       <div>
         <span className="eyebrow">{tr("THE HOUSE OF SIYAG", "دار SIYAG")}</span>
         <h2>{tr("More than a fragrance. A feeling.", "مش مجرد عطر… إحساس")}</h2>
         <p>{tr("A fragrance unfolds in stages. Citrus is often the first impression, followed by the heart and the woods that linger on skin.", "يتكشّف العطر على مراحل. تبدأ الحمضيات غالبًا، ثم يظهر قلب العطر، وتبقى الأخشاب على البشرة.")}</p>
-        <Link href="/shop" className="action ink">{tr("Discover the scents", "اكتشف العطور")}<ArrowUpRight size={16}/></Link>
+        <Link href="/shop" className="action ink">{tr("Discover the scents", "اكتشف العطور")}</Link>
       </div>
     </section>
     <StoreReviewsLink/>

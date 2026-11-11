@@ -378,17 +378,6 @@ textarea {
 .collection-caption h3 {
   overflow-wrap:anywhere;
   font-size:clamp(var(--type-subtitle),2.5vw,var(--type-section))}
-.circle-arrow {
-  border:1px solid var(--moss);
-  border-radius:50%;
-  width:37px;
-  height:37px;
-  display:grid;
-  place-items:center;
-  transition:background .2s,color .2s}
-.collection-card:is(:hover,:focus-visible) .circle-arrow {
-  background:var(--ink);
-  color:var(--white)}
 .catalog-home {
   background:var(--paper);
   border-top:var(--border-fine)}
@@ -1323,44 +1312,6 @@ textarea {
 .hero-carousel .hero-visual img {
   object-position:center 51%;
   animation:hero-image-in var(--motion-image) var(--ease-out) both}
-.hero-controls {
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:var(--space-6);
-  margin-top:var(--space-4)}
-.slider-arrow {
-  display:grid;
-  place-items:center;
-  border:1px solid var(--moss);
-  border-radius:50%;
-  color:var(--ink);
-  background:var(--white);
-  width:35px;
-  height:35px}
-.slider-arrow:hover {
-  background:var(--ink);
-  color:var(--white)}
-.slider-dots {
-  display:flex;
-  align-items:center}
-.slider-dots button {
-  width:24px;
-  height:32px;
-  display:grid;
-  place-items:center;
-  border:0;
-  background:none}
-.slider-dots button::before {
-  content:"";
-  width:7px;
-  height:7px;
-  border-radius:50%;
-  background:var(--olive)}
-.slider-dots button[aria-current="true"]::before {
-  background:var(--ink);
-  width:16px;
-  border-radius:var(--radius-surface)}
 .collections-section {
   padding-block:var(--section-space)}
 .product-card-body {
@@ -2524,15 +2475,6 @@ textarea {
   background:var(--hero-ink);
   color:var(--hero-surface);
   border-color:var(--hero-ink)}
-.hero-carousel .hero-controls {
-  margin:0;
-  background:var(--hero-surface);
-  color:var(--hero-ink);
-  justify-content:flex-start;
-  padding:var(--space-4) var(--hero-control-inset) var(--space-7);
-  gap:var(--space-4)}
-.hero-carousel .slider-dots button[aria-current=true]::before {
-  background:var(--color-line)}
 .review-form :is(input:not([type=checkbox]),textarea) {
   font-size:var(--type-input);
   min-height:48px}
@@ -2730,19 +2672,6 @@ textarea {
   line-height:1.6;
   color:var(--muted);
   text-align:center}
-.hero-carousel .slider-arrow {
-  border:0;
-  width:var(--control-height);
-  height:var(--control-height);
-  color:var(--hero-ink);
-  background:transparent}
-.hero-carousel .slider-dots button::before {
-  background:var(--hero-muted);
-  height:2px;
-  border-radius:0}
-.hero-carousel .slider-dots button[aria-current="true"]::before {
-  background:var(--hero-ink);
-  width:24px}
 .product-info .quantity button {
   min-height:calc(var(--control-height) - 2px)}
 .site-header[data-hidden=true] {
@@ -2759,21 +2688,6 @@ html[data-header-hidden=true] {
   letter-spacing:.12em;
   color:var(--hero-muted);
   margin-top:var(--space-4)}
-.hero-slide-count {
-  font-size:var(--type-caption);
-  font-variant-numeric:tabular-nums;
-  margin-inline-end:var(--space-8)}
-.hero-slide-count>span {
-  color:var(--hero-muted)}
-.slider-play {
-  display:grid;
-  place-items:center;
-  width:var(--control-height);
-  height:var(--control-height);
-  background:none;
-  border:0;
-  margin-inline-start:var(--space-4);
-  color:var(--hero-ink)}
 .scent-shortcuts {
   display:flex;
   gap:var(--space-5);
@@ -2826,29 +2740,6 @@ html[data-header-hidden=true] {
   color:var(--muted)}
 .home-collection-mosaic .collection-caption h3 {
   font-size:var(--type-subtitle)}
-.home-collection-mosaic .circle-arrow {
-  grid-column:2;
-  grid-row:2}
-.home-rail-controls {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:var(--space-5);
-  margin-bottom:var(--space-7);
-  color:var(--muted);
-  font-size:var(--type-label)}
-.home-rail-controls>div {
-  display:flex;
-  gap:var(--space-4)}
-.home-rail-controls button {
-  display:grid;
-  place-items:center;
-  height:var(--control-height);
-  width:var(--control-height);
-  border:var(--border-fine);
-  background:transparent;
-  border-radius:50%;
-  color:var(--ink)}
 .home-product-rail {
   grid-template-columns:none;
   grid-auto-flow:column;
@@ -2946,6 +2837,10 @@ html[data-header-hidden=true] {
   grid-auto-columns:minmax(0,1fr);
   gap:var(--space-2);
   width:100%}
+.home-rail-caption {
+  color:var(--muted);
+  font-size:var(--type-label);
+  margin-bottom:var(--space-7)}
 @media (hover:hover) {
   .product-visual:hover .product-hover {
   opacity:1}
@@ -3223,32 +3118,6 @@ body {
   border-color:var(--white)}
 .hero-carousel .hero .action:focus-visible {
   outline-color:var(--yellow)}
-.hero-carousel .hero-controls button:focus-visible {
-  outline-color:var(--yellow)}
-.hero-carousel .hero-controls {
-  justify-content:flex-end;
-  margin:0;
-  padding:0 clamp(var(--space-6),5vw,var(--space-9)) var(--space-4);
-  gap:var(--space-1)}
-.hero-carousel .slider-arrow {
-  inline-size:44px;
-  block-size:44px;
-  border:0;
-  background:transparent;
-  color:var(--white)}
-.hero-carousel .slider-arrow:hover {
-  background:color-mix(in srgb, var(--color-white) 8%, transparent)}
-.hero-carousel .slider-dots button {
-  inline-size:25px;
-  block-size:44px}
-.hero-carousel .slider-dots button::before {
-  inline-size:12px;
-  block-size:2px;
-  border-radius:0;
-  background:color-mix(in srgb, var(--color-paper) 44%, transparent)}
-.hero-carousel .slider-dots button[aria-current="true"]::before {
-  inline-size:18px;
-  background:var(--yellow)}
 .collections-section {
   padding-block:var(--space-9) var(--space-10)}
 .collections-section .section-head {
@@ -3277,10 +3146,6 @@ body {
   display:none}
 .collections-section .collection-caption h3 {
   font-size:var(--type-subtitle)}
-.collections-section .circle-arrow {
-  width:31px;
-  height:31px;
-  border:0}
 .catalog-launch {
   grid-template-columns:1fr}
 .catalog-launch>img {
@@ -3685,19 +3550,6 @@ body {
   background:var(--hero-ink);
   color:var(--hero-surface);
   border-color:var(--hero-ink)}
-.hero-carousel .hero-controls {
-  background:var(--hero-surface);
-  color:var(--hero-ink);
-  justify-content:flex-start;
-  padding:0 var(--space-8) var(--space-5);
-  gap:var(--space-4)}
-.hero-carousel .slider-arrow {
-  background:transparent;
-  color:var(--hero-ink)}
-.hero-carousel .slider-dots button::before {
-    background:var(--hero-muted)}
-.hero-carousel .slider-dots button[aria-current="true"]::before {
-    background:var(--hero-ink)}
 .collections-section .collections-grid {
   gap:var(--space-4)}
 .collections-section .collection-visual {
@@ -3711,8 +3563,6 @@ body {
 .hero-edition {
     font-size:var(--type-micro);
     margin-top:var(--space-3)}
-.hero-slide-count {
-    margin-inline-end:auto}
 .home-collection-mosaic {
     display:grid;
     grid-template-columns:1fr 1fr;

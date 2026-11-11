@@ -17,7 +17,7 @@ function Stars({rating}:{rating:number}){
 export function ReviewButton({product,proof}:{product?:string;proof?:OrderProof}){
   const {tr,demo}=useStore();
   const [open,setOpen]=useState(false);
-  const title=product?tr("Review this fragrance","قيّم العطر"):tr("Review SIYAG","قيّم تجربتك مع سياج");
+  const title=product?tr("Write your experience","اكتب تجربتك"):tr("Review SIYAG","قيّم تجربتك مع سياج");
   if(demo)return null;
   return <>
     <button type="button" className="action ink review-cta" onClick={()=>setOpen(true)}>{title}<ArrowUpRight size={15}/></button>
@@ -136,7 +136,7 @@ export function Reviews({product}:{product?:string}){
       .then(setResult).catch(()=>{if(!controller.signal.aborted)setFailed(true)});
     return()=>controller.abort();
   },[demo,product,page,retry]);
-  const title=product?tr("Fragrance reviews","تقييمات العطر"):tr("The SIYAG experience","تجارب عملاء سياج");
+  const title=product?tr("Written experiences","تجارب مكتوبة"):tr("The SIYAG experience","تجارب عملاء سياج");
   const summary=result?.summary;
   const Heading=product?"h2":"h1";
   const number=new Intl.NumberFormat(ar?"ar-EG":"en-EG",{maximumFractionDigits:1});

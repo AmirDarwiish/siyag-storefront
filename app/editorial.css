@@ -132,10 +132,10 @@ h1,h2,h3 {letter-spacing:-.026em}
   .hero-carousel[data-slide="2"] .hero-visual img {object-position:center 44%}
   .hero-carousel .hero-visual::after {
     content:"";position:absolute;inset:0;pointer-events:none;
-    background:linear-gradient(to bottom,transparent 75%,var(--hero-panel) 100%);
+    background:none;
   }
   .hero-carousel .hero-content {
-    z-index:1;align-self:start;margin-top:-12px;padding:0 clamp(20px,6vw,38px);
+    z-index:1;align-self:start;margin-top:0;padding:24px clamp(20px,6vw,38px) 10px;
   }
   .hero-carousel .hero-kicker {gap:8px;font-size:11px}
   .hero-carousel .hero-kicker span {inline-size:17px}

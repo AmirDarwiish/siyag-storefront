@@ -54,6 +54,7 @@ function HeroSlider() {
 export function Home() {
   const {tr, lang} = useStore();
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading,setLoading]=useState(true);
   const [collections, setCollections] = useState<Collection[]>([]);
 
   useEffect(() => {
@@ -62,7 +63,7 @@ export function Home() {
     api<Page<Product>>("store/products?featured=true&pageSize=4", options)
       .then(data => data.data.length ? data : api<Page<Product>>("store/products?pageSize=4", options))
       .then(data => setProducts(data.data))
-      .catch(() => {});
+      .catch(() => {}).finally(()=>{if(!controller.signal.aborted)setLoading(false)});
     api<Collection[]>("store/collections", options).then(setCollections).catch(() => {});
     return () => controller.abort();
   }, []);
@@ -113,12 +114,12 @@ export function Home() {
       </div>
     </section>
 
-    {products.length > 0 && <section className="catalog-home"><div className="container section">
+    {(loading||products.length>0) && <section className="catalog-home"><div className="container section">
       <div className="section-head">
         <div><span className="eyebrow">{tr("FROM THE HOUSE", "من دار سياج")}</span><h2>{tr("Selected from SIYAG", "مختارات سياج")}</h2></div>
         <Link className="text-link" href="/shop">{tr("View the collection", "تصفّح المجموعة")}<ArrowUpRight size={16}/></Link>
       </div>
-      <div className="product-grid">{products.map(product => <ProductCard product={product} key={product.id}/>)}</div>
+      <div className="product-grid" aria-busy={loading}>{loading?[1,2,3,4].map(i=><div className="skeleton" key={i}/>):products.map(product => <ProductCard product={product} key={product.id}/>)}</div>
     </div></section>}
 
     <section className="story" id="maison">

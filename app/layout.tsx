@@ -5,6 +5,7 @@ import "./editorial.css";
 import "./reviews.css";
 import "./conversion.css";
 import "./scent-signature.css";
+import "./refinement.css";
 import {StorefrontFrame} from "@/components/storefront-frame";
 import {DEMO} from "@/lib/server-store";
 

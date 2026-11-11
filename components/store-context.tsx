@@ -1,13 +1,14 @@
 "use client";
 
 import {createContext,useCallback,useContext,useEffect,useRef,useState,type ReactNode} from "react";
-import {api,ApiError,type Language,type Cart,type Product,type Variant,name} from "@/lib/store";
+import {api,ApiError,type Language,type Cart,type Product,type Variant,name,imageUrl,money} from "@/lib/store";
 import Link from "next/link";
+import {Check,X} from "lucide-react";
 import {track,itemData,cartData} from "@/lib/analytics";
 import {readLocal,writeLocal} from "@/lib/browser-storage";
 
 const EMPTY:Cart={lines:[],subtotalMinor:0,currency:"EGP"};
-type BagNotice={text:string;kind:"success"|"error"};
+type BagNotice={text:string;kind:"success"|"error";item?:{image?:string;title:string;sizeMl:number;quantity:number;priceMinor:number}};
 type Store = {
   lang:Language; ar:boolean; tr:(en:string,ar:string)=>string; toggleLanguage:()=>void; demo:boolean;
   cart:Cart; cartOpen:boolean; setCartOpen:(open:boolean)=>void; busy:boolean; token:()=>string;
@@ -98,7 +99,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
         }
       }
       if(!product&&previous&&quantity<previous.quantity)track("remove_from_cart",{items:[{item_id:id,item_name:previous.nameEn,item_variant:String(previous.sizeMl),price:previous.unitPriceMinor/100,quantity:previous.quantity-quantity}],value:previous.unitPriceMinor*(previous.quantity-quantity)/100});
-      if(product&&variant){setBagNotice({kind:"success",text:tr(`${name(product,lang)} added to bag`,"اتضاف العطر للحقيبة")});track("add_to_cart",itemData(product,variant,quantity-(previous?.quantity??0)))}
+      if(product&&variant){setBagNotice({kind:"success",text:tr("Added to your bag","اتضاف لحقيبتك"),item:{image:product.images[0],title:name(product,lang),sizeMl:variant.sizeMl,quantity:quantity-(previous?.quantity??0),priceMinor:variant.priceMinor}});track("add_to_cart",itemData(product,variant,quantity-(previous?.quantity??0)))}
       return true;
     }catch(error){setBagNotice({kind:"error",text:lang==="ar"?"تعذر تحديث الحقيبة. راجع توافر المقاس وحاول مرة أخرى.":error instanceof Error?error.message:"Could not update your bag."});return false}
     finally{inProgress.current=false;setBusy(false)}
@@ -126,5 +127,9 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
     saved,toggleSaved:(slug)=>{const next=saved.includes(slug)?saved.filter(s=>s!==slug):[...saved,slug];if(!saved.includes(slug))track("add_to_wishlist",{items:[{item_id:slug}]});writeLocal("siyag-saved",JSON.stringify(next));setSaved(next)},
     clearCart:()=>{saveToken("");set(EMPTY)},
   };
-  return <Context.Provider value={value}>{children}<div className="toast-live" aria-live="polite">{!cartOpen&&bagNotice&&<div className="bag-confirmation" data-kind={bagNotice.kind}><p>{bagNotice.text}</p>{bagNotice.kind==="success"&&<div><button type="button" onClick={()=>openBag(true)}>{tr("View bag","عرض الحقيبة")}</button><Link href="/checkout" onClick={()=>setBagNotice(null)}>{tr("Checkout","إتمام الطلب")}</Link></div>}<button type="button" className="notice-dismiss" onClick={()=>setBagNotice(null)}>{tr("Continue shopping","متابعة التسوق")}</button></div>}</div></Context.Provider>;
+  return <Context.Provider value={value}>{children}<div className="toast-live" aria-live="polite">{!cartOpen&&bagNotice&&<section className="bag-confirmation refined-confirmation" data-kind={bagNotice.kind} aria-label={tr("Bag update","تحديث الحقيبة")}>
+    <div className="confirmation-header"><span>{bagNotice.kind==="success"&&<Check size={14}/>} {bagNotice.text}</span><button type="button" className="confirmation-close" aria-label={tr("Dismiss notification","إغلاق التنبيه")} onClick={()=>setBagNotice(null)}><X size={17}/></button></div>
+    {bagNotice.item&&<div className="confirmation-product"><img src={imageUrl(bagNotice.item.image)} alt=""/><div><strong>{bagNotice.item.title}</strong><small>{bagNotice.item.sizeMl} {tr("ml","مل")} · {tr("Quantity","الكمية")} {bagNotice.item.quantity}</small></div><span>{money(bagNotice.item.priceMinor*bagNotice.item.quantity,lang)}</span></div>}
+    {bagNotice.kind==="success"?<div className="confirmation-actions"><button type="button" onClick={()=>{setBagNotice(null);openBag(true)}}>{tr("View bag","عرض الحقيبة")}</button><Link href="/checkout" onClick={()=>setBagNotice(null)}>{tr("Checkout","إتمام الطلب")}</Link><button type="button" className="confirmation-continue" onClick={()=>setBagNotice(null)}>{tr("Continue shopping","متابعة التسوق")}</button></div>:<button className="confirmation-error-close" type="button" onClick={()=>setBagNotice(null)}>{tr("Close","إغلاق")}</button>}
+  </section>}</div></Context.Provider>;
 }

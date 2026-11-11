@@ -4,6 +4,7 @@ const readPaths=/^store\/(products(?:\/[a-z0-9-]+)?|collections(?:\/[a-z0-9-]+)?
 const postPaths=/^store\/(events|carts|cart\/quote|orders(?:\/track|\/payment\/paymob)?)$/;
 const linePath=/^store\/cart\/lines\/[0-9a-f-]{36}$/i;
 const reviewPhotoPath=/^store\/reviews\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\/photo$/i;
+const impressionPath=/^store\/products\/[a-z0-9-]+\/impressions$/;
 const mediaPath=/^media\/[a-f0-9]{64}\.(jpg|png|webp)$/;
 
 async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}) {
@@ -13,7 +14,7 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
   const media=method==="GET"&&mediaPath.test(path);
   const reviewSubmission=method==="POST"&&path==="store/reviews";
   const reviewRead=method==="GET"&&(path==="store/reviews"||reviewPhotoPath.test(path));
-  const allowed=media||reviewSubmission||reviewRead||(method==="GET"&&readPaths.test(path))||(method==="POST"&&postPaths.test(path))||(method==="PUT"&&linePath.test(path));
+  const allowed=(["GET","PUT","DELETE"].includes(method)&&impressionPath.test(path))||media||reviewSubmission||reviewRead||(method==="GET"&&readPaths.test(path))||(method==="POST"&&postPaths.test(path))||(method==="PUT"&&linePath.test(path));
   if(!allowed) return Response.json({detail:"Route not found."},{status:404});
   if(method!=="GET") {
     const origin=request.headers.get("origin");
@@ -29,6 +30,8 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
     const headers=new Headers();
     const token=request.headers.get("x-cart-token");
     if(token) headers.set("X-Cart-Token",token);
+    const impressionToken=request.headers.get("x-impression-token");
+    if(impressionPath.test(path)&&impressionToken)headers.set("X-Impression-Token",impressionToken);
     let body:BodyInit|undefined;
     if(reviewSubmission){
       const contentType=request.headers.get("content-type");
@@ -53,4 +56,4 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
     return Response.json({detail:"The store is temporarily unavailable."},{status:502});
   }
 }
-export {proxy as GET,proxy as POST,proxy as PUT};
+export {proxy as GET,proxy as POST,proxy as PUT,proxy as DELETE};

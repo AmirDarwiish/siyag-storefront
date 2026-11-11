@@ -37,7 +37,7 @@ export function demoGet(path:string, query:URLSearchParams) {
   if(path==="store/content") return query.get("area")==="campaign" ? [{
     slug:"private-preview",titleEn:"The Black Friday Edit",titleAr:"اختيارات بلاك فرايداي",
     textEn:JSON.stringify({description:"A first look at the SIYAG collection.",tiers:[{value:"10%",label:"Any order"},{value:"15%",label:"From EGP 1,000"},{value:"20%",label:"From EGP 2,000"}],footnote:"Illustrative offers for the design preview."}),
-    textAr:JSON.stringify({description:"نظرة أولى على تشكيلة سياج.",tiers:[{value:"١٠٪",label:"على أي طلب"},{value:"١٥٪",label:"من ١٬٠٠٠ جنيه"},{value:"٢٠٪",label:"من ٢٬٠٠٠ جنيه"}],footnote:"نسب توضيحية لمعاينة التصميم."}),
+    textAr:JSON.stringify({description:"نظرة أولى على تشكيلة SIYAG.",tiers:[{value:"١٠٪",label:"على أي طلب"},{value:"١٥٪",label:"من ١٬٠٠٠ جنيه"},{value:"٢٠٪",label:"من ٢٬٠٠٠ جنيه"}],footnote:"نسب توضيحية لمعاينة التصميم."}),
     actionUrl:"/shop",actionEn:"Explore the edit",actionAr:"استكشف التشكيلة",
   }] : [];
   return undefined;

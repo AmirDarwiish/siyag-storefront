@@ -17,7 +17,7 @@ function Stars({rating}:{rating:number}){
 export function ReviewButton({product,proof}:{product?:string;proof?:OrderProof}){
   const {tr,demo}=useStore();
   const [open,setOpen]=useState(false);
-  const title=product?tr("Write your experience","اكتب تجربتك"):tr("Review SIYAG","قيّم تجربتك مع سياج");
+  const title=product?tr("Write your experience","اكتب تجربتك"):tr("Review SIYAG","قيّم تجربتك مع SIYAG");
   if(demo)return null;
   return <>
     <button type="button" className="action ink review-cta" onClick={()=>setOpen(true)}>{title}<ArrowUpRight size={15}/></button>
@@ -85,7 +85,7 @@ function ReviewForm({product,proof,title}:{product?:string;proof?:OrderProof;tit
 
   return <form className="review-form" onSubmit={submit}>
     <h2>{title}</h2>
-    <p>{tr("Share your experience. If you purchased from us, you can verify your review.","شارك تجربتك. لو اشتريت من سياج، تقدر توثّق تقييمك.")}</p>
+    <p>{tr("Share your experience. If you purchased from us, you can verify your review.","شارك تجربتك. لو اشتريت من SIYAG، تقدر توثّق تقييمك.")}</p>
     <fieldset disabled={busy}>
       <div className="review-rating" role="group" aria-label={tr("Star rating","التقييم بالنجوم")} dir="ltr">
         {[1,2,3,4,5].map(value=><button type="button" key={value} onClick={()=>setRating(value)}
@@ -136,7 +136,7 @@ export function Reviews({product}:{product?:string}){
       .then(setResult).catch(()=>{if(!controller.signal.aborted)setFailed(true)});
     return()=>controller.abort();
   },[demo,product,page,retry]);
-  const title=product?tr("Written experiences","تجارب مكتوبة"):tr("The SIYAG experience","تجارب عملاء سياج");
+  const title=product?tr("Written experiences","تجارب مكتوبة"):tr("The SIYAG experience","تجارب عملاء SIYAG");
   const summary=result?.summary;
   const Heading=product?"h2":"h1";
   const number=new Intl.NumberFormat(ar?"ar-EG":"en-EG",{maximumFractionDigits:1});
@@ -195,7 +195,7 @@ export function Reviews({product}:{product?:string}){
 export function StoreReviewsLink(){
   const {tr}=useStore();
   return <section className="container store-reviews-link"><div><span className="eyebrow">SIYAG PARFUMS</span>
-    <h2>{tr("The SIYAG experience","تجارب عملاء سياج")}</h2></div>
+    <h2>{tr("The SIYAG experience","تجارب عملاء SIYAG")}</h2></div>
     <Link className="text-link" href="/reviews">{tr("Read store reviews","شوف تقييمات المتجر")}<ArrowUpRight size={16}/></Link>
   </section>;
 }

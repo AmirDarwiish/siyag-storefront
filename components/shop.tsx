@@ -57,7 +57,7 @@ export function Shop(){
   useEffect(()=>{if(result?.page.data.length)track("view_item_list",{list_id:savedOnly?"wishlist":"collection",items:result.page.data.map(p=>({item_id:p.variants[0]?.id??p.id,item_name:p.nameEn,item_category:p.family}))})},[result,savedOnly]);
   const collection=collections.find(c=>c.slug===query.get("collection"));
   const term=query.get("q")?.trim();
-  const title=savedOnly?tr("Your favourites","عطورك المفضّلة"):collection?name(collection,lang):term?tr("Search results","نتائج البحث"):tr("The fragrance collection","مجموعة سياج");
+  const title=savedOnly?tr("Your favourites","عطورك المفضّلة"):collection?name(collection,lang):term?tr("Search results","نتائج البحث"):tr("The fragrance collection","مجموعة SIYAG");
   const hasTools=!savedOnly&&catalogAvailable&&!error;
   const status=error?"error":result?.catalogEmpty?"launch":savedOnly?"wishlist":"filtered";
   const showState=error||Boolean(page&&!page.data.length);
@@ -109,10 +109,10 @@ function CatalogNotice({status,onRetry}:{status:"launch"|"wishlist"|"filtered"|"
     <img src="/brand/olive-hero.webp" alt="" width={1280} height={960}/>
     <div>
       <span className="eyebrow">{tr("A NEW CHAPTER","فصل جديد")}</span>
-      <h2>{tr("The collection is in preparation","مجموعة سياج قيد التحضير")}</h2>
+      <h2>{tr("The collection is in preparation","مجموعة SIYAG قيد التحضير")}</h2>
       <p>{tr("Meet the house and discover the woods, amber and citrus that inspire our fragrances.",
-        "تعرّف إلى دار سياج، واكتشف الأخشاب والعنبر والحمضيات التي تُلهم عطورنا.")}</p>
-      <Link className="action ink" href="/#maison">{tr("Discover the house","تعرّف إلى دار سياج")}<ArrowUpRight size={16}/></Link>
+        "تعرّف إلى دار SIYAG، واكتشف الأخشاب والعنبر والحمضيات التي تُلهم عطورنا.")}</p>
+      <Link className="action ink" href="/#maison">{tr("Discover the house","تعرّف إلى دار SIYAG")}<ArrowUpRight size={16}/></Link>
     </div>
   </article>;
 

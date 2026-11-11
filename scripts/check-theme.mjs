@@ -30,3 +30,6 @@ for(const old of ['storefront','editorial','reviews','conversion','scent-signatu
 }
 assert(layout.includes('./theme/tokens.css')&&layout.includes('./theme/storefront.css'));
 console.log(`Theme checks passed: ${names.size} tokens, ${rules.size} canonical component rules.`);
+
+const homepage=readFileSync('components/home.tsx','utf8');
+for(const control of ['circle-arrow','home-rail-controls','hero-controls','slider-play','ArrowUpRight','ChevronLeft','ChevronRight'])assert(!homepage.includes(control),`Removed homepage control must not return: ${control}`);

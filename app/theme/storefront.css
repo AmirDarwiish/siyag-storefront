@@ -2497,7 +2497,8 @@ textarea {
   line-height:1.5;
   min-height:42px;
   min-width:0;
-  padding-inline:var(--space-2)}
+  padding-inline:0;
+  white-space:nowrap}
 .product-card .sizes button[aria-pressed=true] {
   background:transparent;
   color:var(--ink);
@@ -3448,7 +3449,8 @@ body {
   min-width:0;
   min-height:42px;
   font-size:var(--type-caption);
-  padding-inline:var(--space-2)}
+  padding-inline:0;
+  white-space:nowrap}
 .consent-panel {
   bottom:max(12px,env(safe-area-inset-bottom))}
 .product-detail-main {

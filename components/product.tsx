@@ -94,7 +94,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
   const v=variantFor(product,selection);
   useEffect(()=>{
     if(!buy.current)return;
-    const observer=new IntersectionObserver(([entry])=>setSticky(!entry.isIntersecting));
+    const observer=new IntersectionObserver(([entry])=>setSticky(entry.intersectionRatio<.98),{threshold:[0,1],rootMargin:"0px 0px -12px 0px"});
     observer.observe(buy.current);
     return()=>observer.disconnect();
   },[]);

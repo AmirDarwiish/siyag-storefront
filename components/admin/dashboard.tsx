@@ -8,9 +8,11 @@ import {Orders} from "./orders";
 import {ShippingOptions} from "./shipping";
 import {Staff} from "./staff";
 import {ReviewModeration} from "./reviews";
+import {JourneyDashboard} from "./journey";
 import {Message} from "./shared";
 
 const panels=[
+  {id:"journey",label:"رحلة العميل",description:"تابع الزيارات والحملات والسلة وإتمام الطلب.",icon:Users,component:JourneyDashboard,roles:["Owner"]},
   {id:"orders",label:"الطلبات",description:"تابع الطلبات الجديدة، وحالات الشحن والتسليم.",icon:PackageCheck,component:Orders,roles:["Owner","Fulfillment"]},
   {id:"products",label:"العطور",description:"أدر بيانات العطور والصور والأحجام والأسعار والمخزون.",icon:Boxes,component:Products,roles:["Owner","Catalog"]},
   {id:"shipping",label:"التوصيل",description:"اضبط المحافظات ورسوم التوصيل قبل استقبال الطلبات.",icon:Truck,component:ShippingOptions,roles:["Owner","Fulfillment"]},

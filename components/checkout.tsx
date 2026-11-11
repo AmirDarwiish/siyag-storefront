@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import {useRouter} from "next/navigation";
-import {useEffect,useState,type FormEvent} from "react";
+import {useEffect,useRef,useState,type FormEvent} from "react";
 import {ArrowUpRight,Banknote,CreditCard,MapPin,PackageCheck,ShieldCheck,ShoppingBag} from "lucide-react";
-import {api,ApiError,imageUrl,money,name,type Quote,type Receipt,type Settings,type Shipping,type Tracking} from "@/lib/store";
+import {api,ApiError,imageUrl,money,name,type Quote,type Receipt,type Settings,type Shipping,type Tracking,type Cart} from "@/lib/store";
+import {track,cartData,allowed} from "@/lib/analytics";
 import {useStore} from "./store-context";
 import {ReviewButton} from "./reviews";
 import type {OrderProof} from "@/lib/reviews";
@@ -30,7 +31,31 @@ const previewShipping: Shipping[] = [
 const previewSettings: Settings = {name:"SIYAG Parfums",acceptOrders:false,paymentMethods:["cashOnDelivery"]};
 
 export function Checkout(){
-  const {cart,token,clearCart,demo,busy,tr,lang,ar}=useStore();
+  const {cart:regularCart,token:regularToken,clearCart,demo,busy,tr,lang,ar}=useStore();
+  const [express,setExpress]=useState(false);
+  const [expressCart,setExpressCart]=useState<Cart>();
+  const [expressLoading,setExpressLoading]=useState(true);
+  const [expressError,setExpressError]=useState(false);
+  const [summaryOpen,setSummaryOpen]=useState(false);
+  const expressToken=useRef("");
+  const submitting=useRef(false);
+  const began=useRef(false);
+  const completed=useRef(false);
+  const cart=express?(expressCart??{lines:[],subtotalMinor:0,currency:"EGP"}):regularCart;
+  const token=()=>express?expressToken.current:regularToken();
+  useEffect(()=>{
+    if(new URLSearchParams(location.search).get("express")!=="1"){setExpressLoading(false);return}
+    setExpress(true);
+    let value="";try{value=sessionStorage.getItem("siyag-express-token")||""}catch{}
+    if(!value){setExpressError(true);setExpressLoading(false);return}
+    expressToken.current=value;
+    if(demo){try{const preview=JSON.parse(sessionStorage.getItem("siyag-express-preview")||"null") as Cart|null;if(preview?.lines?.length)setExpressCart(preview);else setExpressError(true)}catch{setExpressError(true)}setExpressLoading(false);return}
+    const controller=new AbortController();
+    api<Cart>("store/cart",{token:value,signal:controller.signal}).then(setExpressCart).catch(()=>{if(!controller.signal.aborted)setExpressError(true)}).finally(()=>{if(!controller.signal.aborted)setExpressLoading(false)});
+    return()=>controller.abort();
+  },[demo]);
+  useEffect(()=>{if(allowed()&&!expressLoading&&cart.lines.length&&!began.current){began.current=true;track("begin_checkout",{...cartData(cart),step:express?"express":"bag"})}},[cart,express,expressLoading]);
+  useEffect(()=>{const exit=()=>{if(began.current&&!completed.current)track("checkout_exit",{step:"incomplete"})};window.addEventListener("pagehide",exit);return()=>{window.removeEventListener("pagehide",exit);exit()}},[]);
   const router=useRouter();
   const [settings,setSettings]=useState<Settings|undefined>(demo?previewSettings:undefined);
   const [shipping,setShipping]=useState<Shipping[]>(demo?previewShipping:[]);
@@ -70,20 +95,21 @@ export function Checkout(){
     if(!demo&&rememberDetails)storeCheckoutDetails(details);
   },[demo,rememberDetails,details]);
   useEffect(()=>{
-    if(demo||!ship||!governorate||!cart.lines.length)return;
+    if(demo||expressLoading||!ship||!governorate||!cart.lines.length)return;
     const controller=new AbortController();
     setError("");
     api<Quote>("store/cart/quote",{method:"POST",token:token(),data:{shippingCode:ship,governorate,promotionCode:applied||null},signal:controller.signal})
-      .then(value=>setQuote({key,value})).catch(e=>{if(!controller.signal.aborted)setError(e.message)});
+      .then(value=>{setQuote({key,value});track("add_shipping_info",{...cartData(cart),step:"delivery"});if(applied)track("coupon_apply",{result:"accepted"})}).catch(e=>{if(!controller.signal.aborted)setError(e.message)});
     return()=>controller.abort();
     // The quote key includes the shipping option, coupon and cart lines.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[key,demo]);
+  },[key,demo,expressLoading]);
   async function submit(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
-    if(demo||!activeQuote||pending||!settings?.acceptOrders||cart.lines.some(line=>!line.available))return;
+    if(demo||expressLoading||!activeQuote||submitting.current||pending||!settings?.acceptOrders||cart.lines.some(line=>!line.available))return;
     const form=new FormData(event.currentTarget);
-    setPending(true);setError("");
+    submitting.current=true;setPending(true);setError("");
+    track("add_payment_info",{...cartData(cart),payment_type:method,step:"submit"});
     try{
       const email=String(form.get("email")||"").trim();
       const receipt=await api<Receipt>("store/orders",{method:"POST",token:token(),data:{
@@ -95,15 +121,20 @@ export function Checkout(){
       let fallback="";
       try{sessionStorage.setItem("siyag-receipt",JSON.stringify(receipt))}
       catch{fallback="#token="+encodeURIComponent(receipt.trackingToken)}
-      clearCart();
+      completed.current=true;
+      track("order_placed",{transaction_id:receipt.number,value:receipt.total.totalMinor/100,payment_type:receipt.paymentMethod},{number:receipt.number,token:receipt.trackingToken});
+      if(receipt.paymentMethod==="cashOnDelivery")track("purchase",{transaction_id:receipt.number},{number:receipt.number,token:receipt.trackingToken});
+      if(express){try{sessionStorage.removeItem("siyag-express-token")}catch{}}else clearCart();
       router.push(tracking+fallback);
     }catch(e){
       if(e instanceof ApiError && e.code==="price-changed") {
         try {setQuote({key,value:await api<Quote>("store/cart/quote",{method:"POST",token:token(),data:{shippingCode:ship,governorate,promotionCode:applied||null}})});} catch {}
         setError(tr("The total changed. Review the updated quote before placing your order.","الإجمالي اتغير. راجع السعر الجديد قبل تأكيد الطلب."));
       } else setError(e instanceof Error?e.message:tr("Could not place your order.","تعذر تسجيل الطلب."));
-    }finally{setPending(false)}
+    }finally{submitting.current=false;setPending(false)}
   }
+  if(expressLoading)return <main className="container utility checkout-page"><p role="status">{tr("Preparing checkout…","جاري تجهيز الطلب…")}</p></main>;
+  if(expressError)return <main className="container utility checkout-page"><h1>{tr("Checkout unavailable","تعذر تجهيز الطلب")}</h1><p role="alert">{tr("Your direct-purchase session is unavailable. Choose your fragrance again; your original bag is saved.","جلسة الشراء المباشر غير متاحة. اختار العطر تاني؛ حقيبتك الأصلية محفوظة.")}</p><Link className="action ink" href="/shop">{tr("Return to collection","العودة للتشكيلة")}</Link></main>;
   if(!cart.lines.length)return <main className="container utility checkout-page">
     <div className="checkout-empty">
       <ShoppingBag size={30}/><h1>{tr("Checkout","إتمام الطلب")}</h1>
@@ -117,18 +148,22 @@ export function Checkout(){
       <span className="checkout-secure"><ShieldCheck size={19}/>{tr("Secure checkout","إتمام طلب آمن")}</span>
     </div>
     {demo&&<p className="checkout-preview">{tr("Design preview · delivery charges are illustrative. Order submission is disabled.","معاينة التصميم · رسوم التوصيل توضيحية وتأكيد الطلب متوقف.")}</p>}
+    <p className="checkout-intro">{tr("Your fragrance, a few details away. No account needed.","عطرك قرب يوصل لك. كمّل بياناتك بدون إنشاء حساب.")}</p>
+    <ol className="checkout-progress" aria-label={tr("Checkout steps","خطوات الطلب")}><li aria-current="step"><span>1</span>{tr("Delivery","التوصيل")}</li><li><span>2</span>{tr("Payment","الدفع")}</li><li><span>3</span>{tr("Confirmation","التأكيد")}</li></ol>
+    {express&&<p className="express-note">{tr("Direct purchase · items in your original bag stay saved.","شراء مباشر · منتجات حقيبتك الأصلية محفوظة.")}</p>}
+    <button type="button" className="summary-toggle" aria-expanded={summaryOpen} aria-controls="checkout-summary" onClick={()=>setSummaryOpen(!summaryOpen)}>{tr(summaryOpen?"Hide order summary":"Show order summary",summaryOpen?"إخفاء ملخص الطلب":"عرض ملخص الطلب")}<strong>{money(activeQuote?.totalMinor??cart.subtotalMinor,lang)}</strong></button>
     <div className="checkout-grid">
-      <form className="checkout-form" onSubmit={submit}><fieldset disabled={pending||loading}>
+      <form className="checkout-form" data-clarity-mask="true" onInvalidCapture={()=>track("checkout_validation",{result:"invalid_input"})} onSubmit={submit}><fieldset disabled={pending||loading}>
         <legend><MapPin size={21}/>{tr("Delivery details","بيانات التوصيل")}</legend>
         <div className="field-grid">
           <label>{tr("Full name","الاسم بالكامل")}<input name="name" value={details.name} onChange={e=>changeDetail("name",e.target.value)} autoComplete="name" required maxLength={120}/></label>
-          <label>{tr("Mobile number","رقم الموبايل")}<input name="phone" value={details.phone} onChange={e=>changeDetail("phone",e.target.value)} type="tel" autoComplete="tel" required maxLength={13} pattern={"(?:01|\\+201)[0125][0-9]{8}"}/></label>
-          <label>{tr("Email","البريد الإلكتروني")}<input name="email" value={details.email} onChange={e=>changeDetail("email",e.target.value)} type="email" autoComplete="email" required={method==="paymob"} maxLength={254}/></label>
+          <label>{tr("Mobile number","رقم الموبايل")}<input name="phone" value={details.phone} onChange={e=>changeDetail("phone",e.target.value)} type="tel" autoComplete="tel" inputMode="tel" dir="ltr" placeholder="01012345678" title={tr("Enter an Egyptian mobile number, e.g. 01012345678","أدخل رقم موبايل مصري مثل 01012345678")} required maxLength={13} pattern={"(?:01|\\+201)[0125][0-9]{8}"}/></label>
+          <label>{method==="paymob"?tr("Email","البريد الإلكتروني"):tr("Email · optional","البريد الإلكتروني · اختياري")}<input name="email" value={details.email} onChange={e=>changeDetail("email",e.target.value)} type="email" autoComplete="email" required={method==="paymob"} maxLength={254}/></label>
           <label>{tr("Governorate","المحافظة")}<select required value={governorate} onChange={e=>{const next=e.target.value;changeDetail("governorate",next);setShip(shipping.find(s=>s.governorate===next)?.code??"")}}><option value="">{tr("Choose governorate","اختر المحافظة")}</option>{[...new Set(shipping.map(s=>s.governorate))].map(x=><option value={x} key={x}>{governorates[x]?.[ar?1:0]??x}</option>)}</select></label>
           <label>{tr("City / district","المدينة / المنطقة")}<input name="city" value={details.city} onChange={e=>changeDetail("city",e.target.value)} autoComplete="address-level2" required maxLength={100}/></label>
           <label>{tr("Delivery option","طريقة التوصيل")}<select required value={ship} onChange={e=>setShip(e.target.value)}><option value="">{tr("Choose delivery","اختر طريقة التوصيل")}</option>{shipping.filter(s=>s.governorate===governorate).map(s=><option value={s.code} key={s.code}>{name(s,lang)} · {money(s.feeMinor,lang)}</option>)}</select></label>
           <label className="wide">{tr("Street, building and apartment","الشارع والعمارة والشقة")}<input name="address" value={details.address} onChange={e=>changeDetail("address",e.target.value)} autoComplete="street-address" required maxLength={500}/></label>
-          <label className="wide">{tr("Delivery notes · optional","ملاحظات التوصيل · اختياري")}<textarea name="notes" maxLength={500}/></label>
+          <label className="wide">{tr("Delivery notes · optional","ملاحظات التوصيل · اختياري")}<textarea name="notes" rows={2} maxLength={500}/></label>
         </div>
         {!demo&&<label className="remember-delivery">
           <input type="checkbox" checked={rememberDetails} onChange={event=>{
@@ -145,7 +180,7 @@ export function Checkout(){
           {(settings?.paymentMethods??[]).map(value=><label key={value} className="payment-choice" data-selected={method===value}>
             {value==="paymob"?<CreditCard size={19}/>:<Banknote size={19}/>}
             <span>{value==="paymob"?tr("Pay online with Paymob","ادفع أونلاين عبر Paymob"):tr("Cash on delivery","الدفع عند الاستلام")}</span>
-            <input type="radio" name="paymentMethod" value={value} checked={method===value} onChange={()=>setMethod(value)}/>
+            <input type="radio" name="paymentMethod" value={value} checked={method===value} onChange={()=>{setMethod(value);track("add_payment_info",{payment_type:value,step:"selection"})}}/>
           </label>)}
         </div>
         {!demo&&settings&&!settings.acceptOrders&&<p role="alert">{tr("Orders are temporarily paused.","الطلبات متوقفة مؤقتًا.")}</p>}
@@ -153,10 +188,10 @@ export function Checkout(){
         {error&&<p className="form-error" role="alert">{error}</p>}
         <button type="submit" className="action ink" disabled={demo||!activeQuote||pending||!settings?.acceptOrders||cart.lines.some(l=>!l.available)}>{pending?tr("Placing your order…","جاري تسجيل الطلب…"):tr("Place order","تأكيد الطلب")}{activeQuote&&<strong>{money(activeQuote.totalMinor,lang)}</strong>}<ArrowUpRight size={16}/></button>
       </fieldset></form>
-      <aside className="order-summary">
+      <aside id="checkout-summary" className={`order-summary ${summaryOpen?"summary-expanded":""}`}>
         <h2><PackageCheck size={21}/>{tr("Order summary","ملخص الطلب")}</h2>
         {cart.lines.map(l=><div className="summary-line" key={l.variantId}><img src={imageUrl(l.image)} alt=""/><div><strong>{name(l,lang)}</strong><small>{l.sizeMl} {tr("ml","مل")} × {l.quantity}</small></div><span>{money(l.unitPriceMinor*l.quantity,lang)}</span></div>)}
-        {!demo&&<form className="promo" onSubmit={e=>{e.preventDefault();setApplied(promotion.trim())}}><input value={promotion} onChange={e=>setPromotion(e.target.value)} maxLength={100} placeholder={tr("Promo code","كود الخصم")} aria-label={tr("Promo code","كود الخصم")}/><button type="submit" disabled={!ship||pending}>{tr("Apply","تطبيق")}</button></form>}
+        {!demo&&<form className="promo" onSubmit={e=>{e.preventDefault();setApplied(promotion.trim())}}><input autoComplete="off" value={promotion} onChange={e=>setPromotion(e.target.value)} maxLength={100} placeholder={tr("Promo code","كود الخصم")} aria-label={tr("Promo code","كود الخصم")}/><button type="submit" disabled={!ship||pending}>{tr("Apply","تطبيق")}</button></form>}
         {applied&&<button className="text-link" type="button" onClick={()=>{setApplied("");setPromotion("")}}>{tr("Remove promo code","إزالة كود الخصم")}</button>}
         <Summary quote={activeQuote} subtotal={cart.subtotalMinor}/>
       </aside>
@@ -177,6 +212,7 @@ export function Track({returning=false}:{returning?:boolean}){
     try{
       const result=await api<Tracking>("store/orders/track",{method:"POST",data:credentials});
       setOrder(result);setProof(credentials);
+      if(credentials.token&&(result.paymentMethod==="cashOnDelivery"||result.paymentStatus==="collected"))track("purchase",{transaction_id:result.number},{number:result.number,token:credentials.token});
     }catch{
       setOrder(undefined);setProof(undefined);
       setError(tr("We couldn’t find the order. Check the order number and mobile.","ملقيناش الطلب. راجع رقم الطلب ورقم الموبايل."));

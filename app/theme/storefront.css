@@ -481,9 +481,6 @@ textarea {
   font-weight:700;
   letter-spacing:.075em;
   text-transform:uppercase}
-.product-meta span+span::before {
-  content:"·";
-  margin-inline-end:var(--space-3)}
 .product-title {
   display:flex;
   align-items:baseline;

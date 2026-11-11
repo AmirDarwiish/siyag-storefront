@@ -14,7 +14,7 @@ export function Wordmark(){return <span className="wordmark"><span>SIYAG</span><
 export function Modal({open,onOpenChange,title,description,className,placement,children}:{open:boolean;onOpenChange:(v:boolean)=>void;title:string;description?:string;className?:string;placement?:"center"|"side";children:ReactNode}){
   const {tr,dismissNotice}=useStore();
   useEffect(()=>{if(open)dismissNotice()},[open,dismissNotice]);
-  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className={`store-modal ${className??""}`} showCloseButton={false} placement={placement}>
+  return <Dialog open={open} onOpenChange={onOpenChange}><DialogContent className={`store-modal ${className??""}`} showCloseButton={false} placement={placement??(className==="impression-modal"||className==="filter-modal"?"side":"center")}>
     <DialogTitle className="sr-only">{title}</DialogTitle><DialogDescription className="sr-only">{description??title}</DialogDescription>
     <button type="button" className="icon modal-close" aria-label={tr("Close","إغلاق")} onClick={()=>onOpenChange(false)}><X size={20}/></button>{children}
   </DialogContent></Dialog>;

@@ -8,6 +8,11 @@ const tokens=postcss.parse(readFileSync('app/theme/tokens.css','utf8'));
 const styles=postcss.parse(readFileSync('app/theme/storefront.css','utf8'));
 const names=new Set(['--store-header-height']);
 tokens.walkDecls(d=>{if(d.prop.startsWith('--'))names.add(d.prop)});
+let responsiveSeen=false;
+for(const node of styles.nodes){
+ if(node.type==='atrule')responsiveSeen=true;
+ if(node.type==='rule')assert(!responsiveSeen,'Base rules must come before responsive rules');
+}
 const rules=new Set();
 styles.walkRules(rule=>{
  let context='';for(let p=rule.parent;p?.type!=='root';p=p.parent)context=`@${p.name} ${p.params}|${context}`;

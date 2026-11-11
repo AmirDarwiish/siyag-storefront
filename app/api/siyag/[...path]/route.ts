@@ -1,7 +1,7 @@
 import { DEMO, demoGet, requestStore } from "@/lib/server-store";
 
 const readPaths=/^store\/(products(?:\/[a-z0-9-]+)?|collections(?:\/[a-z0-9-]+)?|content(?:\/[a-z0-9-]+)?|settings|shipping|cart)$/;
-const postPaths=/^store\/(carts|cart\/quote|orders(?:\/track|\/payment\/paymob)?)$/;
+const postPaths=/^store\/(events|carts|cart\/quote|orders(?:\/track|\/payment\/paymob)?)$/;
 const linePath=/^store\/cart\/lines\/[0-9a-f-]{36}$/i;
 const reviewPhotoPath=/^store\/reviews\/[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}\/photo$/i;
 const mediaPath=/^media\/[a-f0-9]{64}\.(jpg|png|webp)$/;

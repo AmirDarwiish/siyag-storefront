@@ -6,6 +6,7 @@ const guid="[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}";
 const slug="[a-z0-9]+(?:-[a-z0-9]+)*";
 const number="SYG-[A-F0-9]{16}";
 const rules=[
+  {method:"GET",pattern:/^reports\/journey$/},
   {method:"GET",pattern:new RegExp(`^reviews(?:/${guid}/photo)?$`,"i")},
   {method:"PUT",pattern:new RegExp(`^reviews/${guid}$`,"i")},
   {method:"GET",pattern:/^staff$/},

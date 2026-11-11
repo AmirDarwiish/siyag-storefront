@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import {track} from "@/lib/analytics";
 import {useRouter} from "next/navigation";
 import {useEffect,useState,type ReactNode} from "react";
 import {ArrowDownLeft,ArrowRight,ArrowUpRight,Heart,Menu,Minus,Plus,Search,ShoppingBag,X} from "lucide-react";
@@ -37,7 +38,7 @@ function Campaign(){
     api<Content[]>("store/content?area=campaign",{signal:controller.signal}).then(([item])=>{
       if(!item)return;
       setOffer(item);
-      if(!sessionStorage.getItem("siyag-campaign:"+item.slug))
+      if(!location.pathname.startsWith("/checkout")&&!location.pathname.startsWith("/payment")&&!sessionStorage.getItem("siyag-campaign:"+item.slug))
         timer=setTimeout(()=>{sessionStorage.setItem("siyag-campaign:"+item.slug,"1");setOpen(true)},1100);
     }).catch(()=>{});
     return()=>{controller.abort();clearTimeout(timer)};
@@ -100,7 +101,7 @@ export function Header(){
       onKeyDown={event=>{if(event.key==="Escape")setSearch(false)}}>
       <form className="header-search-form" role="search" onSubmit={event=>{
         event.preventDefault();
-        setSearch(false);
+        setSearch(false);track("search",{result:query.trim()?"submitted":"empty"});
         router.push(query.trim()?resultsUrl:"/shop");
       }}>
         <Search size={19} aria-hidden="true"/>

@@ -3,6 +3,7 @@ import "./globals.css";
 import "./storefront.css";
 import "./editorial.css";
 import "./reviews.css";
+import "./conversion.css";
 import {StorefrontFrame} from "@/components/storefront-frame";
 import {DEMO} from "@/lib/server-store";
 

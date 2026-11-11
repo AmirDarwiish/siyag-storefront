@@ -112,3 +112,5 @@
 .office-review>div,.office-review-pages {display:flex;flex-wrap:wrap;align-items:center;gap:8px}
 .office-review>div:first-child {justify-content:space-between}
 .office-review-pages {margin-top:16px}
+
+.journey-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin:20px 0}.journey-stats>div{padding:18px;border:1px solid #dcded5;border-radius:12px;background:#fff}.journey-stats small,.journey-stats strong{display:block}.journey-stats strong{font-size:23px;margin-top:8px}

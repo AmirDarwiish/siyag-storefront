@@ -59,7 +59,7 @@ function Campaign(){
 }
 
 export function Header(){
-  const {tr,ar,toggleLanguage,cart,setCartOpen,demo}=useStore();
+  const {tr,ar,toggleLanguage,cart,cartOpen,setCartOpen,demo}=useStore();
   const router=useRouter();
   const path=usePathname();
   const checkoutRoute=path==="/checkout"||path==="/payment/result";
@@ -67,6 +67,22 @@ export function Header(){
   useEffect(()=>{const element=headerRef.current;if(!element)return;const update=()=>document.documentElement.style.setProperty("--store-header-height",`${element.getBoundingClientRect().height}px`);update();const observer=new ResizeObserver(update);observer.observe(element);return()=>{observer.disconnect();document.documentElement.style.removeProperty("--store-header-height")}},[]);
   const [search,setSearch]=useState(false);
   const [menu,setMenu]=useState(false);
+  const [hidden,setHidden]=useState(false);
+  useEffect(()=>{
+    setHidden(false);
+    if(menu||search||cartOpen||checkoutRoute)return;
+    let anchor=Math.max(0,window.scrollY),frame=0;
+    const update=()=>{frame=0;const y=Math.max(0,window.scrollY);const delta=y-anchor;
+      const focused=headerRef.current?.contains(document.activeElement)&&document.activeElement?.matches(":focus-visible");
+      if(y<80||focused){setHidden(false);anchor=y;return}
+      if(Math.abs(delta)<8)return;
+      setHidden(delta>0&&y>(headerRef.current?.offsetHeight??120)+80);anchor=y;
+    };
+    const scroll=()=>{if(!frame)frame=requestAnimationFrame(update)};
+    window.addEventListener("scroll",scroll,{passive:true});
+    return()=>{window.removeEventListener("scroll",scroll);cancelAnimationFrame(frame)};
+  },[path,menu,search,cartOpen,checkoutRoute]);
+  useEffect(()=>{document.documentElement.dataset.headerHidden=String(hidden);return()=>{delete document.documentElement.dataset.headerHidden}},[hidden]);
   const [query,setQuery]=useState("");
   const [results,setResults]=useState<Product[]>([]);
   const [searchState,setSearchState]=useState<"idle"|"loading"|"done"|"error">("idle");
@@ -83,7 +99,7 @@ export function Header(){
     return()=>{controller.abort();clearTimeout(timer)};
   },[query,search]);
   const quantity=cart.lines.reduce((sum,line)=>sum+line.quantity,0);
-  return <header ref={headerRef} className="site-header" data-checkout={checkoutRoute}>
+  return <header ref={headerRef} className="site-header" data-hidden={hidden} data-checkout={checkoutRoute} onFocusCapture={()=>setHidden(false)}>
     {demo&&<div className="preview-notice">{tr("PRIVATE DESIGN PREVIEW · SAMPLE PRODUCTS","معاينة خاصة · منتجات تجريبية")}</div>}
     <Campaign/>
     <div className="nav-wrap">

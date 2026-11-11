@@ -25,7 +25,7 @@ const previewProduct=(product:Product)=>product.variants.length>0&&product.varia
 function Sizes({product,selected,onSelect,compact=false}:{product:Product;selected:Variant;onSelect:(v:Variant)=>void;compact?:boolean}){
   const {ar,tr}=useStore();
   const preview=previewProduct(product);
-  if(compact&&product.variants.length>4)return <select className="size-select" aria-label={tr("Choose a size","اختر الحجم")} value={selected.id}
+  if(compact&&product.variants.length>3)return <select className="size-select" aria-label={tr("Choose a size","اختر الحجم")} value={selected.id}
     onChange={event=>{const choice=product.variants.find(variant=>variant.id===event.target.value);if(choice&&(preview||choice.inStock))onSelect(choice)}}>
     {product.variants.map(variant=><option key={variant.id} value={variant.id} disabled={!preview&&!variant.inStock}>{variant.sizeMl} {tr("ml","مل")} · {formats[variant.format][ar?1:0]}</option>)}
   </select>;
@@ -55,26 +55,26 @@ export function ProductCard({product,preferred}:{product:Product;preferred?:stri
         <img src={imageUrl(product.images[0])} alt={title} loading="lazy" width={520} height={560}/>
         {product.images[1]&&<img className="product-hover" src={imageUrl(product.images[1])} alt="" loading="lazy" width={520} height={560}/>}
       </Link>
-      {(!v.inStock||(v.compareAtMinor??0)>v.priceMinor)&&<span className="product-badge" data-state={v.inStock?"sale":"unavailable"}>{v.inStock?tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`):availability}</span>}
+      <div className="product-labels">{!v.inStock?<span className="product-badge" data-state="unavailable">{availability}</span>:(v.compareAtMinor??0)>v.priceMinor?<span className="product-badge" data-state="sale"><small>{tr('THE SIYAG OFFER','عرض سياج')}</small><strong>{tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`)}</strong></span>:product.featured?<span className="product-badge" data-state="featured">{tr('The house edit','مختارات الدار')}</span>:null}</div>
       <button type="button" className="icon favorite" aria-pressed={liked} aria-label={liked?tr("Remove from wishlist","إزالة من المفضلة"):tr("Save to wishlist","حفظ في المفضلة")} onClick={()=>toggleSaved(product.slug)}><Heart size={17} fill={liked?"currentColor":"none"}/></button>
       {(preview||v.inStock)&&<button type="button" className="photo-quick" onClick={()=>setQuick(true)}>{tr("Quick view","عرض سريع")}<ArrowUpRight size={14}/></button>}
     </div>
     <div className="product-card-body">
-      <div className="product-meta"><span>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
+      <div className="product-meta"><span className="family-tag" data-family={product.family}>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
       <div className="product-title"><Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
       <p className="product-card-notes">{(product.topNotes.length?product.topNotes.slice(0,3).map(note=>noteName(note,ar)).join(" · "):(ar?product.descriptionAr:product.descriptionEn))||" "}</p>
       <div className="card-options">
         <span>{tr("Choose a size","اختر الحجم")}</span>
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)} compact/>
       </div>
-      <button className="card-add" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
+      <button className="card-add" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
     </div>
     <Modal open={quick} onOpenChange={setQuick} title={title} className="quick-modal">
       <img className="quick-image" src={imageUrl(product.images[0])} alt={title}/>
       <div className="quick-copy"><div className="eyebrow">SIYAG PARFUMS</div><h2>{title}</h2><Price variant={v}/>
         <p>{ar?product.descriptionAr:product.descriptionEn}</p>
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)}/>
-        <button className="action ink" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={async()=>{setQuick(false);await add(product,v,1)}}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
+        <button className="action ink" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={async()=>{setQuick(false);await add(product,v,1)}}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
         <Link className="text-link" href={productUrl(product,v)} onClick={()=>setQuick(false)}>{tr("View fragrance details","تفاصيل العطر")}<ArrowUpRight size={15}/></Link>
       </div>
     </Modal>

@@ -24,6 +24,26 @@
   font-display: swap;
 }
 :root {
+  --motion-header: 260ms;
+  --motion-ui: 220ms;
+  --motion-reveal: 650ms;
+  --motion-image: 1200ms;
+  --ease-out: cubic-bezier(.2,.65,.3,1);
+  --radius-pill: 999px;
+  --radius-badge: 3px;
+  --store-header-offset: var(--store-header-height,116px);
+  --hero-surface: var(--color-forest);
+  --hero-ink: var(--white);
+  --hero-muted-light: color-mix(in srgb, var(--white) 78%, transparent);
+  --hero-muted: var(--hero-muted-light);
+  --hero-control-inset: clamp(32px,6vw,88px);
+  --collection-row-height: 250px;
+  --collection-image-small: 180px;
+  --collection-image-large: 310px;
+  --mood-card-height: 300px;
+  --tone-fresh: #e7eddf;
+  --tone-floral: #eee6e0;
+  --tone-amber: #ebe4d1;
   --color-paper: #faf8f2;
   --color-white: #fffefa;
   --color-stone: #f0eee5;
@@ -111,6 +131,7 @@
 @media (max-width:767px) {
   :root {
     --page-gutter: 20px;
+    --mood-card-height: 260px;
     --section-space: 52px;
     --panel-space: 28px;
     --type-body: 14px;

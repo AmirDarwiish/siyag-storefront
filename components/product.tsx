@@ -55,12 +55,12 @@ export function ProductCard({product,preferred}:{product:Product;preferred?:stri
         <img src={imageUrl(product.images[0])} alt={title} loading="lazy" width={520} height={560}/>
         {product.images[1]&&<img className="product-hover" src={imageUrl(product.images[1])} alt="" loading="lazy" width={520} height={560}/>}
       </Link>
-      {(!v.inStock||(v.compareAtMinor??0)>v.priceMinor)&&<span className="product-badge" data-state={v.inStock?"sale":"unavailable"}>{v.inStock?tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`):availability}</span>}
+      <div className="product-labels">{!v.inStock?<span className="product-badge" data-state="unavailable">{availability}</span>:(v.compareAtMinor??0)>v.priceMinor?<span className="product-badge" data-state="sale"><small>{tr('THE SIYAG OFFER','عرض سياج')}</small><strong>{tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`)}</strong></span>:product.featured?<span className="product-badge" data-state="featured">{tr('The house edit','مختارات الدار')}</span>:null}</div>
       <button type="button" className="icon favorite" aria-pressed={liked} aria-label={liked?tr("Remove from wishlist","إزالة من المفضلة"):tr("Save to wishlist","حفظ في المفضلة")} onClick={()=>toggleSaved(product.slug)}><Heart size={17} fill={liked?"currentColor":"none"}/></button>
       {(preview||v.inStock)&&<button type="button" className="photo-quick" onClick={()=>setQuick(true)}>{tr("Quick view","عرض سريع")}<ArrowUpRight size={14}/></button>}
     </div>
     <div className="product-card-body">
-      <div className="product-meta"><span>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
+      <div className="product-meta"><span className="family-tag" data-family={product.family}>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
       <div className="product-title"><Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
       <p className="product-card-notes">{(product.topNotes.length?product.topNotes.slice(0,3).map(note=>noteName(note,ar)).join(" · "):(ar?product.descriptionAr:product.descriptionEn))||" "}</p>
       <div className="card-options">

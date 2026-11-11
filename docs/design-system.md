@@ -19,3 +19,7 @@ Fixed image/dialog geometry, percentages and breakpoint conditions are layout co
 Review the homepage, catalog, filtered/empty search, wishlist, product variants, quick view, purchase dock, bag receipt/drawer, checkout summary, written review and impression sheets at 393px and desktop widths. Repeat Arabic and English; check horizontal overflow, sticky header, focus/close behavior and safe-area controls. Use preview data for visual tests, avoid publishing test reviews or placing real orders.
 
 Keep main as the permanent frontend branch. Merge temporary work branches, confirm the automatic production build, then delete the merged branch. Never discard unmerged work without reviewing its difference from main.
+
+## Storefront motion
+
+The header reveals on upward scrolling and hides on downward scrolling, with a deadband to avoid jitter. Search, menu, keyboard focus, bag and checkout keep navigation visible. Slideshow autoplay pauses on interaction and background tabs; manual navigation stops autoplay. Respect reduced-motion preferences for autoplay, reveal animations and smooth rail movement. Product labels reflect real featured flags, stock and selected-variant discount data; never invent best-seller or popularity claims.

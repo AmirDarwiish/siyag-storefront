@@ -58,7 +58,7 @@ export function ProductCard({product,preferred}:{product:Product;preferred?:stri
     </div>
     <div className="product-card-body">
       <div className="product-meta"><span>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
-      <div className="product-title"><Link href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
+      <div className="product-title"><Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
       <p className="product-card-notes">{(product.topNotes.length?product.topNotes.slice(0,3).join(" · "):(ar?product.descriptionAr:product.descriptionEn))||" "}</p>
       <div className="card-options">
         <span>{tr("Choose a size","اختر الحجم")}</span>

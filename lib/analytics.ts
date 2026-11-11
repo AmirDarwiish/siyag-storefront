@@ -29,7 +29,7 @@ export function track(event:EventName,data:EventData={},proof?:{number:string;to
  const identity=journey();if(!identity)return;
  // Paths and fixed categories only: query strings, free-text search, forms and referrer paths never leave the browser.
  const path=/^\/products\/[a-z0-9-]+$/.test(location.pathname)?location.pathname:['/','/shop','/checkout','/reviews','/track','/payment/result'].includes(location.pathname)?location.pathname:'/other';
- const payload={id:crypto.randomUUID(),event,at:new Date().toISOString(),...identity,path,previousPage,device:innerWidth<768?'mobile':innerWidth<1100?'tablet':'desktop',width:innerWidth,...data,proof};
+ const payload={id:crypto.randomUUID(),event,at:new Date().toISOString(),...identity,path,previousPage,userAgent:navigator.userAgent.slice(0,512),device:innerWidth<768?'mobile':innerWidth<1100?'tablet':'desktop',width:innerWidth,...data,proof};
  if(event==='page_view')previousPage=path;
  const send=async(attempt=0):Promise<void>=>{
   if(!allowed())return;
@@ -37,10 +37,11 @@ export function track(event:EventName,data:EventData={},proof?:{number:string;to
    const response=await fetch('/api/siyag/store/events',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),keepalive:true});
    if(!response.ok){if(response.status>=500&&attempt<2)setTimeout(()=>void send(attempt+1),1500*(attempt+1));return}
    const result=await response.json();
-   if(event==='purchase'&&result.recorded&&!result.duplicate&&allowed()){
+   if(event==='purchase'&&result.recorded&&allowed()&&!readLocal('siyag-measured-order:'+proof?.number)){
     const w=window as unknown as {gtag?:(...args:unknown[])=>void;fbq?:(...args:unknown[])=>void};
-    w.gtag?.('event','purchase',{currency:'EGP',transaction_id:proof?.number,value:result.value,page_location:location.origin+path});
+    w.gtag?.('event','purchase',{currency:'EGP',transaction_id:proof?.number,value:result.value,items:result.items,page_location:location.origin+path});
     w.fbq?.('track','Purchase',{currency:'EGP',value:result.value},{eventID:result.eventId});
+    if(w.gtag||w.fbq)writeLocal('siyag-measured-order:'+proof?.number,'1');
    }
   }catch{if(attempt<2)setTimeout(()=>void send(attempt+1),1500*(attempt+1))}
  };
@@ -53,5 +54,5 @@ export function track(event:EventName,data:EventData={},proof?:{number:string;to
   if(mapped[event])w.fbq?.('track',mapped[event],{currency:'EGP',value:data.value,content_ids:data.items?.map(i=>i.item_id),content_type:'product'},{eventID:payload.id});
  }
 }
-export function itemData(p:Product,v:Variant,q=1):EventData{return {items:[{item_id:p.id,item_name:p.nameEn,item_category:p.family,item_variant:v.id,price:v.priceMinor/100,quantity:q}],value:v.priceMinor*q/100}}
+export function itemData(p:Product,v:Variant,q=1):EventData{return {items:[{item_id:v.id,item_name:p.nameEn,item_category:p.family,item_variant:v.id,price:v.priceMinor/100,quantity:q}],value:v.priceMinor*q/100}}
 export function cartData(cart:Cart):EventData{return {items:cart.lines.map(l=>({item_id:l.variantId,item_name:l.nameEn,item_variant:String(l.sizeMl),price:l.unitPriceMinor/100,quantity:l.quantity})),value:cart.subtotalMinor/100,item_count:cart.lines.reduce((n,l)=>n+l.quantity,0)}}

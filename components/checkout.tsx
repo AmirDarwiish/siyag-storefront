@@ -55,7 +55,7 @@ export function Checkout(){
     return()=>controller.abort();
   },[demo]);
   useEffect(()=>{if(allowed()&&!expressLoading&&cart.lines.length&&!began.current){began.current=true;track("begin_checkout",{...cartData(cart),step:express?"express":"bag"})}},[cart,express,expressLoading]);
-  useEffect(()=>{const exit=()=>{if(began.current&&!completed.current)track("checkout_exit",{step:"incomplete"})};window.addEventListener("pagehide",exit);return()=>window.removeEventListener("pagehide",exit)},[]);
+  useEffect(()=>{const exit=()=>{if(began.current&&!completed.current)track("checkout_exit",{step:"incomplete"})};window.addEventListener("pagehide",exit);return()=>{window.removeEventListener("pagehide",exit);exit()}},[]);
   const router=useRouter();
   const [settings,setSettings]=useState<Settings|undefined>(demo?previewSettings:undefined);
   const [shipping,setShipping]=useState<Shipping[]>(demo?previewShipping:[]);

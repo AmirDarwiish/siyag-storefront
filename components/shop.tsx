@@ -53,7 +53,7 @@ export function Shop(){
     }).catch(()=>{if(!controller.signal.aborted)setError(true)});
     return()=>controller.abort();
   },[queryString,savedKey,savedOnly,retry]);
-  useEffect(()=>{if(result?.page.data.length)track("view_item_list",{list_id:savedOnly?"wishlist":"collection",items:result.page.data.map(p=>({item_id:p.id,item_name:p.nameEn,item_category:p.family}))})},[result,savedOnly]);
+  useEffect(()=>{if(result?.page.data.length)track("view_item_list",{list_id:savedOnly?"wishlist":"collection",items:result.page.data.map(p=>({item_id:p.variants[0]?.id??p.id,item_name:p.nameEn,item_category:p.family}))})},[result,savedOnly]);
   const collection=collections.find(c=>c.slug===query.get("collection"));
   const term=query.get("q")?.trim();
   const title=savedOnly?tr("Your favourites","عطورك المفضّلة"):collection?name(collection,lang):term?tr("Search results","نتائج البحث"):tr("The fragrance collection","مجموعة سياج");

@@ -26,8 +26,8 @@ export function ShippingOptions(){
       <button className="office-button" onClick={()=>setEditing(blank)}><Plus size={16}/> إضافة طريقة توصيل</button></div>
     <Message message={error} error/>
     <TableFrame label="طرق التوصيل" actions total={data?.length} bulkActions={shippingActions()} onBulkComplete={()=>setRevision(v=>v+1)}><table className="office-table"><thead><tr><th>الطريقة</th><th>المحافظة</th><th>الرسوم</th><th>مجاني من</th><th>الحالة</th><th>التعديل</th></tr></thead>
-      <tbody>{data?.map(option=><tr key={option.code}><td>{option.nameAr}</td><td>{governorates[option.governorate]?.[1]??option.governorate}</td><td>{money(option.feeMinor,"ar")}</td>
-        <td>{option.freeFromMinor?money(option.freeFromMinor,"ar"):"—"}</td><td>{option.active?"مفعّلة":"متوقفة"}</td><td><RowAction label={`تعديل توصيل ${option.nameAr}`} icon={SquarePen} onClick={()=>setEditing(option)}/></td></tr>)}</tbody>
+      <tbody>{data?.map(option=><tr key={option.code}><td>{option.nameAr}</td><td>{governorates[option.governorate]?.[1]??option.governorate}</td><td data-sort-value={option.feeMinor}>{money(option.feeMinor,"ar")}</td>
+        <td data-sort-value={option.freeFromMinor??0}>{option.freeFromMinor?money(option.freeFromMinor,"ar"):"—"}</td><td>{option.active?"مفعّلة":"متوقفة"}</td><td><RowAction label={`تعديل توصيل ${option.nameAr}`} icon={SquarePen} onClick={()=>setEditing(option)}/></td></tr>)}</tbody>
     </table>{!data?.length&&!error&&<p className="office-empty">{data?"أضف طريقة توصيل لتظهر في إتمام الطلب.":"جارٍ تحميل طرق التوصيل…"}</p>}</TableFrame>
 
   </>;

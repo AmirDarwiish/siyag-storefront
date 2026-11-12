@@ -42,11 +42,6 @@ export function Home() {
     {family:"oriental",title:tr("After the sun sets","حين يحل المساء"),copy:tr("Oriental fragrances","عطور شرقية"),image:"/brand/royal.webp"},
     {family:"amber",title:tr("Stay a little longer","أثر يبقى"),copy:tr("Amber fragrances","عطور عنبرية"),image:"/brand/oud.webp"},
   ];
-  const guidance=[
-    {title:tr("Follow the notes","ابدأ بالنوتات"),copy:tr("Citrus, woods or amber? Choose a family you enjoy, then explore each fragrance’s opening, heart and base.","حمضيات، أخشاب أم عنبر؟ ابدأ بالعائلة الأقرب لك، ثم تعرّف إلى مقدمة كل عطر وقلبه وقاعدته.")},
-    {title:tr("Let it unfold","امنحه وقته"),copy:tr("A first impression is only the beginning. Let a fragrance settle on your skin before deciding how it feels.","الانطباع الأول بداية فقط. امنح العطر وقتًا على بشرتك لتكتشف كيف تتغير رائحته وما الذي يبقى منه.")},
-    {title:tr("Find your size","اختر حجمك"),copy:tr("Explore a smaller amount or choose a full bottle. Available sizes and prices appear on each product.","كمية أصغر للتجربة أم زجاجتك الكاملة؟ الأحجام والأسعار المتاحة تظهر داخل كل منتج.")},
-  ];
   const [products, setProducts] = useState<Product[]>([]);
   const [loading,setLoading]=useState(true);
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -76,12 +71,12 @@ export function Home() {
         copy:tr("Explore the collection","اكتشف المجموعة"),
         image: imageUrl(collection.imageUrl || fallbackCategories[index].image),
       }))
-    : fallbackCategories;
+    : [];
 
   return <main className="home-experience" ref={homeRef}>
     <HouseCampaign/>
 
-    <section className="container section home-edits" id="collections" data-reveal>
+    {categories.length>0 && <section className="container section home-edits" id="collections" data-reveal>
       <div className="section-head">
         <div>
           <span className="eyebrow">{tr("THE SIYAG EDIT", "مختارات SIYAG")}</span>
@@ -101,7 +96,7 @@ export function Home() {
           </div>
         </Link>)}
       </div>
-    </section>
+    </section>}
 
     {(loading||products.length>0) && <section className="catalog-home" data-reveal><div className="container section">
       <div className="section-head">
@@ -112,19 +107,17 @@ export function Home() {
       {loading?<div className="product-grid home-rail-loading" aria-busy="true" aria-label={tr("Loading fragrances","جارٍ تحميل العطور")}>{[1,2,3,4].map(i=><div className="skeleton" key={i}/>)}</div>:<HomeProductRail products={products}/>}
     </div></section>}
 
-    <EditorialFeature tone="discovery" eyebrow={tr("THE ART OF DISCOVERY","متعة الاكتشاف")} title={tr("A little curiosity. A new favourite.","ابدأ بفضول… واكتشف عطرك")} copy={tr("A new scent deserves a little time. Explore the available discovery sizes and find the one you want to return to.","بعض العطور تحتاج لقاءً أقرب. اكتشف أحجام التجربة المتاحة، وامنح نفسك فرصة لتجد العطر الذي تحب العودة إليه.")} image="/brand/olive-hero.webp" href="/shop?format=decant" action={tr("Explore discovery sizes","اكتشف أحجام التجربة")} caption={tr("Available sizes and prices on each product","الأحجام والأسعار المتاحة داخل كل منتج")}/>
-    <section className="container section home-families" data-reveal>
+
+    <EditorialFeature tone="house" eyebrow={tr("INSIDE THE HOUSE","من عالم SIYAG")} title={tr("Before the fragrance, there is a feeling.","قبل أن يصبح عطرًا… يبدأ بإحساس")} copy={tr("The brightness of citrus. The depth of woods. The warmth that lingers. Step into the world of notes and discover a more personal way to choose your fragrance.","إشراقة الحمضيات، وعمق الأخشاب، ودفء يبقى في الذاكرة. اقترب من عالم النوتات واكتشف طريقة أكثر خصوصية لاختيار عطرك.")} image="/brand/olive-notes.webp" href="/about" action={tr("Discover the house","اكتشف دار SIYAG")} caption={tr("SIYAG PARFUMS · EGYPT","SIYAG PARFUMS · مصر")}/>
+    {products.length>0 && <section className="container section home-families" data-reveal>
       <div className="section-head"><div><span className="eyebrow">{tr("A LANGUAGE OF NOTES","لغة من النوتات")}</span><h2>{tr("Every mood has a scent","لكل إحساس… عطر")}</h2></div><p>{tr("Follow the notes that draw you in.","اتبع النوتات التي تستوقفك.")}</p></div>
-      <div className="home-families-grid">{scentFamilies.map(family=><Link href={"/shop?family="+family.family} className="home-family" key={family.family}>
-        <div className="home-family-visual"><StoreImage sizes={imageSizes.family} src={family.image} alt="" width={600} height={600} loading="lazy"/></div>
+      <div className="home-families-grid">{scentFamilies.filter(family=>products.some(product=>product.family===family.family)).map(family=><Link href={"/shop?family="+family.family} className="home-family" key={family.family}>
+        <div className="home-family-visual"><StoreImage sizes={imageSizes.family} src={imageUrl(products.find(product=>product.family===family.family)?.images[0])} alt="" width={600} height={600} loading="lazy"/></div>
         <span className="eyebrow">{family.copy}</span><h3>{family.title}</h3><span className="text-link">{tr("Discover","اكتشف")}</span>
       </Link>)}</div>
-    </section>
-    <EditorialFeature tone="house" eyebrow={tr("INSIDE THE HOUSE","من عالم SIYAG")} title={tr("Before the fragrance, there is a feeling.","قبل أن يصبح عطرًا… يبدأ بإحساس")} copy={tr("The brightness of citrus. The depth of woods. The warmth that lingers. Step into the world of notes and discover a more personal way to choose your fragrance.","إشراقة الحمضيات، وعمق الأخشاب، ودفء يبقى في الذاكرة. اقترب من عالم النوتات واكتشف طريقة أكثر خصوصية لاختيار عطرك.")} image="/brand/olive-notes.webp" href="/about" action={tr("Discover the house","اكتشف دار SIYAG")} caption={tr("SIYAG PARFUMS · EGYPT","SIYAG PARFUMS · مصر")}/>
-    <section className="container section home-guide" data-reveal>
-      <div className="section-head"><div><span className="eyebrow">{tr("YOUR SCENT, YOUR WAY","عطرك، بطريقتك")}</span><h2>{tr("Take your time choosing","خذ وقتك في الاختيار")}</h2></div><Link href="/faq" className="text-link">{tr("Need a little guidance?","تحتاج مساعدة في الاختيار؟")}</Link></div>
-      <div className="home-guide-grid">{guidance.map((item,index)=><article key={item.title}><span className="home-guide-number">{new Intl.NumberFormat(lang==="ar"?"ar-EG":"en",{minimumIntegerDigits:2}).format(index+1)}</span><h3>{item.title}</h3><p>{item.copy}</p></article>)}</div>
-    </section>
+    </section>}
+
+    {products.some(product=>product.variants.some(variant=>variant.format!=="fullBottle")) && <EditorialFeature tone="discovery" eyebrow={tr("THE ART OF DISCOVERY","متعة الاكتشاف")} title={tr("A little curiosity. A new favourite.","ابدأ بفضول… واكتشف عطرك")} copy={tr("A new scent deserves a little time. Explore the available discovery sizes and find the one you want to return to.","بعض العطور تحتاج لقاءً أقرب. اكتشف أحجام التجربة المتاحة، وامنح نفسك فرصة لتجد العطر الذي تحب العودة إليه.")} image="/brand/olive-hero.webp" href="/shop?format=decant" action={tr("Explore discovery sizes","اكتشف أحجام التجربة")} caption={tr("Available sizes and prices on each product","الأحجام والأسعار المتاحة داخل كل منتج")}/>}
     <StoreReviewsLink/>
     <nav className="home-care container" aria-label={tr("Shopping assistance","مساعدة التسوق")}>
       <Link href="/shop?format=decant"><FlaskConical aria-hidden="true"/><span><strong>{tr("Discover at your pace","اكتشف على مهل")}</strong><small>{tr("Explore smaller sizes","تصفّح أحجام التجربة")}</small></span></Link>

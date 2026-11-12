@@ -2715,7 +2715,7 @@ html[data-header-hidden=true] {
 .return-request textarea {width:100%;min-height:120px;padding:var(--space-5);font:inherit;background:var(--white);border:var(--border-fine)}
 /* Homepage editorial system: campaign, photographic edits and reusable stories. */
 .home-cover {position:relative;isolation:isolate;background:var(--home-night);color:var(--white);min-height:var(--home-cover-height);overflow:hidden}
-.home-cover-image {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.home-cover-image {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--home-cover-image-position)}
 .home-cover-layout {position:relative;direction:ltr;display:flex;align-items:center;min-height:var(--home-cover-height)}
 .home-cover-copy {width:var(--home-cover-copy-width);padding-block:var(--space-12);position:relative}
 .home-cover-copy .eyebrow {color:var(--home-on-dark-muted);letter-spacing:.14em}
@@ -3382,7 +3382,7 @@ body {
     inset-inline-start:var(--space-4);
     top:var(--space-4)}
 .home-cover {min-height:0}
-.home-cover-image {position:relative;height:var(--home-cover-mobile-image);object-position:76% center}
+.home-cover-image {position:relative;height:var(--home-cover-mobile-image);object-position:var(--home-cover-mobile-position)}
 .home-cover-layout {min-height:0}
 .home-cover-copy {width:100%;padding-block:var(--space-8) var(--space-9)}
 .home-cover h1 {font-size:var(--type-display);max-width:17ch;margin-block:var(--space-4)}

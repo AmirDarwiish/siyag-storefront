@@ -28,6 +28,8 @@
   --home-on-dark-muted: #e0ddd0;
   --home-cover-height: clamp(540px,43vw,680px);
   --home-cover-copy-width: 43%;
+  --home-cover-image-position: center 44%;
+  --home-cover-mobile-position: 76% center;
   --home-cover-mobile-image: clamp(270px,80vw,360px);
   --home-edit-height: clamp(250px,29vw,380px);
   --home-edit-feature-mobile: 210px;

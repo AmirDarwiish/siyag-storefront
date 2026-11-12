@@ -1,5 +1,8 @@
 /** Responsive image hints shared by the storefront's actual layout variants. */
 export const imageSizes={
+ campaign:"100vw",
+ edit:"(max-width: 767px) 50vw, 33vw",
+ family:"(max-width: 767px) 50vw, 25vw",
  hero:"(max-width: 767px) 100vw, 55vw",
  collection:"(max-width: 767px) 50vw, 40vw",
  card:"(max-width: 767px) 46vw, (max-width: 1100px) 40vw, 28vw",

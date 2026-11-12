@@ -24,6 +24,18 @@
   font-display: swap;
 }
 :root {
+  --home-night: #160f0b;
+  --home-on-dark-muted: #e0ddd0;
+  --home-cover-height: clamp(540px,43vw,680px);
+  --home-cover-copy-width: 43%;
+  --home-cover-mobile-image: clamp(270px,80vw,360px);
+  --home-edit-height: clamp(250px,29vw,380px);
+  --home-edit-feature-mobile: 210px;
+  --home-feature-height: clamp(440px,42vw,560px);
+  --home-feature-mobile-image: clamp(280px,85vw,390px);
+  --home-family-height: clamp(230px,25vw,335px);
+  --home-photo-hover-scale: 1.035;
+  --type-feature: clamp(34px,3.6vw,50px);
   --rail-visible: 3;
   --rail-offset: 0px;
   --rail-step-mode: 0;
@@ -157,6 +169,9 @@
 @media (max-width:767px) {
   :root {
     --page-gutter: 20px;
+    --home-edit-height: 210px;
+    --home-family-height: 220px;
+    --type-feature: 32px;
     --rail-step-mode: 1;
     --mood-card-height: 260px;
     --section-space: 52px;

@@ -13,7 +13,7 @@
   --office-text:15px;--office-caption:13px;--office-table-text:14px;
   --office-heading:30px;--office-title-md:24px;--office-grand:48px;--office-brand:29px;--office-subtitle:18px;--office-metric:28px;
   --office-space:24px;--office-sidebar-width:244px;--office-table-min:720px;
-  --office-table-compact-min:400px;--office-progress:0%;--office-shadow-color:#17263508;
+  --office-table-compact-min:400px;--office-action-column:136px;--office-progress:0%;--office-shadow-color:#17263508;
   --office-shadow:0 16px 64px #17263518;--office-shadow-soft:0 2px 10px #17263506;
   font:400 var(--office-text)/1.7 "Plex Arabic",Manrope,Arial,sans-serif;color:var(--office-ink);
 }
@@ -53,7 +53,7 @@
 .office-workspace {width:min(100%,1540px);margin:auto;padding:30px}
 .office-header {display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-bottom:28px}
 .office-header span {font-size:var(--office-caption);color:var(--office-muted)}
-.office-header h1 {font-size:var(--office-heading);margin:6px 0 7px;letter-spacing:-.02em}
+.office-header h1 {font-size:var(--office-heading);margin:6px 0 7px;letter-spacing:0}
 .office-header p,.office-toolbar p,.office-form-section>p,.office-page-actions p,.office-card header p,.office-help,.office-editor-section>p {color:var(--office-muted)}
 .office-toolbar,.office-tools,.office-page-actions {display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
 .office-toolbar,.office-page-actions {margin-bottom:20px}
@@ -180,7 +180,6 @@
 .office-table-heading {display:flex;align-items:center;gap:10px;padding:18px 20px;border-bottom:1px solid var(--office-border)}
 .office-table-heading h2 {font-size:var(--office-text);font-weight:600}
 .office-count {display:inline-flex;align-items:center;justify-content:center;min-width:26px;padding:2px 8px;border-radius:var(--office-small-radius);background:var(--office-soft);color:var(--office-muted);font-size:var(--office-caption);font-variant-numeric:tabular-nums}
-.office-table-view {margin-inline-start:auto;font-size:var(--office-caption);color:var(--office-muted)}
 .office-data-table>.office-table-wrap {border:0;border-radius:0}
 .office-table-wrap:focus-visible {outline:2px solid var(--office-primary);outline-offset:-3px}
 .office-table td {background:var(--office-surface);border-bottom:1px solid var(--office-gridline);height:64px}
@@ -190,7 +189,7 @@
 .office-table td:first-child {min-width:170px;max-width:340px;white-space:normal;overflow-wrap:anywhere}
 .office-table :is(th,td)>bdi {display:block;min-width:180px;text-align:start}
 .office-data-table[data-compact=true] .office-table {min-width:var(--office-table-compact-min)}
-.office-data-table[data-actions=true] .office-table :is(th,td):last-child {position:sticky;inset-inline-end:0;z-index:1;min-width:112px;box-shadow:4px 0 8px var(--office-shadow-color,transparent);border-inline-start:1px solid var(--office-gridline)}
+.office-data-table[data-actions=true] .office-table :is(th,td):last-child {position:sticky;inset-inline-end:0;z-index:1;width:var(--office-action-column);min-width:112px;box-shadow:4px 0 8px var(--office-shadow-color,transparent);border-inline-start:1px solid var(--office-gridline)}
 .office-data-table[data-actions=true] .office-table th:last-child {z-index:3;background:var(--office-header-bg)}
 .office-table td .office-text-button {min-height:36px;padding:6px 11px;border:1px solid var(--office-border);border-radius:var(--office-small-radius);background:var(--office-surface);font-size:var(--office-caption);text-decoration:none;white-space:nowrap}
 .office-table td .office-text-button:hover {border-color:var(--office-primary);background:var(--office-sidebar-active)}
@@ -255,6 +254,7 @@
   .office-image-link {align-items:stretch;flex-direction:column}
   .office-list-controls {align-items:stretch}
   .office-list-controls .office-search,.office-search input:not([type=checkbox]) {width:100%}
+  .office-list-controls .office-search {flex-basis:100%}
   .office-search {flex:1;min-width:0}
   .office-mobile-navigation {margin:-16px;padding:24px;overflow:visible}
   .office-mobile-navigation nav {overflow:visible}
@@ -265,7 +265,6 @@
   .office-header {align-items:flex-start;gap:16px}
   .office-header>.office-button {min-height:40px;font-size:var(--office-caption)}
   .office-table-heading {padding:15px 16px}
-  .office-table-view {display:none}
   .office-table-hint {padding:12px 16px;align-items:flex-start}
   .office-insights {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .office-insights>div {padding:15px}

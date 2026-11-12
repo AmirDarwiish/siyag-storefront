@@ -43,7 +43,7 @@ export function TableFrame({label,children,actions=false,compact=false,total}:{l
     return()=>observer.disconnect();
   },[children]);
   return <section className="office-data-table" data-actions={actions} data-compact={compact}>
-    <header className="office-table-heading"><h2>{label}</h2>{total!==undefined&&<span className="office-count">{total.toLocaleString("ar-EG")}</span>}<span className="office-table-view">عرض الجدول</span></header>
+    <header className="office-table-heading"><h2>{label}</h2>{total!==undefined&&<span className="office-count">{total.toLocaleString("ar-EG")}</span>}</header>
     <div className="office-table-wrap" ref={viewport} role="region" aria-label={label} aria-describedby={overflow?hint:undefined} tabIndex={overflow?0:undefined}>{children}</div>
     {overflow&&<p className="office-table-hint" id={hint}><MoveHorizontal size={16}/> مرّر أفقيًا لعرض باقي الأعمدة. يمكنك استخدام أسهم لوحة المفاتيح.</p>}
   </section>;

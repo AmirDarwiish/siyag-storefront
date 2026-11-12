@@ -33,7 +33,7 @@ export function HomeProductRail({products}:{products:Product[]}) {
   tabIndex={0} role="region" aria-label={tr("Selected fragrances. Swipe or use arrow keys. Automatic movement stops when you interact.","مختارات العطور. اسحب أو استخدم الأسهم. تتوقف الحركة التلقائية عند تفاعلك.")}
   onPointerDownCapture={stop} onTouchStartCapture={stop} onWheel={stop} onFocusCapture={stop}
   onKeyDown={event=>{
-   stop();if(event.target!==event.currentTarget)return;
+   stop();if(event.target!==event.currentTarget||event.ctrlKey||event.metaKey||event.altKey)return;
    if(!["ArrowLeft","ArrowRight","Home","End"].includes(event.key))return;
    event.preventDefault();const element=event.currentTarget,items=element.querySelectorAll<HTMLElement>(".home-rail-item");
    const step=items.length>1?Math.abs(items[1].offsetLeft-items[0].offsetLeft):0;

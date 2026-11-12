@@ -6,6 +6,7 @@ import {Sun, Leaf, Flower2, Moon} from "lucide-react";
 import {api, imageUrl, name, type Collection, type Page, type Product} from "@/lib/store";
 import {useStore} from "./store-context";
 import {HomeProductRail} from "./home-product-rail";
+import {track} from "@/lib/analytics";
 import {StoreReviewsLink} from "./reviews";
 
 function HeroSlider() {
@@ -18,7 +19,7 @@ function HeroSlider() {
   const touchStart = useRef<{x:number;y:number} | null>(null);
   const slides = [
     {title: tr("Make it your signature", "حضور يشبهك"), label: tr("THE SIYAG COLLECTION", "تشكيلة SIYAG"), copy: tr("Find the scent that feels like you. Then make it yours.", "من أول انطباع إلى آخر أثر… اختر العطر الذي يعبّر عنك."), image: "/brand/olive-hero.webp", href: "/shop", action: tr("Explore the collection", "استكشف التشكيلة")},
-    {title: tr("The notes behind the scent", "ما وراء الرائحة"), label: tr("SCENT FAMILIES", "العائلات العطرية"), copy: tr("Explore the ingredients behind each fragrance.", "تعرّف إلى النوتات التي تمنح كل عطر طابعه."), image: "/brand/olive-notes.webp", href: "/#maison", action: tr("Explore the house", "اكتشف دار SIYAG")},
+    {title: tr("The notes behind the scent", "ما وراء الرائحة"), label: tr("SCENT FAMILIES", "العائلات العطرية"), copy: tr("Explore the ingredients behind each fragrance.", "تعرّف إلى النوتات التي تمنح كل عطر طابعه."), image: "/brand/olive-notes.webp", href: "/about", action: tr("Explore the house", "اكتشف دار SIYAG")},
     {title: tr("Discover in smaller sizes", "اكتشف العطر بحجم أصغر"), label: tr("DISCOVERY SIZES", "أحجام التجربة"), copy: tr("Try a smaller size before choosing your full bottle.", "تجربة تتيح لك اختيار عطرك قبل اقتناء الزجاجة الكاملة."), image: "/brand/eclat.webp", href: "/shop?format=decant", action: tr("Explore discovery sizes", "استكشف أحجام التجربة")},
   ];
   const slide = slides[active];
@@ -67,6 +68,8 @@ export function Home() {
     return () => controller.abort();
   }, []);
 
+  useEffect(()=>{if(products.length)track("view_item_list",{list_id:"home-selected",items:products.map(p=>({item_id:p.variants[0]?.id??p.id,item_name:p.nameEn,item_category:p.family}))})},[products]);
+
   const fallbackCategories = [
     {href: "/shop?format=fullBottle", title: tr("Full bottles", "الزجاجات الكاملة"), image: "/brand/noir.webp"},
     {href: "/shop?family=amber", title: tr("Amber fragrances", "عطور عنبرية"), image: "/brand/oud.webp"},
@@ -83,7 +86,6 @@ export function Home() {
   return <main className="home-experience" ref={homeRef}>
     <HeroSlider/>
 
-    <nav className="scent-shortcuts container" aria-label={tr('Discover your scent','اكتشف طابعك')}>{moods.map(({family,title,icon:Icon})=><Link href={'/shop?family='+family} key={family}><Icon size={18}/>{title}</Link>)}</nav>
     <section className="container section collections-section" id="collections" data-reveal>
       <div className="section-head">
         <div>
@@ -95,12 +97,11 @@ export function Home() {
         </Link>
       </div>
       <div className="collections-grid home-collection-mosaic">
-        {categories.map((category, index) => <Link className="collection-card" href={category.href} key={category.href}>
+        {categories.map((category) => <Link className="collection-card" href={category.href} key={category.href}>
           <div className="collection-visual">
             <img src={category.image} alt="" width={600} height={600} loading="lazy"/>
           </div>
           <div className="collection-caption">
-            <span className="collection-index">THE SIYAG EDIT / 0{index + 1}</span>
             <h3>{category.title}</h3>
           </div>
         </Link>)}
@@ -116,14 +117,14 @@ export function Home() {
       {loading?<div className="product-grid home-rail-loading" aria-busy="true" aria-label={tr("Loading fragrances","جارٍ تحميل العطور")}>{[1,2,3,4].map(i=><div className="skeleton" key={i}/>)}</div>:<HomeProductRail products={products}/>}
     </div></section>}
 
-    <section className="scent-pathways container section" data-reveal><div className="section-head"><div><span className="eyebrow">{tr('FOLLOW YOUR INSTINCT','اتبع إحساسك')}</span><h2>{tr('What’s your mood?','أي طابع يشبهك؟')}</h2></div><p>{tr('Explore a different side of scent.','اكتشف جانب جديد من عالم العطور.')}</p></div><div className="mood-grid">{moods.map(({family,title,copy,icon:Icon},index)=><Link href={'/shop?family='+family} className="mood-card" data-family={family} key={family}><span className="mood-number">0{index+1}</span><Icon size={38}/><h3>{title}</h3><p>{copy}</p><span className="mood-action">{tr('Explore','اكتشف')}</span></Link>)}</div></section>
+    <section className="scent-pathways container section" data-reveal><div className="section-head"><div><span className="eyebrow">{tr('FOLLOW YOUR INSTINCT','اتبع إحساسك')}</span><h2>{tr('What’s your mood?','أي طابع يشبهك؟')}</h2></div><p>{tr('Explore a different side of scent.','اكتشف جانب جديد من عالم العطور.')}</p></div><div className="mood-grid">{moods.map(({family,title,copy,icon:Icon})=><Link href={'/shop?family='+family} className="mood-card" data-family={family} key={family}><Icon size={38}/><h3>{title}</h3><p>{copy}</p><span className="mood-action">{tr('Explore','اكتشف')}</span></Link>)}</div></section>
     <section className="story" id="maison" data-reveal>
       <img src="/brand/olive-notes.webp" alt="" width={1140} height={855} loading="lazy"/>
       <div>
         <span className="eyebrow">{tr("THE HOUSE OF SIYAG", "دار SIYAG")}</span>
         <h2>{tr("More than a fragrance. A feeling.", "أكثر من عطر… إحساس")}</h2>
         <p>{tr("A fragrance unfolds in stages. Citrus is often the first impression, followed by the heart and the woods that linger on skin.", "يتكشّف العطر على مراحل. تبدأ الحمضيات غالبًا، ثم يظهر قلب العطر، وتبقى الأخشاب على البشرة.")}</p>
-        <Link href="/shop" className="action ink">{tr("Discover the scents", "اكتشف العطور")}</Link>
+        <Link href="/about" className="action ink">{tr("Discover the house", "اكتشف دار SIYAG")}</Link>
       </div>
     </section>
     <StoreReviewsLink/>

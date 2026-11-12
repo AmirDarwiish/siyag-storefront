@@ -149,7 +149,7 @@ export function Checkout(){
     </div>
     {demo&&<p className="checkout-preview">{tr("Design preview · delivery charges are illustrative. Order submission is disabled.","معاينة التصميم · رسوم التوصيل توضيحية وتأكيد الطلب متوقف.")}</p>}
     <p className="checkout-intro">{tr("Your fragrance, a few details away. No account needed.","عطرك قرب يوصل لك. كمّل بياناتك بدون إنشاء حساب.")}</p>
-    <ol className="checkout-progress" aria-label={tr("Checkout steps","خطوات الطلب")}><li aria-current="step"><span>1</span>{tr("Delivery","التوصيل")}</li><li><span>2</span>{tr("Payment","الدفع")}</li><li><span>3</span>{tr("Confirmation","التأكيد")}</li></ol>
+
     {express&&<p className="express-note">{tr("Direct purchase · items in your original bag stay saved.","شراء مباشر · منتجات حقيبتك الأصلية محفوظة.")}</p>}
     <button type="button" className="summary-toggle" aria-expanded={summaryOpen} aria-controls="checkout-summary" onClick={()=>setSummaryOpen(!summaryOpen)}>{tr(summaryOpen?"Hide order summary":"Show order summary",summaryOpen?"إخفاء ملخص الطلب":"عرض ملخص الطلب")}<strong>{money(activeQuote?.totalMinor??cart.subtotalMinor,lang)}</strong></button>
     <div className="checkout-grid">
@@ -187,6 +187,7 @@ export function Checkout(){
         {!loading&&!shipping.length&&<p role="alert">{tr("Delivery options haven’t been published yet.","خيارات التوصيل غير متاحة حاليًا.")}</p>}
         {error&&<p className="form-error" role="alert">{error}</p>}
         <button type="submit" className="action ink" disabled={demo||!activeQuote||pending||!settings?.acceptOrders||cart.lines.some(l=>!l.available)}>{pending?tr("Placing your order…","جاري تسجيل الطلب…"):tr("Place order","تأكيد الطلب")}{activeQuote&&<strong>{money(activeQuote.totalMinor,lang)}</strong>}<ArrowUpRight size={16}/></button>
+      <p className="purchase-note">{tr("By placing an order, review our","قبل تأكيد الطلب، راجع")} <Link className="text-link" href="/policies/terms">{tr("shopping terms","شروط التسوق")}</Link> · <Link className="text-link" href="/policies/returns">{tr("returns information","معلومات الاسترجاع")}</Link>.</p>
       </fieldset></form>
       <aside id="checkout-summary" className={`order-summary ${summaryOpen?"summary-expanded":""}`}>
         <h2><PackageCheck size={21}/>{tr("Order summary","ملخص الطلب")}</h2>
@@ -199,6 +200,7 @@ export function Checkout(){
   </main>;
 }
 
+const orderLabels:Record<string,[string,string]>={pending:["Order received","تم استلام الطلب"],confirmed:["Confirmed","مؤكد"],processing:["Preparing your order","جاري التجهيز"],shipped:["On its way","في الطريق"],outForDelivery:["Out for delivery","مع المندوب"],delivered:["Delivered","تم التسليم"],cancelled:["Cancelled","ملغي"],deliveryFailed:["Delivery attempted","تعذّر التسليم"],returned:["Returned","تم الاسترجاع"],unpaid:["Awaiting payment","بانتظار الدفع"],collected:["Payment received","تم الدفع"],paid:["Payment received","تم الدفع"],failed:["Payment unsuccessful","الدفع لم يكتمل"],refunded:["Refunded","تم استرداد المبلغ"],pendingRefund:["Refund pending","الاسترداد قيد المراجعة"]};
 export function Track({returning=false}:{returning?:boolean}){
   const {tr,lang}=useStore();
   const [number,setNumber]=useState("");
@@ -207,8 +209,11 @@ export function Track({returning=false}:{returning?:boolean}){
   const [order,setOrder]=useState<Tracking>();
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
+  const [returnSent,setReturnSent]=useState(false);
+  function status(value:string){const labels=orderLabels[value];return labels?tr(labels[0],labels[1]):value}
+  async function requestReturn(event:FormEvent<HTMLFormElement>){event.preventDefault();if(busy||!proof?.token||returnSent)return;const reason=String(new FormData(event.currentTarget).get("reason")||"").trim();if(!reason)return;setBusy(true);setError("");try{const result=await api<Tracking>("store/orders/return",{method:"POST",data:{number:order?.number,token:proof.token,reason}});setOrder(result);setReturnSent(true)}catch(e){setError(e instanceof Error?e.message:tr("Could not send your request.","تعذّر إرسال الطلب."))}finally{setBusy(false)}}
   async function find(credentials:OrderProof){
-    setBusy(true);setError("");
+    if(busy)return;setBusy(true);setError("");
     try{
       const result=await api<Tracking>("store/orders/track",{method:"POST",data:credentials});
       setOrder(result);setProof(credentials);
@@ -247,9 +252,12 @@ export function Track({returning=false}:{returning?:boolean}){
     </form>
     {error&&<p role="alert" className="form-error">{error}</p>}
     {order&&<section className="order-summary"><h2><ShieldCheck size={21}/> {order.number}</h2>
-      <p>{tr("Order","الطلب")} · {order.status} <br/>{tr("Payment","الدفع")} · {order.paymentStatus}</p>
+      <div className="order-status-panel"><h2>{returning?status(order.paymentStatus):status(order.status)}</h2><p>{tr("Order","الطلب")} · {status(order.status)}<br/>{tr("Payment","الدفع")} · {status(order.paymentStatus)}</p>{order.paymentMethod==="paymob"&&order.paymentStatus==="unpaid"&&<p>{tr("Payment has not been confirmed. You can retry through the secure receipt link. Your order status is verified with the store.","الدفع لم يتأكد بعد. تقدر تعيد المحاولة من رابط الإيصال الآمن. الحالة المعروضة متحققة من المتجر.")}</p>}</div>
+      {order.events?.length>0&&<ol className="order-timeline" aria-label={tr("Order updates","تحديثات الطلب")}>{order.events.map((event,index)=><li key={event.at+index}><strong>{status(event.status)}</strong><time dateTime={event.at}>{new Date(event.at).toLocaleString(lang==="ar"?"ar-EG":"en-EG",{dateStyle:"medium",timeStyle:"short",timeZone:"Africa/Cairo"})}</time></li>)}</ol>}
+      <button type="button" className="text-link" disabled={busy} onClick={()=>{if(proof)void find(proof)}}>{tr("Refresh order status","تحديث حالة الطلب")}</button>
       <Summary quote={order.total} subtotal={order.total.subtotalMinor}/>
       {(order.status==="delivered"||order.status==="returned")&&<ReviewButton proof={proof}/>}
+      {order.status==="delivered"&&proof?.token&&<details className="return-request"><summary>{tr("Request a return review","طلب مراجعة استرجاع")}</summary>{returnSent?<p role="status">{tr("Your request was received for review.","وصل طلبك للمراجعة.")}</p>:<form onSubmit={requestReturn}><label>{tr("Tell us the reason","وضّح سبب الاسترجاع")}<textarea name="reason" required minLength={3} maxLength={500}/></label><p className="muted">{tr("Eligibility is checked by the store. Submission does not approve a refund.","المتجر هيراجع استحقاق الطلب. الإرسال مش موافقة تلقائية على استرداد المبلغ.")}</p><button className="action ink" type="submit" disabled={busy}>{busy?tr("Sending…","جاري الإرسال…"):tr("Send request","إرسال الطلب")}</button></form>}</details>}
       {order.carrierTrackingUrl?.startsWith("https://")&&<a className="text-link" href={order.carrierTrackingUrl} rel="noreferrer" target="_blank">{tr("Track shipment","تتبّع الشحنة")}<ArrowUpRight size={15}/></a>}
       {proof?.token&&order.paymentMethod==="paymob"&&order.paymentStatus==="unpaid"&&order.status==="pending"&&<button type="button" className="action gold" disabled={busy} onClick={pay}>{tr("Continue to Paymob","كمّل الدفع مع Paymob")}<ArrowUpRight size={15}/></button>}
     </section>}

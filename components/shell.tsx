@@ -106,7 +106,7 @@ export function Header(){
       <button type="button" className="icon mobile-menu" aria-label={tr("Menu","القائمة")} onClick={()=>setMenu(true)}><Menu size={22}/></button>
       <Link href="/" className="nav-brand" aria-label="SIYAG"><Wordmark/></Link>
       <nav aria-label={tr("Store navigation","تصفح المتجر")}>
-        <Link href="/shop">{tr("Fragrances","العطور")}</Link><Link href="/shop?format=decant">{tr("Discovery","عينات التجربة")}</Link><Link href="/#maison">{tr("The house","دار سياج")}</Link>
+        <Link href="/shop">{tr("Fragrances","العطور")}</Link><Link href="/shop?format=decant">{tr("Discovery","عينات التجربة")}</Link><Link href="/about">{tr("The house","دار SIYAG")}</Link>
       </nav>
       <div className="nav-tools">
         <button type="button" className="language-switch" onClick={toggleLanguage} aria-label={tr("Switch to Arabic","التبديل للإنجليزية")}>{ar?"EN":"العربية"}</button>
@@ -114,8 +114,8 @@ export function Header(){
         <button type="button" className="icon bag-icon" aria-label={tr(`Bag, ${quantity} items`,`الحقيبة، ${quantity} منتجات`)} onClick={()=>setCartOpen(true)}><ShoppingBag size={20}/>{quantity>0&&<span>{quantity}</span>}</button>
       </div>
     </div>
-    <Modal open={menu} onOpenChange={setMenu} title={tr("Menu","القائمة")} className="nav-modal">
-      <Wordmark/><Link href="/shop" onClick={()=>setMenu(false)}>{tr("Fragrances","العطور")}</Link><Link href="/shop?format=decant" onClick={()=>setMenu(false)}>{tr("Discovery","عينات التجربة")}</Link><Link href="/#maison" onClick={()=>setMenu(false)}>{tr("The house","دار سياج")}</Link><Link href="/shop?saved=1" onClick={()=>setMenu(false)}>{tr("Wishlist","المفضلة")}</Link>
+    <Modal open={menu} onOpenChange={setMenu} title={tr("Menu","القائمة")} className="nav-modal" placement="side">
+      <Wordmark/><Link href="/shop" onClick={()=>setMenu(false)}>{tr("Fragrances","العطور")}</Link><Link href="/shop?format=decant" onClick={()=>setMenu(false)}>{tr("Discovery","عينات التجربة")}</Link><Link href="/about" onClick={()=>setMenu(false)}>{tr("The house","دار SIYAG")}</Link><Link href="/shop?saved=1" onClick={()=>setMenu(false)}>{tr("Wishlist","المفضلة")}</Link><Link href="/track" onClick={()=>setMenu(false)}>{tr("Track your order","تتبّع طلبك")}</Link><Link href="/contact" onClick={()=>setMenu(false)}>{tr("Client care","خدمة العملاء")}</Link>
     </Modal>
     <div className="container header-search" onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))setSearch(false)}}
       onKeyDown={event=>{if(event.key==="Escape")setSearch(false)}}>
@@ -149,14 +149,14 @@ export function Header(){
   </header>;
 }
 
-export function Bag(){
-  const {cart,cartOpen,setCartOpen,busy,setQuantity,tr,lang,demo,bagNotice}=useStore();
-  return <Modal open={cartOpen} onOpenChange={setCartOpen} title={tr("Your bag","حقيبتك")} className="bag-modal" placement="side">
-    <div className="bag-heading"><div className="eyebrow">SIYAG</div><h2>{tr("Your bag","حقيبتك")}</h2><div role="status">{bagNotice&&<p className="bag-notice" data-kind={bagNotice.kind}>{bagNotice.text}</p>}</div></div>
+export function BagContents({page=false}:{page?:boolean}){
+  const {cart,setCartOpen,busy,setQuantity,tr,lang,demo,bagNotice}=useStore();
+  return <div className={page?"cart-content":"bag-content"}>
+    <div className="bag-heading"><div className="eyebrow">SIYAG</div>{page?<h1>{tr("Your bag","حقيبتك")}</h1>:<h2>{tr("Your bag","حقيبتك")}</h2>}<div role="status">{bagNotice&&<p className="bag-notice" data-kind={bagNotice.kind}>{bagNotice.text}</p>}</div></div>
     {!cart.lines.length?<div className="bag-empty"><ShoppingBag size={28}/><p>{tr("Your chosen fragrances will appear here.","ستظهر هنا العطور التي تضيفها إلى حقيبتك.")}</p><Link href="/shop" className="action ink" onClick={()=>setCartOpen(false)}>{tr("Explore the collection","استكشف التشكيلة")}</Link></div>:<>
       <div className="bag-lines" aria-busy={busy}>{cart.lines.map(line=><div className="bag-line" key={line.variantId}>
         <Link href={"/products/"+line.slug+"?variant="+line.variantId} onClick={()=>setCartOpen(false)}><img src={imageUrl(line.image)} alt=""/></Link>
-        <div><strong>{name(line,lang)}</strong><small>{line.sizeMl} {tr("ml","مل")}</small>
+        <div><strong>{name(line,lang)}</strong><small>{line.sizeMl} {tr("ml","مل")}</small>{!line.available&&<small className="form-error">{tr("Currently unavailable. Remove this item to continue.","غير متاح حاليًا. احذف المنتج عشان تكمل الطلب.")}</small>}
           <div className="quantity"><button type="button" disabled={busy} onClick={()=>setQuantity(line.variantId,line.quantity-1)} aria-label={tr("Decrease quantity","تقليل الكمية")}><Minus size={15}/></button><span>{line.quantity}</span><button type="button" disabled={busy||line.quantity>=20||!line.available} onClick={()=>setQuantity(line.variantId,line.quantity+1)} aria-label={tr("Increase quantity","زيادة الكمية")}><Plus size={15}/></button></div>
         </div>
         <div><strong>{money(line.quantity*line.unitPriceMinor,lang)}</strong><button className="text-link remove" type="button" disabled={busy} onClick={()=>setQuantity(line.variantId,0)}>{tr("Remove","حذف")}</button></div>
@@ -164,17 +164,21 @@ export function Bag(){
       <div className="bag-footer"><div className="bag-total"><span>{tr("Subtotal","المجموع الفرعي")}</span><strong>{money(cart.subtotalMinor,lang)}</strong></div>
       <p className="muted">{demo?tr("Sample products are for design review.","المنتجات التجريبية لمراجعة التصميم."):tr("Shipping and eligible offers are calculated at checkout.","تُحسب رسوم التوصيل والعروض المتاحة عند إتمام الطلب.")}</p>
       <Link href="/checkout" className="action ink" onClick={()=>setCartOpen(false)}>{demo?tr("Preview checkout","عاين إتمام الطلب"):tr("Checkout","إتمام الطلب")}<ArrowRight size={16}/></Link>
+      {!page&&<Link className="text-link" href="/cart" onClick={()=>setCartOpen(false)}>{tr("View full bag","عرض الحقيبة كاملة")}</Link>}
       </div>
     </>}
-  </Modal>;
+  </div>;
 }
+
+export function Bag(){const {cartOpen,setCartOpen,tr}=useStore();return <Modal open={cartOpen} onOpenChange={setCartOpen} title={tr("Your bag","حقيبتك")} className="bag-modal" placement="side"><BagContents/></Modal>}
+export function CartPage(){return <main className="container section cart-page"><BagContents page/></main>}
 
 export function Footer(){
   const {tr}=useStore();
   return <footer className="site-footer"><div className="footer-inner">
     <div><Wordmark/><p>{tr("An Egyptian fragrance house.","دار عطور مصرية.")}</p></div>
-    <div><div className="eyebrow">{tr("Explore","استكشف")}</div><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/shop?format=decant">{tr("Discovery sizes","أحجام التجربة")}</Link></div>
-    <div><div className="eyebrow">{tr("Client care","خدمة العملاء")}</div><Link href="/track">{tr("Track your order","تتبّع طلبك")}</Link><Link href="/reviews">{tr("Store reviews","تقييمات المتجر")}</Link><Link href="/shop?saved=1">{tr("Your wishlist","مفضلتك")}</Link></div>
+    <div><div className="eyebrow">{tr("Explore","استكشف")}</div><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/shop?format=decant">{tr("Discovery sizes","أحجام التجربة")}</Link><Link href="/about">{tr("The house of SIYAG","دار SIYAG")}</Link><Link href="/cart">{tr("Your bag","حقيبتك")}</Link></div>
+    <div><div className="eyebrow">{tr("Client care","خدمة العملاء")}</div><Link href="/track">{tr("Track your order","تتبّع طلبك")}</Link><Link href="/reviews">{tr("Store reviews","تقييمات المتجر")}</Link><Link href="/shop?saved=1">{tr("Your wishlist","مفضلتك")}</Link><Link href="/contact">{tr("Contact us","تواصل معنا")}</Link><Link href="/faq">{tr("FAQ","الأسئلة الشائعة")}</Link></div><div><div className="eyebrow">{tr("The details","المعلومات")}</div><Link href="/policies/shipping">{tr("Shipping & delivery","الشحن والتوصيل")}</Link><Link href="/policies/returns">{tr("Returns & refunds","الاسترجاع")}</Link><Link href="/policies/privacy">{tr("Privacy","الخصوصية")}</Link><Link href="/policies/terms">{tr("Terms","شروط التسوق")}</Link></div>
     <a href="#" className="back-to-top" aria-label={tr("Back to top","العودة لأعلى")}><ArrowDownLeft size={19}/></a>
   </div><div className="footer-end"><span>© {new Date().getFullYear()} SIYAG PARFUMS</span><span>{tr("EGYPT · EGP","مصر · جنيه مصري")}</span></div></footer>;
 }

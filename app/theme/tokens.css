@@ -194,3 +194,18 @@
   }
   [dir=rtl] {--type-body:15px}
 }
+@media (min-width:1021px) {
+ :root {
+  --section-space:clamp(36px,3.4vw,48px);
+  --type-section:clamp(30px,2.5vw,36px);
+  --type-page:clamp(40px,3.4vw,48px);
+  --type-feature:clamp(30px,2.8vw,40px);
+  --home-feature-height:clamp(360px,31vw,440px);
+  --desktop-header-height:88px;
+  --desktop-search-panel:360px;
+  --desktop-search-width:clamp(180px,17vw,240px);
+  --type-desktop-wordmark:38px;
+  --type-desktop-title:clamp(30px,2.6vw,38px);
+  --type-desktop-secondary:clamp(28px,2.3vw,34px);
+ }
+}

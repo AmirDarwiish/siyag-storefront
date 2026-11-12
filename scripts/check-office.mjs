@@ -7,6 +7,8 @@ const postcss=createRequire(require.resolve('next/package.json'))('postcss');
 const css=postcss.parse(readFileSync('app/admin/office.css','utf8'));
 const tokens=new Set();
 css.walkDecls(d=>{if(d.prop.startsWith('--'))tokens.add(d.prop)});
+// This variable is measured and injected by Radix Popover at runtime.
+const runtimeTokens=new Set(["--radix-popover-content-available-height"]);
 const rules=new Set();
 css.walkRules(rule=>{
   let context='';for(let p=rule.parent;p?.type!=='root';p=p.parent)context=`@${p.name} ${p.params}|${context}`;
@@ -14,7 +16,7 @@ css.walkRules(rule=>{
 });
 css.walkDecls(d=>{
   if(!d.prop.startsWith('--'))assert(!/#[a-f\d]{3,8}\b/i.test(d.value),`Use an office theme token: ${d.toString()}`);
-  for(const match of d.value.matchAll(/var\((--[\w-]+)/g))assert(tokens.has(match[1]),`Undefined office token: ${match[1]}`);
+  for(const match of d.value.matchAll(/var\((--[\w-]+)/g))assert(tokens.has(match[1])||runtimeTokens.has(match[1]),`Undefined office token: ${match[1]}`);
 });
 let tables=0;
 for(const file of readdirSync('components/admin').filter(x=>x.endsWith('.tsx'))){

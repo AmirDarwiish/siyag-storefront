@@ -1,8 +1,8 @@
 "use client";
 import {useEffect,useState,type FormEvent} from "react";
 import {office,roleNames,type StaffUser} from "@/lib/admin";
-import {UserPlus,Search,ShieldCheck,Users} from "lucide-react";
-import {Message,Panel,TableFrame} from "./shared";
+import {UserPlus,Search,ShieldCheck,Users,SquarePen} from "lucide-react";
+import {RowAction,Message,Panel,TableFrame} from "./shared";
 
 export function Staff(){
   const [people,setPeople]=useState<StaffUser[]>([]);
@@ -48,13 +48,12 @@ export function Staff(){
     <label className="office-search office-collection-search"><Search size={17}/><input aria-label="البحث في الموظفين" placeholder="ابحث بالاسم أو البريد أو الصلاحية…" value={query} onChange={e=>setQuery(e.target.value)}/></label>
     {!open&&<Message message={error} error/>}<Message message={notice}/>
     {!loaded&&!error&&<p role="status">جارٍ تحميل الفريق…</p>}
-    <TableFrame label="فريق المتجر" actions total={filtered.length}><table className="office-table"><thead><tr>
+    <TableFrame label="فريق المتجر" actions total={filtered.length} scope={query}><table className="office-table"><thead><tr>
       <th>الاسم</th><th>البريد الإلكتروني</th><th>الصلاحية</th><th>الحالة</th><th>الإجراء</th>
     </tr></thead><tbody>{filtered.map(person=><tr key={person.id}>
       <td>{person.name}</td><td><bdi>{person.email}</bdi></td><td>{roleNames[person.role]}</td>
       <td><span className="office-badge" data-status={!person.active?"cancelled":person.mustChangePassword?"pending":"confirmed"}>{!person.active?"موقوف":person.mustChangePassword?"بانتظار تفعيل الدخول":"نشط"}</span></td>
-      <td>{person.role==="Owner"?<span className="office-owner-tag"><ShieldCheck size={15}/> المالك</span>:<button type="button" className="office-text-button" disabled={busy}
-        onClick={()=>{setEditing(person);setOpen(true);setError("");setNotice("")}}>تعديل</button>}</td>
+      <td>{person.role==="Owner"?<span className="office-owner-tag"><ShieldCheck size={15}/> المالك</span>:<RowAction label={`تعديل ${person.name}`} icon={SquarePen} disabled={busy} onClick={()=>{setEditing(person);setOpen(true);setError("");setNotice("")}}/>}</td>
     </tr>)}</tbody></table>{loaded&&!filtered.length&&<div className="office-empty"><Users size={26}/><p>لا توجد حسابات مطابقة للبحث.</p></div>}</TableFrame>
     {open&&<Panel title={editing?"تعديل الموظف":"إضافة موظف"} description="بيانات الحساب والصلاحية المطلوبة للعمل" onClose={()=>{setOpen(false);setEditing(null)}}><form className="office-form" key={editing?.id??"new"} onSubmit={save}>
       {editing&&<div className="office-info-note"><Users size={18}/><p>{editing.name} · <bdi>{editing.email}</bdi></p></div>}

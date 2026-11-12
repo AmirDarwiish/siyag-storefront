@@ -1,5 +1,5 @@
 /* Shared office design tokens. All management screens use this single theme. */
-.office,.office-modal {
+.office,.office-modal,.office-grid-tooltip {
   --office-ink:#252832;--office-muted:#677080;--office-border:#e6e8ed;
   --office-paper:#f8f9fb;--office-surface:#fff;--office-soft:#f3f4f6;
   --office-primary:#20664f;--office-primary-hover:#164b3a;
@@ -13,7 +13,7 @@
   --office-text:14px;--office-caption:13px;--office-table-text:14px;
   --office-heading:26px;--office-title-md:22px;--office-grand:48px;--office-brand:29px;--office-subtitle:18px;--office-metric:28px;
   --office-space:24px;--office-sidebar-width:256px;--office-rail-width:76px;--office-topbar-height:68px;--office-table-min:720px;
-  --office-table-compact-min:400px;--office-action-column:136px;--office-progress:0%;--office-shadow-color:#17263508;
+  --office-table-compact-min:400px;--office-action-column:120px;--office-thumb-width:56px;--office-thumb-height:64px;--office-selection-bg:#f0f7f3;--office-progress:0%;--office-shadow-color:#17263508;
   --office-shadow:0 16px 64px #17263518;--office-shadow-soft:0 2px 10px #17263506;
   font:400 var(--office-text)/1.7 "Plex Arabic",Manrope,Arial,sans-serif;color:var(--office-ink);
 }
@@ -187,7 +187,7 @@
 .office-table tbody tr:last-child td {border-bottom:0}
 .office-table :is(th,td):last-child {border-inline-end:0}
 .office-table tbody tr:hover td {background:var(--office-paper)}
-.office-table td:first-child {min-width:170px;max-width:340px;white-space:normal;overflow-wrap:anywhere}
+.office-table td:nth-child(3) {min-width:170px;max-width:340px;white-space:normal;overflow-wrap:anywhere}
 .office-table :is(th,td)>bdi {display:block;min-width:180px;text-align:start}
 .office-data-table[data-compact=true] .office-table {min-width:var(--office-table-compact-min)}
 .office-data-table[data-actions=true] .office-table :is(th,td):last-child {position:sticky;inset-inline-end:0;z-index:1;width:var(--office-action-column);min-width:112px;box-shadow:4px 0 8px var(--office-shadow-color,transparent);border-inline-start:1px solid var(--office-gridline)}
@@ -230,6 +230,32 @@
 .office-dashboard[data-collapsed=true]>.office-sidebar .office-account {padding:12px 0 0;border:0}
 .office-dashboard[data-collapsed=true]>.office-sidebar .office-nav-group {gap:7px}
 .office-collapse {flex:none}
+
+/* Shared data-grid controls: every table uses the same selection and action system. */
+.office-table-heading>small {font-size:var(--office-caption);color:var(--office-muted);margin-inline-start:auto;font-weight:400}
+.office-table :is(th,td).office-selection-cell {width:44px;min-width:44px;max-width:44px;padding:12px;text-align:center}
+.office-table :is(th,td).office-index-cell {width:48px;min-width:48px;padding:12px 8px;text-align:center;color:var(--office-muted);font-size:var(--office-caption)}
+.office-selection-cell input {width:17px;height:17px;accent-color:var(--office-primary);cursor:pointer;vertical-align:middle}
+.office-table tr[data-selected=true] td {background:var(--office-selection-bg)}
+.office-product-thumb {width:var(--office-thumb-width);height:var(--office-thumb-height);border:1px solid var(--office-border);border-radius:var(--office-small-radius);background:var(--office-paper);color:var(--office-muted);display:grid;place-items:center;overflow:hidden;flex:none}
+.office-product-thumb img {width:100%;height:100%;object-fit:cover}
+.office-product-name>span:last-child {min-width:160px}
+.office-table .office-wrap-cell {min-width:150px;max-width:240px;white-space:normal}
+.office-row-actions {display:flex;align-items:center;justify-content:center;gap:6px}
+.office-row-action {display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;border:1px solid var(--office-border);border-radius:var(--office-small-radius);background:var(--office-surface);color:var(--office-muted);text-decoration:none;cursor:pointer;transition:color 150ms,background 150ms,border-color 150ms}
+.office-row-action:hover {color:var(--office-primary);border-color:var(--office-primary);background:var(--office-sidebar-active)}
+.office-grid-tooltip {z-index:85;max-width:260px;padding:8px 12px;border-radius:var(--office-small-radius);background:var(--office-ink);color:var(--office-surface);font-size:var(--office-caption);box-shadow:var(--office-shadow);direction:rtl;pointer-events:none}
+.office-grid-tooltip svg {fill:var(--office-ink)}
+.office-bulk-bar {display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:16px 20px;background:var(--office-sidebar-active);border-bottom:1px solid var(--office-border);color:var(--office-primary)}
+.office-bulk-bar>strong {font-size:var(--office-table-text);white-space:nowrap}
+.office-bulk-actions {display:flex;gap:8px;flex-wrap:wrap;margin-inline-start:auto}
+.office-bulk-actions>.office-button {font-size:var(--office-caption);min-height:36px;padding:7px 12px}
+.office-bulk-confirm {display:flex;align-items:center;flex-wrap:wrap;gap:10px;width:100%;padding-top:14px;border-top:1px solid var(--office-border);font-size:var(--office-table-text)}
+.office-bulk-confirm>p {margin-inline-end:auto}
+.office-table-feedback {padding:0 18px}
+.office-spinning {animation:office-spin 1s linear infinite}
+@keyframes office-spin {to {transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce) {.office-spinning {animation:none}}
 
 @media(max-width:1100px) {
   .office-dashboard {grid-template-columns:220px minmax(0,1fr)}
@@ -278,7 +304,12 @@
   .office-store-link {width:40px;padding:8px}
   .office-header {align-items:flex-start;gap:16px}
   .office-header>.office-button {min-height:40px;font-size:var(--office-caption)}
-  .office-table-heading {padding:15px 16px}
+  .office-table-heading {padding:15px 16px;flex-wrap:wrap}
+  .office-table-heading>small {flex-basis:100%;margin:0}
+  .office-bulk-bar {padding:14px 16px}
+  .office-bulk-actions {width:100%}
+  .office-bulk-confirm {align-items:stretch}
+  .office-bulk-confirm>p {flex-basis:100%}
   .office-table-hint {padding:12px 16px;align-items:flex-start}
   .office-insights {grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
   .office-insights>div {padding:15px}
@@ -292,3 +323,4 @@
   .office-login {padding:16px}
   .office-login>section {padding:28px 24px}
 }
+

@@ -1311,7 +1311,8 @@ textarea {
   height:auto}
 .hero-carousel .hero-visual img {
   object-position:center 51%;
-  animation:hero-image-in var(--motion-image) var(--ease-out) both}
+  animation:hero-image-in var(--motion-image) var(--ease-out) both,
+    hero-image-drift var(--motion-hero-drift) linear var(--motion-image) both}
 .collections-section {
   padding-block:var(--section-space)}
 .product-card-body {
@@ -2703,11 +2704,13 @@ html[data-header-hidden=true] {
   font-size:var(--type-label);
   min-height:var(--control-height);
   padding:var(--space-4) var(--space-6);
-  background:var(--stone);
-  border-radius:var(--radius-pill);
+  background:transparent;
+  border:var(--home-border);
+  border-radius:var(--radius-surface);
+  color:var(--ink);
   transition:background var(--motion-ui), transform var(--motion-ui)}
 .scent-shortcuts>a:hover {
-  background:var(--sage);
+  background:var(--home-icon-surface);
   transform:translateY(-2px)}
 .home-collection-mosaic {
   display:grid;
@@ -2719,7 +2722,8 @@ html[data-header-hidden=true] {
   grid-template-rows:1fr auto;
   min-height:0;
   overflow:hidden;
-  background:var(--stone)}
+  background:var(--stone);
+  border:var(--home-card-border)}
 .home-collection-mosaic>.collection-card:first-child {
   grid-row:span 2}
 .home-collection-mosaic .collection-visual {
@@ -2741,15 +2745,25 @@ html[data-header-hidden=true] {
 .home-collection-mosaic .collection-caption h3 {
   font-size:var(--type-subtitle)}
 .home-product-rail {
-  grid-template-columns:none;
-  grid-auto-flow:column;
-  grid-auto-columns:calc((100% - var(--space-9) * 3) / 4);
+  display:flex;
+  direction:ltr;
+  gap:var(--home-rail-gap);
   overflow-x:auto;
-  scroll-snap-type:x mandatory;
+  overscroll-behavior-x:contain;
+  overflow-anchor:none;
   scrollbar-width:none;
-  padding-bottom:var(--space-6)}
-.home-product-rail>.product-card {
-  scroll-snap-align:start}
+  scroll-behavior:auto;
+  padding-block:var(--space-2) var(--space-6)}
+.home-product-rail:focus-visible {
+  outline:1px solid var(--olive);
+  outline-offset:var(--space-4)}
+.home-rail-item {
+  flex:0 0 calc((100% - var(--home-rail-gap) * (var(--rail-visible) - 1)) / var(--rail-visible));
+  min-width:0}
+.home-rail-item>.product-card {
+  height:100%}
+.home-rail-loading {
+  overflow:hidden}
 .scent-pathways .section-head>p {
   font-size:var(--type-body);
   color:var(--muted);
@@ -2765,6 +2779,7 @@ html[data-header-hidden=true] {
   align-items:flex-start;
   padding:var(--space-9);
   background:var(--stone);
+  border:var(--home-card-border);
   min-height:var(--mood-card-height);
   transition:transform var(--motion-ui) var(--ease-out), background var(--motion-ui)}
 .mood-card[data-family=fresh] {
@@ -2774,7 +2789,13 @@ html[data-header-hidden=true] {
 .mood-card[data-family=amber] {
   background:var(--tone-amber)}
 .mood-card:hover {
-  transform:translateY(-5px)}
+  transform:translateY(var(--home-card-lift))}
+.mood-card>svg {
+  stroke-width:var(--home-icon-stroke);
+  color:var(--dark)}
+.scent-shortcuts svg {
+  stroke-width:var(--home-icon-stroke);
+  flex:none}
 .mood-number {
   font-size:var(--type-micro);
   color:var(--muted);
@@ -3596,9 +3617,12 @@ body {
     font-size:var(--type-caption);
     letter-spacing:0}
 .home-product-rail {
-    grid-template-columns:none;
-    grid-auto-columns:76%;
-    column-gap:var(--space-6)}
+    gap:var(--space-6)}
+.home-rail-item {
+    flex-basis:var(--home-rail-mobile-card)}
+.home-product-rail[data-count="1"]>.home-rail-item,
+.home-product-rail[data-count="2"]>.home-rail-item {
+    flex-basis:100%}
 .mood-grid {
     grid-template-columns:repeat(2,minmax(0,1fr));
     gap:var(--space-5)}
@@ -3638,3 +3662,5 @@ to {
 @keyframes hero-copy-in{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes hero-image-in{from{opacity:.7;transform:scale(1.035)}to{opacity:1;transform:scale(1)}}
 @keyframes section-arrive{from{opacity:.55;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+
+@keyframes hero-image-drift{from{transform:scale(1)}to{transform:scale(1.025)}}

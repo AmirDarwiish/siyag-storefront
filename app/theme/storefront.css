@@ -2733,7 +2733,7 @@ html[data-header-hidden=true] {
 .home-edit-caption {padding-block:var(--space-6);border-bottom:var(--home-border)}
 .home-edit-caption h3 {font-size:var(--type-subtitle);margin-bottom:var(--space-2)}
 .home-edit-caption>span {font-size:var(--type-label);color:var(--muted)}
-.home-feature {display:grid;grid-template-columns:1.06fr 1fr;min-height:var(--home-feature-height);background:var(--stone);margin-top:var(--section-space);isolation:isolate}
+.home-feature {display:grid;grid-template-columns:1.06fr 1fr;min-height:var(--home-feature-height);background:var(--stone);margin-top:0;isolation:isolate}
 .home-feature[data-tone=house] {background:var(--dark);color:var(--white);direction:ltr}
 .home-feature-visual {position:relative;min-height:0;overflow:hidden}
 .home-feature-visual img {height:100%;width:100%;object-fit:cover;position:absolute;inset:0}

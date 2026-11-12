@@ -84,7 +84,7 @@ export function HomeProductRail({products}:{products:Product[]}){
     onPointerEnter={event=>{if(event.pointerType==="mouse")mouse.current=event.currentTarget.contains(event.target as Node)}} onPointerLeave={()=>{mouse.current=false;rest()}}
     onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))rest()}}
     onPointerDown={event=>{if(event.currentTarget.contains(event.target as Node))dragging.current=true}}
-    onScroll={event=>{if(dragging.current||performance.now()<resumeAt.current)position.current=event.currentTarget.scrollLeft}} onWheel={rest} onKeyDown={rest}>
+    onScroll={event=>{const now=performance.now();if(dragging.current||now<resumeAt.current){position.current=event.currentTarget.scrollLeft;resumeAt.current=now+settings.current.resume}}} onWheel={rest} onKeyDown={rest}>
     {ordered.map(product=><div className="home-rail-item" dir={ar?"rtl":"ltr"} key={product.id}><ProductCard product={product}/></div>)}
   </div>;
 }

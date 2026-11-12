@@ -35,7 +35,7 @@ export function AdminDashboard(){
   const [section,setSection]=useState("");
   const [menu,setMenu]=useState(false);
   const [productIntent,setProductIntent]=useState<string|null>(null);
-  function navigate(id:string){setProductIntent(null);setSection(id);setMenu(false);window.history.replaceState(null,"","#"+id)}
+  function navigate(id:string){setProductIntent(null);setSection(id);setMenu(false);window.history.replaceState(null,"","#"+id);window.scrollTo({top:0,behavior:"instant"})}
   function editProduct(id:string){navigate("products");setProductIntent(id)}
   useEffect(()=>{
     setSection(window.location.hash.slice(1));
@@ -127,7 +127,7 @@ export function AdminDashboard(){
     {menu&&<Panel title="أقسام الإدارة" description="تنقّل بين صفحات المتجر" onClose={()=>setMenu(false)}><div className="office-sidebar office-mobile-navigation">{navigation}</div></Panel>}
     <div className="office-main"><div className="office-topbar"><button className="office-icon office-menu" aria-label="فتح قائمة الإدارة" onClick={()=>setMenu(true)}><Menu size={21}/></button><div className="office-topbar-path"><span>مساحة العمل</span><span>/</span><strong>{active.label}</strong></div><div><Link href="/" target="_blank" rel="noreferrer" className="office-button secondary office-store-link" aria-label="فتح المتجر"><ArrowUpRight size={16}/><span>فتح المتجر</span></Link><button type="button" className="office-button secondary" onClick={logout} disabled={busy}><LogOut size={16}/> خروج</button></div></div>
     <div className="office-workspace">
-      <header className="office-header"><div><span className="office-section-kicker">SIYAG OFFICE</span><h1>{active.label}</h1><p>{active.description}</p></div>{(role==="Owner"||role==="Catalog")&&active.id!=="products"&&<button className="office-button" type="button" onClick={()=>editProduct("")}><Plus size={17}/> إضافة منتج</button>}</header>
+      <header className="office-header"><div><span className="office-section-kicker">SIYAG OFFICE</span><h1>{active.label}</h1><p>{active.description}</p></div>{(role==="Owner"||role==="Catalog")&&active.id==="overview"&&<button className="office-button" type="button" onClick={()=>editProduct("")}><Plus size={17}/> إضافة منتج</button>}</header>
       <Message message={error} error/>
       {active.id==="overview"?<Overview role={role} navigate={navigate} createProduct={()=>editProduct("")}/>:active.id==="inventory"?<Inventory editProduct={editProduct}/>:active.id==="products"?<Products key={productIntent??"list"} initialEditing={productIntent}/>:<ActivePanel key={active.id}/>}
     </div></div>

@@ -14,12 +14,13 @@ const transitions:Record<string,string[]>={
 
 export function Orders(){
   const [page,setPage]=useState(1);
+  const [pageSize,setPageSize]=useState(20);
   const [status,setStatus]=useState("");
   const [number,setNumber]=useState("");
   const [search,setSearch]=useState("");
   const {editor:selected,open:setSelected,close}=useEditorRoute("orders");
   const [revision,setRevision]=useState(0);
-  const query=new URLSearchParams({pageSize:"20",pageNumber:String(page)});
+  const query=new URLSearchParams({pageSize:String(pageSize),pageNumber:String(page)});
   if(status)query.set("status",status);
   if(number)query.set("number",number);
   const {data,error}=useOfficeData<Page<OrderRow>>("orders?"+query,revision,20_000);
@@ -35,16 +36,16 @@ export function Orders(){
       </select><button type="button" className="office-button secondary" onClick={refresh}><RefreshCw size={16}/> تحديث</button></div>
     </div>
     <Message message={error} error/>
-    <TableFrame label="قائمة الطلبات" actions total={data?.totalCount} offset={(page-1)*20} scope={`${page}|${status}|${number}`} bulkActions={orderActions()} onBulkComplete={refresh}><table className="office-table">
+    <TableFrame label="قائمة الطلبات" actions total={data?.totalCount} offset={(page-1)*pageSize} scope={`${page}|${status}|${number}`} bulkActions={orderActions()} onBulkComplete={refresh}><table className="office-table">
       <thead><tr><th>رقم الطلب</th><th>التاريخ</th><th>الحالة</th><th>الدفع</th><th>الإجمالي</th><th>التفاصيل</th></tr></thead>
       <tbody>{data?.data.map(order=><tr key={order.number}>
-        <td><strong dir="ltr">{order.number}</strong></td><td>{orderDate(order.createdAt)}</td>
+        <td><strong dir="ltr">{order.number}</strong></td><td data-sort-value={order.createdAt}>{orderDate(order.createdAt)}</td>
         <td><span className="office-badge" data-status={order.status}>{statusNames[order.status]??order.status}</span></td>
-        <td>{paymentNames[order.paymentStatus]??order.paymentStatus}</td><td>{money(order.totalMinor,"ar")}</td>
+        <td>{paymentNames[order.paymentStatus]??order.paymentStatus}</td><td data-sort-value={order.totalMinor}>{money(order.totalMinor,"ar")}</td>
         <td><RowAction label={`عرض الطلب ${order.number}`} icon={Eye} onClick={()=>setSelected(order.number)}/></td>
       </tr>)}</tbody>
     </table>{!data?.data.length&&<p className="office-empty">{error?"":data?"لا توجد طلبات بهذه الخيارات.":"جارٍ تحميل الطلبات…"}</p>}</TableFrame>
-    <Pagination data={data} go={setPage}/>
+    <Pagination data={data} go={setPage} changeSize={setPageSize}/>
 
   </>;
 }

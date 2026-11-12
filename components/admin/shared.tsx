@@ -1,9 +1,9 @@
 "use client";
 import {Children,cloneElement,isValidElement,useEffect,useId,useRef,useState,type ReactElement,type ReactNode} from "react";
-import {Check,Download,LoaderCircle,ChevronLeft,ChevronRight,MoveHorizontal,X,type LucideIcon} from "lucide-react";
+import {ArrowDownUp,SlidersHorizontal,Check,Download,LoaderCircle,ChevronLeft,ChevronRight,MoveHorizontal,X,type LucideIcon} from "lucide-react";
 import Link from "next/link";
 import {usePathname,useRouter} from "next/navigation";
-import {Tooltip as TooltipPrimitive} from "radix-ui";
+import {Popover as OfficePopover,Tooltip as TooltipPrimitive} from "radix-ui";
 import {Dialog,DialogContent,DialogDescription,DialogTitle} from "@/components/ui/dialog";
 import {office} from "@/lib/admin";
 import type {Page} from "@/lib/store";
@@ -37,6 +37,8 @@ export function Message({message,error=false}:{message:string;error?:boolean}){
 }
 type TableElement=ReactElement<{children?:ReactNode;colSpan?:number;[key:string]:unknown}>;
 const elements=(nodes:ReactNode)=>{const result:TableElement[]=[];Children.forEach(nodes,node=>{if(isValidElement(node))result.push(node as TableElement)});return result};
+const nodeText=(node:ReactNode):string=>{if(typeof node==="string"||typeof node==="number")return String(node);if(Array.isArray(node))return node.map(nodeText).join(" ");return isValidElement<{children?:ReactNode}>(node)?nodeText(node.props.children):""};
+const comparable=(value:string)=>value.replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[\u200e\u200f\u061c]/g,"").trim();
 export type BulkAction={id:string;label:string;icon:LucideIcon;run:(id:string)=>Promise<void>};
 export function RowAction({label,icon:Icon,onClick,href,disabled=false}:{label:string;icon:LucideIcon;onClick?:()=>void;href?:string;disabled?:boolean}){
   const control=href?<a className="office-row-action" href={href} target="_blank" rel="noreferrer" aria-label={label}><Icon size={18}/></a>:<button type="button" className="office-row-action" aria-label={label} disabled={disabled} onClick={onClick}><Icon size={18}/></button>;
@@ -52,10 +54,26 @@ export function TableFrame({label,children,actions=false,compact=false,total,off
   const [overflow,setOverflow]=useState(false),[selection,setSelection]=useState<Set<string>>(new Set());
   const [pending,setPending]=useState<BulkAction|null>(null),[busy,setBusy]=useState(false),[feedback,setFeedback]=useState(""),[failed,setFailed]=useState(false),[progress,setProgress]=useState(0);
   const hint=useId();
+  const [sort,setSort]=useState<{column:number;direction:1|-1}|null>(null);
+  const [hidden,setHidden]=useState<Set<number>>(new Set());
   const table=elements(children).find(node=>node.type==="table");
   const body=table&&elements(table.props.children).find(node=>node.type==="tbody");
+  const head=table&&elements(table.props.children).find(node=>node.type==="thead");
+  const columns=head?elements(elements(head.props.children)[0]?.props.children):[];
+  const labels=columns.map(cell=>nodeText(cell.props.children));
   const rows=body?elements(body.props.children).filter(row=>row.type==="tr"&&row.key!==null):[];
   const ids=rows.map(row=>String(row.key)),signature=JSON.stringify([scope,ids]);
+  const ordered=sort?[...rows].sort((a,b)=>{
+    const get=(row:TableElement)=>{const cell=elements(row.props.children)[sort.column];return comparable(String(cell?.props["data-sort-value"]??nodeText(cell?.props.children)))};
+    const left=get(a),right=get(b),number=/^-?\d+(?:[.,]\d+)?(?:\s|$)/;
+    const result=number.test(left)&&number.test(right)?Number(left.match(number)![0].trim().replace(",","."))-Number(right.match(number)![0].trim().replace(",",".")):new Intl.Collator("ar",{numeric:true,sensitivity:"base"}).compare(left,right);
+    return result*sort.direction;
+  }):rows;
+  const visibleCells=(row:TableElement,header=false)=>elements(row.props.children).flatMap((cell,index)=>{
+    if(hidden.has(index))return [];
+    if(!header||actions&&index===columns.length-1)return [cloneElement(cell,{key:index})];
+    return [cloneElement(cell,{key:index,"aria-sort":sort?.column===index?(sort.direction===1?"ascending":"descending"):"none"},<button type="button" className="office-sort-button" aria-label={`ترتيب حسب ${labels[index]}`} aria-pressed={sort?.column===index} onClick={()=>setSort(current=>({column:index,direction:current?.column===index&&current.direction===1?-1:1}))}>{cell.props.children}<ArrowDownUp size={12}/></button>)];
+  });
   const selected=ids.filter(id=>selection.has(id));
   useEffect(()=>{if(lock.current||total===undefined)return;if(lastScope.current!==signature){setSelection(new Set());setPending(null)}lastScope.current=signature},[signature,total]);
   useEffect(()=>{
@@ -89,28 +107,28 @@ export function TableFrame({label,children,actions=false,compact=false,total,off
   }
   const enhanced=table?cloneElement(table,{},elements(table.props.children).map(part=>{
     if(part.type!=="thead"&&part.type!=="tbody")return part;
-    return cloneElement(part,{key:String(part.type)},elements(part.props.children).map((row,index)=>{
+    return cloneElement(part,{key:String(part.type)},(part.type==="tbody"&&rows.length?ordered:elements(part.props.children)).map((row,index)=>{
       if(row.type!=="tr")return row;
-      if(part.type==="thead")return cloneElement(row,{key:"head"},<th className="office-selection-cell"><SelectBox label={`تحديد كل الصفوف المعروضة في ${label}`} checked={!!ids.length&&selected.length===ids.length} mixed={selected.length>0&&selected.length<ids.length} disabled={busy||!ids.length} onChange={()=>{setPending(null);setSelection(selected.length===ids.length?new Set():new Set(ids))}}/></th>,<th className="office-index-cell" scope="col">#</th>,row.props.children);
+      if(part.type==="thead")return cloneElement(row,{key:"head"},<th className="office-selection-cell"><SelectBox label={`تحديد كل الصفوف المعروضة في ${label}`} checked={!!ids.length&&selected.length===ids.length} mixed={selected.length>0&&selected.length<ids.length} disabled={busy||!ids.length} onChange={()=>{setPending(null);setSelection(selected.length===ids.length?new Set():new Set(ids))}}/></th>,<th className="office-index-cell" scope="col">#</th>,visibleCells(row,true));
       if(row.key===null)return row;
       const id=String(row.key),number=offset+index+1;
-      return cloneElement(row,{key:id,"data-office-row":id,"data-selected":selection.has(id)},<td className="office-selection-cell"><SelectBox label={`تحديد الصف ${number} في ${label}`} checked={selection.has(id)} disabled={busy} onChange={()=>toggle(id)}/></td>,<td className="office-index-cell">{number.toLocaleString("ar-EG")}</td>,row.props.children);
+      return cloneElement(row,{key:id,"data-office-row":id,"data-selected":selection.has(id)},<td className="office-selection-cell"><SelectBox label={`تحديد الصف ${number} في ${label}`} checked={selection.has(id)} disabled={busy} onChange={()=>toggle(id)}/></td>,<td className="office-index-cell">{number.toLocaleString("ar-EG")}</td>,visibleCells(row));
     }));
   })):null;
   return <section className="office-data-table" data-actions={actions} data-compact={compact} aria-busy={busy}>
-    <header className="office-table-heading"><h2>{label}</h2>{total!==undefined&&<span className="office-count">{total.toLocaleString("ar-EG")}</span>}<small>التحديد للصفوف المعروضة</small></header>
+    <header className="office-table-heading"><h2>{label}</h2>{total!==undefined&&<span className="office-count">{total.toLocaleString("ar-EG")}</span>}<OfficePopover.Root><OfficePopover.Trigger asChild><button type="button" className="office-columns-trigger" aria-label={`اختيار أعمدة ${label}`}><SlidersHorizontal size={14}/> الأعمدة</button></OfficePopover.Trigger><OfficePopover.Portal><OfficePopover.Content className="office-table-column-menu" align="end" sideOffset={8} dir="rtl" aria-label={`أعمدة ${label}`}>{labels.map((name,index)=><label key={index}><input type="checkbox" checked={!hidden.has(index)} disabled={index===0||actions&&index===columns.length-1} onChange={()=>setHidden(current=>{const next=new Set(current);if(next.has(index))next.delete(index);else next.add(index);return next})}/>{name}</label>)}</OfficePopover.Content></OfficePopover.Portal></OfficePopover.Root></header>
     {!!selected.length&&<div className="office-bulk-bar"><strong>{selected.length.toLocaleString("ar-EG")} محدد</strong><div className="office-bulk-actions"><button type="button" className="office-button secondary" disabled={busy} onClick={exportSelected}><Download size={16}/> تصدير المحدد</button>{bulkActions.map(action=><button type="button" className="office-button secondary" key={action.id} disabled={busy} onClick={()=>setPending(action)}><action.icon size={16}/>{action.label}</button>)}<button type="button" className="office-icon" title="إلغاء التحديد" aria-label="إلغاء التحديد" disabled={busy} onClick={()=>{setSelection(new Set());setPending(null)}}><X size={17}/></button></div>{pending&&<div className="office-bulk-confirm"><p>تنفيذ «{pending.label}» على {selected.length} صف محدد؟</p><button type="button" className="office-button" disabled={busy} onClick={()=>void execute()}>{busy?<LoaderCircle size={16} className="office-spinning"/>:<Check size={16}/>} {busy?`${progress} / ${selected.length}`:"تأكيد التنفيذ"}</button><button type="button" className="office-button secondary" disabled={busy} onClick={()=>setPending(null)}>إلغاء</button></div>}</div>}
     {feedback&&<div className="office-table-feedback"><Message message={feedback} error={failed}/></div>}
     <div className="office-table-wrap" ref={viewport} role="region" aria-label={label} aria-describedby={overflow?hint:undefined} tabIndex={overflow?0:undefined}>{Children.map(children,child=>child===table?enhanced:child)}</div>
     {overflow&&<p className="office-table-hint" id={hint}><MoveHorizontal size={16}/> مرّر أفقيًا لعرض باقي الأعمدة. يمكنك استخدام أسهم لوحة المفاتيح.</p>}
   </section>;
 }
-export function Pagination({data,go}:{data?:Page<unknown>;go:(page:number)=>void}){
+export function Pagination({data,go,changeSize}:{data?:Page<unknown>;go:(page:number)=>void;changeSize?:(size:number)=>void}){
   if(!data)return null;
   const first=data.totalCount?(data.pageNumber-1)*data.pageSize+1:0;
   const last=Math.min(data.pageNumber*data.pageSize,data.totalCount);
   const format=(n:number)=>n.toLocaleString("ar-EG");
-  return <div className="office-pagination"><p>عرض {format(first)}–{format(last)} من {format(data.totalCount)}</p><div><button type="button" disabled={data.pageNumber<=1} onClick={()=>go(data.pageNumber-1)} aria-label="الصفحة السابقة"><ChevronRight size={17}/> السابق</button>
+  return <div className="office-pagination">{changeSize&&<label>صفوف الصفحة<select aria-label="عدد الصفوف في الصفحة" value={data.pageSize} onChange={e=>{changeSize(Number(e.target.value));go(1)}}>{[10,20,30,50].map(size=><option value={size} key={size}>{size.toLocaleString("ar-EG")}</option>)}</select></label>}<p>عرض {format(first)}–{format(last)} من {format(data.totalCount)}</p><div><button type="button" disabled={data.pageNumber<=1} onClick={()=>go(data.pageNumber-1)} aria-label="الصفحة السابقة"><ChevronRight size={17}/> السابق</button>
     <span>{format(data.pageNumber)} / {format(Math.max(1,data.totalPages))}</span><button type="button" disabled={data.pageNumber>=data.totalPages} onClick={()=>go(data.pageNumber+1)} aria-label="الصفحة التالية">التالي <ChevronLeft size={17}/></button></div></div>;
 }
 export function useEditorRoute(section:string){

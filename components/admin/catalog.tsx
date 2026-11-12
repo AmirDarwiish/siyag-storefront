@@ -20,7 +20,7 @@ const notes=(value:FormDataEntryValue|null)=>String(value??"").split(/[،,\n]+/)
 const variantOrder=(variants:AdminVariant[])=>[...variants].sort((a,b)=>a.sizeMl-b.sizeMl);
 
 export function Products(){
-  const [page,setPage]=useState(1),[query,setQuery]=useState(""),[filter,setFilter]=useState("all");
+  const [page,setPage]=useState(1),[pageSize,setPageSize]=useState(20),[query,setQuery]=useState(""),[filter,setFilter]=useState("all");
   const {editor:editing,open:setEditing,close:closeEditor}=useEditorRoute("products");
   const [revision,setRevision]=useState(0);
   const [products,setProducts]=useState<ProductSummary[]>();
@@ -45,8 +45,8 @@ export function Products(){
   },[revision]);
   const term=query.trim().toLocaleLowerCase();
   const filtered=products?.filter(p=>(filter==="all"||(filter==="published"?p.published:!p.published))&&(!term||[p.nameAr,p.nameEn,p.slug].some(value=>value.toLocaleLowerCase().includes(term))));
-  const currentPage=Math.min(page,Math.max(1,Math.ceil((filtered?.length??0)/20)));
-  const rows=filtered?.slice((currentPage-1)*20,currentPage*20);
+  const currentPage=Math.min(page,Math.max(1,Math.ceil((filtered?.length??0)/pageSize)));
+  const rows=filtered?.slice((currentPage-1)*pageSize,currentPage*pageSize);
   const visibleIds=JSON.stringify(rows?.map(row=>row.id)??[]);
   useEffect(()=>{
     const controller=new AbortController();setDetailError("");
@@ -68,15 +68,15 @@ export function Products(){
     <div className="office-list-controls"><div className="office-tabs" role="group" aria-label="حالة المنتج">{[["all","الكل"],["published","منشور"],["draft","مسودة"]].map(([value,label])=><button key={value} aria-pressed={filter===value} onClick={()=>{setFilter(value);setPage(1)}}>{label}</button>)}</div><label className="office-search"><Search size={17}/><input aria-label="البحث في المنتجات" placeholder="اسم المنتج أو المعرّف…" value={query} onChange={e=>{setQuery(e.target.value);setPage(1)}}/></label></div>
     <Message message={error} error/>
     <Message message={detailError} error/>
-    <TableFrame label="قائمة المنتجات" actions total={filtered?.length} offset={(currentPage-1)*20} scope={`${query}|${filter}|${currentPage}`} bulkActions={productActions()} onBulkComplete={()=>setRevision(v=>v+1)}><table className="office-table"><thead><tr><th>المنتج</th><th>الحالة</th><th>السعر</th><th>المخزون والأحجام</th><th>الأقسام</th><th>الإجراءات</th></tr></thead>
+    <TableFrame label="قائمة المنتجات" actions total={filtered?.length} offset={(currentPage-1)*pageSize} scope={`${query}|${filter}|${currentPage}`} bulkActions={productActions()} onBulkComplete={()=>setRevision(v=>v+1)}><table className="office-table"><thead><tr><th>المنتج</th><th>الحالة</th><th>السعر</th><th>المخزون والأحجام</th><th>الأقسام</th><th>الإجراءات</th></tr></thead>
       <tbody>{rows?.map(product=>{const detail=details[product.id],prices=detail?.variants.map(v=>v.priceMinor)??[],stock=detail?.variants.reduce((sum,v)=>sum+v.stock,0);return <tr key={product.id}><td><button className="office-product-name" onClick={()=>setEditing(product.id)}><ProductThumb url={detail?.images[0]} name={product.nameAr}/><span><strong>{product.nameAr}</strong><small>{product.nameEn}</small><small dir="ltr">{product.slug}</small></span></button></td>
         <td><span className="office-badge" data-status={product.published?"confirmed":"neutral"}>{product.published?"منشور":"مسودة"}</span>{product.featured&&<small>ضمن المختارات</small>}</td>
-        <td>{detail?prices.length?<>{money(Math.min(...prices),"ar")}{Math.max(...prices)!==Math.min(...prices)&&<small>حتى {money(Math.max(...prices),"ar")}</small>}</>:"بدون أحجام":"—"}</td>
-        <td>{detail?<><span className="office-badge" data-status={stock===0?"cancelled":(stock??0)<=5?"pending":"confirmed"}>{stock} قطعة</span><small>{detail.variants.length} حجم · {detail.variants.filter(v=>v.active).length} مفعّل</small></>:"—"}</td>
+        <td data-sort-value={prices.length?Math.min(...prices):undefined}>{detail?prices.length?<>{money(Math.min(...prices),"ar")}{Math.max(...prices)!==Math.min(...prices)&&<small>حتى {money(Math.max(...prices),"ar")}</small>}</>:"بدون أحجام":"—"}</td>
+        <td data-sort-value={stock}>{detail?<><span className="office-badge" data-status={stock===0?"cancelled":(stock??0)<=5?"pending":"confirmed"}>{stock} قطعة</span><small>{detail.variants.length} حجم · {detail.variants.filter(v=>v.active).length} مفعّل</small></>:"—"}</td>
         <td className="office-wrap-cell">{detail?(detail.collections.map(slug=>collections?.find(c=>c.slug===slug)?.nameAr??slug).join("، ")||"غير مصنّف"):"—"}</td>
         <td><div className="office-row-actions"><RowAction label={`تعديل ${product.nameAr}`} icon={SquarePen} onClick={()=>setEditing(product.id)}/>{product.published&&<RowAction label={`معاينة ${product.nameAr}`} icon={ExternalLink} href={"/products/"+product.slug}/>}</div></td></tr>})}</tbody></table>
       {!rows?.length&&!error&&<div className="office-empty"><Boxes size={28}/><strong>{!products?"جارٍ تحميل العطور…":products.length?"لا توجد منتجات مطابقة":"ابدأ بأول عطر في مجموعتك"}</strong><p>{products?.length?"جرّب اسمًا آخر أو غيّر حالة العرض.":"احفظ المنتج كمسودة، ثم أضف الأحجام والمخزون قبل النشر."}</p></div>}</TableFrame>
-    {filtered&&<Pagination data={{data:rows??[],totalCount:filtered.length,totalPages:Math.ceil(filtered.length/20),pageNumber:currentPage,pageSize:20}} go={setPage}/>}
+    {filtered&&<Pagination data={{data:rows??[],totalCount:filtered.length,totalPages:Math.ceil(filtered.length/pageSize),pageNumber:currentPage,pageSize}} go={setPage} changeSize={setPageSize}/>}
 
   </>;
 }
@@ -165,7 +165,7 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
     {!!product.id&&<section className="office-form-section">
       <div className="office-toolbar"><h3>الأحجام والأسعار والمخزون</h3><button type="button" className="office-button secondary" onClick={()=>setVariant(blankVariant)}><Plus size={16}/> إضافة حجم</button></div>
       <TableFrame label="الأحجام والأسعار" actions compact total={product.variants.length} bulkActions={[true,false].map(active=>({id:active?"activate":"deactivate",label:active?"تفعيل الأحجام":"إيقاف الأحجام",icon:active?Eye:EyeOff,run:async(id:string)=>{const current=await office<AdminProduct>("products/"+product.id);const item=current.variants.find(v=>v.id===id);if(!item)throw new Error("الحجم لم يعد متاحًا");const updated=await office<AdminVariant>(`products/${product.id}/variants/${id}`,{method:"PUT",data:{...item,active}});setProduct(value=>({...value,variants:value.variants.map(v=>v.id===id?updated:v)}))}}))} onBulkComplete={changed}><table className="office-table"><thead><tr><th>SKU</th><th>الحجم</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>
-        {variantOrder(product.variants).map(item=><tr key={item.id}><td dir="ltr">{item.sku}</td><td>{item.sizeMl} مل</td><td>{money(item.priceMinor,"ar")}</td><td>{item.stock}</td><td>{item.active?"مفعّل":"متوقف"}</td><td><RowAction label={`تعديل الحجم ${item.sizeMl} مل`} icon={SquarePen} onClick={()=>setVariant(item)}/></td></tr>)}
+        {variantOrder(product.variants).map(item=><tr key={item.id}><td dir="ltr">{item.sku}</td><td>{item.sizeMl} مل</td><td data-sort-value={item.priceMinor}>{money(item.priceMinor,"ar")}</td><td>{item.stock}</td><td>{item.active?"مفعّل":"متوقف"}</td><td><RowAction label={`تعديل الحجم ${item.sizeMl} مل`} icon={SquarePen} onClick={()=>setVariant(item)}/></td></tr>)}
       </tbody></table>{!product.variants.length&&<p className="office-empty">أضف حجمًا قبل نشر العطر.</p>}</TableFrame>
 
     </section>}

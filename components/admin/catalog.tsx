@@ -69,7 +69,7 @@ export function Products(){
     <Message message={error} error/>
     <Message message={detailError} error/>
     <TableFrame label="قائمة المنتجات" actions total={filtered?.length} offset={(currentPage-1)*pageSize} scope={`${query}|${filter}|${currentPage}`} bulkActions={productActions()} onBulkComplete={()=>setRevision(v=>v+1)}><table className="office-table"><thead><tr><th>المنتج</th><th>الحالة</th><th>السعر</th><th>المخزون والأحجام</th><th>الأقسام</th><th>الإجراءات</th></tr></thead>
-      <tbody>{rows?.map(product=>{const detail=details[product.id],prices=detail?.variants.map(v=>v.priceMinor)??[],stock=detail?.variants.reduce((sum,v)=>sum+v.stock,0);return <tr key={product.id}><td><button className="office-product-name" onClick={()=>setEditing(product.id)}><ProductThumb url={detail?.images[0]} name={product.nameAr}/><span><strong>{product.nameAr}</strong><small>{product.nameEn}</small><small dir="ltr">{product.slug}</small></span></button></td>
+      <tbody>{rows?.map(product=>{const detail=details[product.id],prices=detail?.variants.map(v=>v.priceMinor)??[],stock=detail?.variants.reduce((sum,v)=>sum+v.stock,0);return <tr key={product.id}><td><button className="office-product-name" onClick={()=>setEditing(product.id)}><ProductThumb url={detail?.images[0]} name={product.nameAr}/><span><strong>{product.nameAr}</strong><small>{product.nameEn}</small></span></button></td>
         <td><span className="office-badge" data-status={product.published?"confirmed":"neutral"}>{product.published?"منشور":"مسودة"}</span>{product.featured&&<small>ضمن المختارات</small>}</td>
         <td data-sort-value={prices.length?Math.min(...prices):undefined}>{detail?prices.length?<>{money(Math.min(...prices),"ar")}{Math.max(...prices)!==Math.min(...prices)&&<small>حتى {money(Math.max(...prices),"ar")}</small>}</>:"بدون أحجام":"—"}</td>
         <td data-sort-value={stock}>{detail?<><span className="office-badge" data-status={stock===0?"cancelled":(stock??0)<=5?"pending":"confirmed"}>{stock} قطعة</span><small>{detail.variants.length} حجم · {detail.variants.filter(v=>v.active).length} مفعّل</small></>:"—"}</td>
@@ -135,7 +135,7 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
   }
   if(pathname.split("/")[4]==="variants")return variant?<section className="office-detail"><header><h3>{variant.id?`تعديل صنف ${variant.sku}`:"إضافة صنف للمنتج"}</h3><p className="office-help">{product.nameAr} · سعر ومخزون مستقل لكل صنف.</p></header><VariantForm key={variant.id||"new"} productId={product.id} initial={variant} onCancel={()=>setVariant(null)} onSave={value=>{setProduct(current=>({...current,variants:[...current.variants.filter(item=>item.id!==value.id),value]}));if(!variant.id)router.replace(`/admin/products/${product.id}/variants/${value.id}`);changed()}}/></section>:<Message message="الصنف غير موجود." error/>;
   return <div className="office-detail">
-    <div className="office-product-progress"><strong>{product.id?"بيانات المنتج محفوظة":"منتج جديد وأصنافه"}</strong><span>{product.id?product.variants.length?"راجع المخزون ثم فعّل النشر واحفظ التغييرات.":"الخطوة التالية: أضف حجمًا وسعرًا ومخزونًا أسفل البيانات.":"أضف بيانات المنتج والأحجام والأسعار والمخزون، ثم احفظها معًا."}</span></div>
+    {!product.id&&<p className="office-help">المنتج وأصنافه يُحفظوا معًا. لكل صنف سعر ومخزون مستقل.</p>}
     <form className="office-form" onSubmit={save}>
       <section className="office-editor-section"><h3>بيانات العطر</h3>
       <div className="office-fields">

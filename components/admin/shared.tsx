@@ -139,7 +139,7 @@ export function useEditorRoute(section:string){
 export function Panel({title,description,onClose,children}:{title:string;description:string;onClose:()=>void;children:ReactNode}){
   const pathname=usePathname();
   const back=pathname.split("/").slice(0,3).join("/");
-  if(title!=="أقسام الإدارة")return <section className="office-editor-page"><header className="office-editor-head"><div><Link href={back} className="office-text-button"><ChevronRight size={17}/> العودة للقائمة</Link><h2>{title}</h2><p>{description}</p></div><button type="button" className="office-icon" aria-label="العودة للقائمة" onClick={onClose}><X size={20}/></button></header><div className="office-editor-body">{children}</div></section>;
+  if(title!=="أقسام الإدارة")return <section className="office-editor-page"><header className="office-editor-head"><div><Link href={back} className="office-text-button"><ChevronRight size={17}/> العودة للقائمة</Link><h2>{title}</h2></div><button type="button" className="office-icon" aria-label="العودة للقائمة" onClick={onClose}><X size={20}/></button></header><div className="office-editor-body">{children}</div></section>;
   return <Dialog open onOpenChange={open=>{if(!open)onClose()}}><DialogContent placement="side" className="office-modal" showCloseButton={false}>
     <div className="office-modal-head"><div><DialogTitle>{title}</DialogTitle><DialogDescription>{description}</DialogDescription></div>
       <button type="button" className="office-icon" aria-label="إغلاق" onClick={onClose}><X size={20}/></button></div>

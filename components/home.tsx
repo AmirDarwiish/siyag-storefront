@@ -113,7 +113,7 @@ export function Home() {
         <Link className="text-link" href="/shop">{tr("View the collection", "تصفّح المجموعة")}</Link>
       </div>
       <p className="home-rail-caption">{tr('A scent for every side of you.','لكل جانب فيك… عطر.')}</p>
-      {loading?<div className="product-grid home-rail-loading" aria-busy="true" aria-label={tr("Loading fragrances","جارٍ تحميل العطور")}>{[1,2,3,4].map(i=><div className="skeleton" key={i}/>)}</div>:<HomeProductRail key={lang} products={products}/>}
+      {loading?<div className="product-grid home-rail-loading" aria-busy="true" aria-label={tr("Loading fragrances","جارٍ تحميل العطور")}>{[1,2,3,4].map(i=><div className="skeleton" key={i}/>)}</div>:<HomeProductRail products={products}/>}
     </div></section>}
 
     <section className="scent-pathways container section" data-reveal><div className="section-head"><div><span className="eyebrow">{tr('FOLLOW YOUR INSTINCT','اتبع إحساسك')}</span><h2>{tr('What’s your mood?','أي طابع يشبهك؟')}</h2></div><p>{tr('Explore a different side of scent.','اكتشف جانب جديد من عالم العطور.')}</p></div><div className="mood-grid">{moods.map(({family,title,copy,icon:Icon},index)=><Link href={'/shop?family='+family} className="mood-card" data-family={family} key={family}><span className="mood-number">0{index+1}</span><Icon size={38}/><h3>{title}</h3><p>{copy}</p><span className="mood-action">{tr('Explore','اكتشف')}</span></Link>)}</div></section>

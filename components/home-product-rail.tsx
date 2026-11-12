@@ -14,7 +14,7 @@ export function HomeProductRail({products}:{products:Product[]}){
   const [reduced,setReduced]=useState(true);
   const mouse=useRef(false),dragging=useRef(false);
   const position=useRef(0),step=useRef(0),recycling=useRef(false),resumeAt=useRef(0);
-  const settings=useRef({speed:18,resume:1800});
+  const settings=useRef({speed:0,resume:0});
   const count=products.length;
   const start=count?(shift+(!ar&&!reduced?count-1:0))%count:0;
   const ordered=[...products.slice(start),...products.slice(0,start)];
@@ -34,7 +34,7 @@ export function HomeProductRail({products}:{products:Product[]}){
       if(!element)return;
       const css=getComputedStyle(element);
       step.current=(element.firstElementChild?.getBoundingClientRect().width??0)+(parseFloat(css.columnGap)||0);
-      settings.current={speed:parseFloat(css.getPropertyValue("--motion-rail-speed"))||18,resume:parseFloat(css.getPropertyValue("--motion-rail-resume"))||1800};
+      settings.current={speed:parseFloat(css.getPropertyValue("--motion-rail-speed"))||0,resume:parseFloat(css.getPropertyValue("--motion-rail-resume"))||0};
       position.current=ar||reduced?0:step.current;
       recycling.current=false;element.scrollLeft=position.current;
     }

@@ -1,12 +1,57 @@
-'use client';
-import {useEffect,useState} from 'react';
-import {office} from '@/lib/admin';
-import {money} from '@/lib/store';
+"use client";
+import {useState,type CSSProperties} from "react";
+import {Activity,Info,MousePointerClick,RefreshCw,ShoppingBag,Users,Wallet} from "lucide-react";
+import {money} from "@/lib/store";
+import {Message,TableFrame,useOfficeData} from "./shared";
+
 type Metrics={sessions:number;purchases:number;revenueMinor:number;conversion:number};
 type Report={days:number;truncated:boolean;visitors:number;sessions:number;productViews:number;addToCartSessions:number;checkoutSessions:number;purchaseSessions:number;bagToCheckoutSessions:number;abandonedCartSessions:number;abandonedCheckoutSessions:number;expressCheckoutSessions:number;purchases:number;revenueMinor:number;aovMinor:number;sources:{source:string;medium:string;campaign:string;metrics:Metrics}[];devices:{device:string;metrics:Metrics}[];visitorsByType:{returning:boolean;metrics:Metrics}[];topViewed:{product:string;views:number}[];topSelling:{variantId:string;product:string;quantity:number;revenueMinor:number}[];events:{name:string;count:number}[]};
+const number=(value:number)=>value.toLocaleString("ar-EG");
+const rate=(value:number,total:number)=>total?(value/total*100).toLocaleString("ar-EG",{maximumFractionDigits:1})+"٪":"—";
+const deviceNames:Record<string,string>={mobile:"موبايل",desktop:"كمبيوتر",tablet:"تابلت",unknown:"غير محدد"};
+function EmptyRow({columns}:{columns:number}){return <tr><td colSpan={columns}><div className="office-empty"><Activity size={24}/><p>لا توجد بيانات مسجلة في الفترة المحددة.</p></div></td></tr>}
+
 export function JourneyDashboard(){
- const [days,setDays]=useState(30);const [report,setReport]=useState<Report>();const [error,setError]=useState('');
- useEffect(()=>{const controller=new AbortController();setReport(undefined);setError('');office<Report>('reports/journey?days='+days,{signal:controller.signal}).then(setReport).catch(()=>{if(!controller.signal.aborted)setError('تعذر تحميل التقرير. تأكد من نشر تحديث التحليلات على خادم المتجر.')});return()=>controller.abort()},[days]);
- const rate=(n:number,d:number)=>d?(n/d*100).toFixed(1)+'٪':'—';
- return <section><label>فترة التقرير <select value={days} onChange={e=>setDays(Number(e.target.value))}><option value={7}>٧ أيام</option><option value={30}>٣٠ يوم</option><option value={90}>٩٠ يوم</option></select></label><p>الأرقام تخص الزوار الذين وافقوا على القياس. قيمة الطلبات تشمل طلبات الدفع عند الاستلام المسجلة والطلبات الإلكترونية التي أكد الخادم تحصيلها؛ وليست صافي النقد المحصل.</p>{error&&<p role="alert">{error}</p>}{!error&&!report&&<p role="status">جاري تحميل التقرير…</p>}{report&&<>{report.truncated&&<p role="alert">الفترة تجاوزت ١٠٠ ألف حدث؛ اختر فترة أقصر لتقرير كامل.</p>}<div className="journey-stats">{[['الزوار',report.visitors],['الجلسات',report.sessions],['مشاهدات المنتجات',report.productViews],['الطلبات المنسوبة',report.purchases],['قيمة الطلبات',money(report.revenueMinor,'ar')],['متوسط الطلب',money(Math.round(report.aovMinor),'ar')],['إضافة للسلة / جلسات',rate(report.addToCartSessions,report.sessions)],['إتمام / جلسات',rate(report.purchaseSessions,report.sessions)],['السلة ← الطلب',rate(report.bagToCheckoutSessions,report.addToCartSessions)],['إتمام الـCheckout',rate(report.purchaseSessions,report.checkoutSessions)],['جلسات سلة لم تبدأ الطلب',report.abandonedCartSessions],['جلسات طلب بدون شراء',report.abandonedCheckoutSessions],['شراء مباشر',report.expressCheckoutSessions]].map(([label,value])=><div key={label}><small>{label}</small><strong>{value}</strong></div>)}</div><p>مؤشرات ترك الرحلة تُحسب بالجلسات: جلسات السلة بدون بداية طلب، وجلسات بداية الطلب بدون شراء. نسبة انتقال السلة للطلب تخص جلسات إضافة للسلة التي بدأت الطلب؛ الشراء المباشر ظاهر بشكل منفصل.</p><div className="office-table-wrap"><table><caption>المصادر والحملات</caption><thead><tr><th>المصدر</th><th>الوسيط</th><th>الحملة</th><th>الجلسات</th><th>الطلبات</th><th>القيمة</th></tr></thead><tbody>{report.sources.map((s,i)=><tr key={i}><td>{s.source}</td><td>{s.medium}</td><td>{s.campaign}</td><td>{s.metrics.sessions}</td><td>{s.metrics.purchases}</td><td>{money(s.metrics.revenueMinor,'ar')}</td></tr>)}</tbody></table></div><div className="office-table-wrap"><table><caption>الجهاز وسلوك الزوار</caption><thead><tr><th>الفئة</th><th>الجلسات</th><th>الطلبات</th><th>التحويل</th></tr></thead><tbody>{[...report.devices.map(d=>({label:d.device,metrics:d.metrics})),...report.visitorsByType.map(d=>({label:d.returning?'عائد':'جديد',metrics:d.metrics}))].map(d=><tr key={d.label}><td>{d.label}</td><td>{d.metrics.sessions}</td><td>{d.metrics.purchases}</td><td>{d.metrics.conversion.toFixed(1)}٪</td></tr>)}</tbody></table></div><div className="office-table-wrap"><table><caption>الأكثر مشاهدة</caption><thead><tr><th>المنتج</th><th>المشاهدات</th></tr></thead><tbody>{report.topViewed.map(p=><tr key={p.product}><td>{p.product}</td><td>{p.views}</td></tr>)}</tbody></table></div><div className="office-table-wrap"><table><caption>الأكثر مبيعًا</caption><thead><tr><th>المنتج</th><th>الكمية</th><th>القيمة</th></tr></thead><tbody>{report.topSelling.map(p=><tr key={p.variantId}><td>{p.product}</td><td>{p.quantity}</td><td>{money(p.revenueMinor,'ar')}</td></tr>)}</tbody></table></div>{report.sessions===0&&<p>لا توجد أحداث مسجلة في الفترة؛ لا يتم إنشاء بيانات أو نسب تجريبية.</p>}</>}</section>;
+  const [days,setDays]=useState(30),[revision,setRevision]=useState(0);
+  const {data:report,error}=useOfficeData<Report>("reports/journey?days="+days,revision);
+  const stats=[
+    {label:"الزوار",value:report?number(report.visitors):"—",icon:Users,caption:"زوار وافقوا على القياس"},
+    {label:"الجلسات",value:report?number(report.sessions):"—",icon:MousePointerClick,caption:"خلال الفترة المحددة"},
+    {label:"الطلبات المنسوبة",value:report?number(report.purchases):"—",icon:ShoppingBag,caption:"طلبات مرتبطة برحلة مسجلة"},
+    {label:"قيمة الطلبات",value:report?money(report.revenueMinor,"ar"):"—",icon:Wallet,caption:"قبل احتساب صافي التحصيل"},
+  ];
+  const journey=report?[
+    {label:"زيارة المتجر",value:report.sessions},
+    {label:"إضافة للحقيبة",value:report.addToCartSessions},
+    {label:"بدء إتمام الطلب",value:report.checkoutSessions},
+    {label:"إتمام الشراء",value:report.purchaseSessions},
+  ]:[];
+  const audience=report?[...report.devices.map(d=>({label:deviceNames[d.device]??d.device,metrics:d.metrics})),...report.visitorsByType.map(d=>({label:d.returning?"زائر عائد":"زائر جديد",metrics:d.metrics}))]:[];
+  return <div className="office-analytics">
+    <div className="office-toolbar"><div className="office-report-period"><Activity size={18}/><span>أداء المتجر</span></div><div className="office-tools"><label className="office-inline-field">الفترة<select aria-label="فترة التقرير" value={days} onChange={e=>setDays(Number(e.target.value))}><option value={7}>آخر ٧ أيام</option><option value={30}>آخر ٣٠ يومًا</option><option value={90}>آخر ٩٠ يومًا</option></select></label><button className="office-button secondary" onClick={()=>setRevision(v=>v+1)}><RefreshCw size={16}/> تحديث</button></div></div>
+    <Message message={error} error/>
+    {report?.truncated&&<Message message="الفترة تجاوزت ١٠٠ ألف حدث. اختر فترة أقصر لعرض تقرير كامل." error/>}
+    <div className="office-stats office-analytics-stats">{stats.map(({label,value,icon:Icon,caption})=><section key={label}><div className="office-metric-label"><span>{label}</span><Icon size={19}/></div><strong>{value}</strong><small>{caption}</small></section>)}</div>
+    {!report&&!error&&<p className="office-help" role="status">جارٍ تحميل بيانات التقرير…</p>}
+    <div className="office-info-note"><Info size={18}/><p>الأرقام تخص الزوار الذين وافقوا على القياس. قيمة الطلبات تشمل الدفع عند الاستلام المسجّل والمدفوعات الإلكترونية المؤكدة؛ ولا تمثل صافي المبالغ المحصّلة.</p></div>
+    {report&&<>
+      <section className="office-card"><header><div><h2>خطوات رحلة العميل</h2><p>عدد الجلسات التي وصلت لكل خطوة، ونسبتها من جميع الجلسات</p></div><span className="office-badge">{number(report.sessions)} جلسة</span></header>
+        <div className="office-funnel">{journey.map((item,index)=><div key={item.label}><span className="office-funnel-step">{number(index+1).padStart(2,"٠")}</span><span>{item.label}</span><strong>{number(item.value)}</strong><div className="office-funnel-track"><span style={{"--office-progress":`${report.sessions?Math.min(100,item.value/report.sessions*100):0}%`} as CSSProperties}/></div><small>{rate(item.value,report.sessions)}</small></div>)}</div>
+        <p className="office-help">الجلسة قد تصل لأكثر من خطوة، والشراء المباشر قد يتجاوز خطوة الحقيبة؛ لذلك لا تمثل الأعمدة مسارًا إلزاميًا واحدًا.</p>
+      </section>
+      <div className="office-insights">{[
+        ["متوسط قيمة الطلب",money(Math.round(report.aovMinor),"ar")],
+        ["السلة ← بدء الطلب",rate(report.bagToCheckoutSessions,report.addToCartSessions)],
+        ["إكمال الطلب",rate(report.purchaseSessions,report.checkoutSessions)],
+        ["جلسات الشراء المباشر",number(report.expressCheckoutSessions)],
+        ["حقيبة بدون بدء طلب",number(report.abandonedCartSessions)],
+        ["بدء طلب بدون شراء",number(report.abandonedCheckoutSessions)],
+      ].map(([label,value])=><div key={label}><span>{label}</span><strong>{value}</strong></div>)}</div>
+      <TableFrame label="المصادر والحملات" total={report.sources.length}><table className="office-table"><thead><tr><th>المصدر</th><th>الوسيط</th><th>الحملة</th><th>الجلسات</th><th>الطلبات</th><th>قيمة الطلبات</th></tr></thead><tbody>{report.sources.length?report.sources.map((s,i)=><tr key={i}><td><bdi>{s.source||"—"}</bdi></td><td><bdi>{s.medium||"—"}</bdi></td><td><bdi>{s.campaign||"—"}</bdi></td><td>{number(s.metrics.sessions)}</td><td>{number(s.metrics.purchases)}</td><td>{money(s.metrics.revenueMinor,"ar")}</td></tr>):<EmptyRow columns={6}/>}</tbody></table></TableFrame>
+      <TableFrame label="الأجهزة ونوع الزوار" total={audience.length}><table className="office-table"><thead><tr><th>الفئة</th><th>الجلسات</th><th>الطلبات</th><th>معدل التحويل</th></tr></thead><tbody>{audience.length?audience.map(d=><tr key={d.label}><td>{d.label}</td><td>{number(d.metrics.sessions)}</td><td>{number(d.metrics.purchases)}</td><td>{d.metrics.conversion.toLocaleString("ar-EG",{maximumFractionDigits:1})}٪</td></tr>):<EmptyRow columns={4}/>}</tbody></table></TableFrame>
+      <div className="office-report-grid"><TableFrame label="المنتجات الأكثر مشاهدة" total={report.topViewed.length} compact><table className="office-table"><thead><tr><th>المنتج</th><th>المشاهدات</th></tr></thead><tbody>{report.topViewed.length?report.topViewed.map(p=><tr key={p.product}><td>{p.product}</td><td>{number(p.views)}</td></tr>):<EmptyRow columns={2}/>}</tbody></table></TableFrame>
+      <TableFrame label="المنتجات الأكثر مبيعًا" total={report.topSelling.length} compact><table className="office-table"><thead><tr><th>المنتج</th><th>الكمية</th><th>القيمة</th></tr></thead><tbody>{report.topSelling.length?report.topSelling.map(p=><tr key={p.variantId}><td>{p.product}</td><td>{number(p.quantity)}</td><td>{money(p.revenueMinor,"ar")}</td></tr>):<EmptyRow columns={3}/>}</tbody></table></TableFrame></div>
+      {report.sessions===0&&<div className="office-info-note"><Info size={18}/><p>لا توجد أحداث مسجلة في هذه الفترة. ستظهر المؤشرات مع تسجيل زيارات وافقت على القياس.</p></div>}
+    </>}
+  </div>;
 }

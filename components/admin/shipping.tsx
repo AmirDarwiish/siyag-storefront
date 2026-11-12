@@ -4,7 +4,7 @@ import {Plus} from "lucide-react";
 import {office} from "@/lib/admin";
 import {governorates} from "@/lib/governorates";
 import {money,type Shipping} from "@/lib/store";
-import {Message,Panel,useOfficeData} from "./shared";
+import {TableFrame,Message,Panel,useOfficeData} from "./shared";
 
 type ShippingOption=Shipping&{active:boolean;freeFromMinor?:number|null};
 const blank:ShippingOption={code:"",nameAr:"",nameEn:"",governorate:"",feeMinor:0,active:true};
@@ -18,10 +18,10 @@ export function ShippingOptions(){
     <div className="office-toolbar"><p>أضف طريقة توصيل مفعّلة لكل محافظة ترغب في استقبال طلباتها.</p>
       <button className="office-button" onClick={()=>setEditing(blank)}><Plus size={16}/> إضافة طريقة توصيل</button></div>
     <Message message={error} error/>
-    <div className="office-table-wrap"><table className="office-table"><thead><tr><th>الطريقة</th><th>المحافظة</th><th>الرسوم</th><th>الحالة</th><th>التعديل</th></tr></thead>
+    <TableFrame label="طرق التوصيل" actions total={data?.length}><table className="office-table"><thead><tr><th>الطريقة</th><th>المحافظة</th><th>الرسوم</th><th>الحالة</th><th>التعديل</th></tr></thead>
       <tbody>{data?.map(option=><tr key={option.code}><td>{option.nameAr}</td><td>{governorates[option.governorate]?.[1]??option.governorate}</td><td>{money(option.feeMinor,"ar")}</td>
         <td>{option.active?"مفعّلة":"متوقفة"}</td><td><button className="office-text-button" onClick={()=>setEditing(option)}>تعديل</button></td></tr>)}</tbody>
-    </table>{!data?.length&&!error&&<p className="office-empty">{data?"أضف طريقة توصيل لتظهر في إتمام الطلب.":"جارٍ تحميل طرق التوصيل…"}</p>}</div>
+    </table>{!data?.length&&!error&&<p className="office-empty">{data?"أضف طريقة توصيل لتظهر في إتمام الطلب.":"جارٍ تحميل طرق التوصيل…"}</p>}</TableFrame>
     {editing&&<Panel title={editing.code?"تعديل التوصيل":"إضافة طريقة توصيل"} description="رسوم التوصيل والحد الأدنى للتوصيل المجاني" onClose={()=>setEditing(null)}>
       <ShippingForm initial={editing} existing={data??[]} saved={()=>{setEditing(null);setRevision(value=>value+1)}}/>
     </Panel>}

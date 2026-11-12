@@ -9,7 +9,7 @@
     "dev": "node scripts/dev.mjs",
     "build": "next build",
     "start": "next start",
-    "check": "tsc --noEmit && node scripts/check-theme.mjs"
+    "check": "tsc --noEmit && node scripts/check-theme.mjs && node scripts/check-office.mjs"
   },
   "dependencies": {
     "class-variance-authority": "0.7.1",

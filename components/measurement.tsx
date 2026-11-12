@@ -7,7 +7,7 @@ import {readLocal} from '@/lib/browser-storage';
 import {useStore} from './store-context';
 export function Measurement(){
  const {tr}=useStore();const path=usePathname();const search=useSearchParams().toString();const [enabled,setEnabled]=useState(false);const [open,setOpen]=useState(false);
- useEffect(()=>{setEnabled(allowed());setOpen(!readLocal('siyag-measurement'));const update=()=>setEnabled(allowed());window.addEventListener('siyag-consent',update);return()=>window.removeEventListener('siyag-consent',update)},[]);
+ useEffect(()=>{setEnabled(allowed());setOpen(!readLocal('siyag-measurement'));const update=()=>setEnabled(allowed());const show=()=>setOpen(true);window.addEventListener('siyag-consent',update);window.addEventListener('siyag-open-privacy',show);return()=>{window.removeEventListener('siyag-consent',update);window.removeEventListener('siyag-open-privacy',show)}},[]);
  useEffect(()=>{if(enabled)track('page_view')},[path,search,enabled]);
  const ga=process.env.NEXT_PUBLIC_GA4_ID;const pixel=process.env.NEXT_PUBLIC_META_PIXEL_ID;
  return <>{enabled&&ga&&/^G-[A-Z0-9]+$/.test(ga)&&<><Script src={`https://www.googletagmanager.com/gtag/js?id=${ga}`} strategy="afterInteractive"/><Script id="siyag-ga">{`window.dataLayer=window.dataLayer||[];window.gtag=function(){dataLayer.push(arguments)};gtag('consent','default',{analytics_storage:'granted',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});gtag('js',new Date());gtag('config','${ga}',{send_page_view:false,allow_google_signals:false,allow_ad_personalization_signals:false});`}</Script></>}

@@ -128,7 +128,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
       <div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span><Link href="/shop">{tr("Fragrances","العطور")}</Link><span>/</span><span>{title}</span></div>
       <div className="product-layout">
         <div className="gallery">
-          <div className="gallery-main"><img src={imageUrl(product.images[activeImage])} alt={title} width={800} height={840}/></div>
+          <div className="gallery-main"><img src={imageUrl(product.images[activeImage])} alt={title} width={800} height={840} fetchPriority="high"/></div>
           {product.images.length>1&&<div className="gallery-thumbs">{product.images.map((src,i)=><button type="button" key={src+i} aria-pressed={i===activeImage} aria-label={tr(`Show image ${i+1}`,`اعرض صورة ${i+1}`)} onClick={()=>setActiveImage(i)}><img src={imageUrl(src)} alt="" width={64} height={70}/></button>)}</div>}
         </div>
         <div className="product-info">
@@ -150,7 +150,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
           </div>
           <Accordion type="multiple" className="product-accordion">
             <AccordionItem value="shipping"><AccordionTrigger>{tr("Shipping & delivery","الشحن والتوصيل")}</AccordionTrigger><AccordionContent>{tr("Available delivery options and charges are shown at checkout for your governorate.","خيارات التوصيل وتكلفته بتظهر عند إتمام الطلب حسب محافظتك.")}</AccordionContent></AccordionItem>
-            <AccordionItem value="returns"><AccordionTrigger>{tr("Returns","الاسترجاع")}</AccordionTrigger><AccordionContent>{tr("Use the tracking details on your receipt to look up your order and its available return options.","استخدم بيانات التتبع في إيصالك لمراجعة طلبك وخيارات الاسترجاع المتاحة.")}</AccordionContent></AccordionItem>
+            <AccordionItem value="returns"><AccordionTrigger>{tr("Returns","الاسترجاع")}</AccordionTrigger><AccordionContent>{tr("Review the returns information, then use your secure receipt to request a review when eligible.","راجع معلومات الاسترجاع، واستخدم إيصالك الآمن لطلب المراجعة لو الطلب مؤهل.")}<Link className="text-link" href="/policies/returns">{tr("Returns information","معلومات الاسترجاع")}</Link></AccordionContent></AccordionItem>
           </Accordion>
         </div>
       </div>

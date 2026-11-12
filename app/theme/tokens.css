@@ -25,6 +25,14 @@
 }
 :root {
   --rail-visible: 3;
+  --rail-offset: 0px;
+  --care-width: 1120px;
+  --care-copy-width: 66ch;
+  --care-aside-width: 220px;
+  --hero-copy-min: 340px;
+  --layer-menu: 60;
+  --layer-feedback: 70;
+  --motion-hover: 180ms;
   --motion-rail-speed: 18;
   --motion-rail-resume: 1800ms;
   --motion-hero-drift: 9000ms;
@@ -41,9 +49,9 @@
   --motion-image: 1200ms;
   --ease-out: cubic-bezier(.2,.65,.3,1);
   --control-padding-card: 12px 10px;
-  --type-action-card: 13px;
+  --type-action-card: 14px;
   --radius-pill: 999px;
-  --radius-badge: 999px;
+  --radius-badge: 3px;
   --badge-background: color-mix(in srgb, var(--white) 94%, transparent);
   --badge-padding: 6px 10px;
   --store-header-offset: var(--store-header-height,116px);
@@ -131,7 +139,7 @@
   --content-width: 1320px;
   --hero-width: 1520px;
   --page-gutter: clamp(24px, 4vw, 64px);
-  --section-space: clamp(64px, 7vw, 104px);
+  --section-space: clamp(56px, 6vw, 88px);
   --panel-space: clamp(32px, 5vw, 64px);
   --product-gap: 48px 28px;
   --hero-image-height: clamp(480px, 43vw, 660px);
@@ -157,7 +165,7 @@
     --type-display: 42px;
     --type-display-ar: 34px;
     --product-gap: 32px 16px;
-    --hero-image-height: clamp(300px, 98vw, 440px);
+    --hero-image-height: clamp(280px, 82vw, 400px);
     --hero-content-space: 28px 24px 20px;
     --control-padding: 12px 14px;
   }

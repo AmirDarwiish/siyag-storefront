@@ -1,11 +1,13 @@
 "use client";
-import {useEffect,useRef,useState,type FormEvent} from "react";
-import {usePathname,useRouter} from "next/navigation";
+import {useCallback,useEffect,useRef,useState,type FormEvent} from "react";
+import {useRouter} from "next/navigation";
 import {Plus,Search,Boxes,ArrowUp,ArrowDown,ExternalLink,RefreshCw,SquarePen,Eye,EyeOff} from "lucide-react";
 import {office,type AdminCollection,type AdminProduct,type AdminVariant,type ProductSummary} from "@/lib/admin";
 import {concentrations,families,formats,imageUrl,money,type Page} from "@/lib/store";
 import {useEditorRoute,RowAction,TableFrame,Message,Pagination,Panel,Upload,useOfficeData} from "./shared";
 
+import {useOfficePathname} from "./office-route";
+import {loadCatalogIndex,loadCatalogDetails} from "@/lib/admin-queries";
 import {productActions,collectionActions} from "./bulk-actions";
 
 const blankProduct:AdminProduct={
@@ -23,45 +25,17 @@ export function Products(){
   const [page,setPage]=useState(1),[pageSize,setPageSize]=useState(20),[query,setQuery]=useState(""),[filter,setFilter]=useState("all");
   const {editor:editing,open:setEditing,close:closeEditor}=useEditorRoute("products");
   const [revision,setRevision]=useState(0);
-  const [products,setProducts]=useState<ProductSummary[]>();
-  const [details,setDetails]=useState<Record<string,AdminProduct>>({});
-  const [detailError,setDetailError]=useState("");
-  const [error,setError]=useState("");
+  const {data:products,error}=useOfficeData<ProductSummary[]>("catalog/index",revision,60000,loadCatalogIndex);
   const {data:collections,error:collectionError}=useOfficeData<AdminCollection[]>("collections");
-  useEffect(()=>{
-    const controller=new AbortController();setError("");
-    async function load(){
-      try{
-        const first=await office<Page<ProductSummary>>("products?pageSize=100&pageNumber=1",{signal:controller.signal});
-        const rows=[...first.data];
-        for(let start=2;start<=first.totalPages;start+=4){
-          const pages=await Promise.all(Array.from({length:Math.min(4,first.totalPages-start+1)},(_,i)=>office<Page<ProductSummary>>(`products?pageSize=100&pageNumber=${start+i}`,{signal:controller.signal})));
-          for(const part of pages)rows.push(...part.data);
-        }
-        if(!controller.signal.aborted)setProducts(rows);
-      }catch(error){if(!controller.signal.aborted)setError(error instanceof Error?error.message:"تعذّر تحميل المنتجات.")}
-    }
-    void load();return()=>controller.abort();
-  },[revision]);
   const term=query.trim().toLocaleLowerCase();
   const filtered=products?.filter(p=>(filter==="all"||(filter==="published"?p.published:!p.published))&&(!term||[p.nameAr,p.nameEn,p.slug].some(value=>value.toLocaleLowerCase().includes(term))));
   const currentPage=Math.min(page,Math.max(1,Math.ceil((filtered?.length??0)/pageSize)));
   const rows=filtered?.slice((currentPage-1)*pageSize,currentPage*pageSize);
-  const visibleIds=JSON.stringify(rows?.map(row=>row.id)??[]);
-  useEffect(()=>{
-    const controller=new AbortController();setDetailError("");
-    async function loadDetails(){
-      const ids=JSON.parse(visibleIds) as string[];
-      for(let start=0;start<ids.length;start+=4){
-        const results=await Promise.allSettled(ids.slice(start,start+4).map(id=>office<AdminProduct>("products/"+id,{signal:controller.signal})));
-        if(controller.signal.aborted)return;
-        const loaded=results.flatMap(result=>result.status==="fulfilled"?[result.value]:[]);
-        setDetails(current=>({...current,...Object.fromEntries(loaded.map(product=>[product.id,product]))}));
-        if(results.some(result=>result.status==="rejected"))setDetailError("تعذّر تحميل بعض صور وتفاصيل المنتجات. اضغط تحديث لإعادة المحاولة.");
-      }
-    }
-    void loadDetails();return()=>controller.abort();
-  },[visibleIds,revision]);
+  const visibleIds=JSON.stringify(editing===null?rows?.map(row=>row.id)??[]:[]);
+  const detailsLoader=useCallback((signal:AbortSignal)=>loadCatalogDetails(JSON.parse(visibleIds),signal),[visibleIds]);
+  const detailResource=useOfficeData<Awaited<ReturnType<typeof loadCatalogDetails>>>(editing===null&&rows?.length?"catalog-details/"+visibleIds:null,revision,15000,detailsLoader);
+  const details=detailResource.data?.products??{};
+  const detailError=detailResource.error||(detailResource.data?.failed?"تعذّر التحقق من بعض تفاصيل المنتجات. أعد التحديث قبل اتخاذ إجراء.":"");
   if(editing!==null)return <Panel title={editing?"إدارة العطر":"إضافة عطر"} description="البيانات، الصور، الأحجام والأسعار والمخزون" onClose={closeEditor}><Message message={collectionError} error/><ProductEditor id={editing} collections={collections} changed={()=>setRevision(value=>value+1)}/></Panel>;
   return <>
     <div className="office-toolbar"><p>{products?`${products.length} منتج في الكتالوج`:"جارٍ تحميل الكتالوج…"}</p><div className="office-tools"><button className="office-icon" aria-label="تحديث المنتجات" onClick={()=>setRevision(v=>v+1)}><RefreshCw size={17}/></button><button className="office-button" onClick={()=>setEditing("")}><Plus size={17}/> إضافة عطر</button></div></div>
@@ -88,9 +62,10 @@ function ProductEditor({id,collections,changed}:{id:string;collections?:AdminCol
 }
 
 function ProductForm({initial,collections,changed}:{initial:AdminProduct;collections?:AdminCollection[];changed:()=>void}){
-  const router=useRouter(),pathname=usePathname();
+  const router=useRouter(),pathname=useOfficePathname();
   const [drafts,setDrafts]=useState([{key:"first",sku:"",sizeMl:50,format:"fullBottle",price:"",compareAt:"",stock:0,active:true}]);
   const [product,setProduct]=useState(initial);
+  useEffect(()=>{setProduct(current=>({...current,variants:initial.variants}))},[initial.variants]);
   const [slug,setSlug]=useState(initial.slug);
   const [customSlug,setCustomSlug]=useState(!!initial.slug);
   const [images,setImages]=useState(initial.images);
@@ -174,6 +149,7 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
 
 function VariantForm({productId,initial,onSave,onCancel}:{productId:string;initial:AdminVariant;onSave:(value:AdminVariant)=>void;onCancel:()=>void}){
   const [item,setItem]=useState(initial);
+  useEffect(()=>{setItem(current=>({...current,stock:initial.stock}))},[initial.stock]);
   const [busy,setBusy]=useState(false);
   const [message,setMessage]=useState("");
   const [failed,setFailed]=useState(false);

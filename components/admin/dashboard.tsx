@@ -1,21 +1,28 @@
 "use client";
 import Link from "next/link";
+import dynamic from "next/dynamic";
+import {connectOfficeCache,loadOffice} from "@/lib/admin-cache";
+import {loadCatalogIndex} from "@/lib/admin-queries";
+import {OfficeRouteContext} from "./office-route";
+import {OfficeDataStatus} from "./office-data-status";
 import {usePathname,useRouter} from "next/navigation";
-import {IntegrationSettings} from "./integration-settings";
-import {OfficeNotifications} from "./office-notifications";
-import {useEffect,useRef,useState,type FormEvent} from "react";
+const IntegrationSettings=dynamic(()=>import("./integration-settings").then(m=>m.IntegrationSettings),{loading:PageSkeleton});
+import {OfficeChrome} from "./office-chrome";
+import {Activity,useEffect,useLayoutEffect,useRef,useState,type FormEvent} from "react";
 import {CreditCard,PanelRightClose,PanelRightOpen,ArrowUpRight,Plus,Store,ShieldCheck,LayoutDashboard,Menu,Warehouse,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Star,Truck,Users} from "lucide-react";
 import {office,roleNames,type StaffUser} from "@/lib/admin";
-import {Collections,Products} from "./catalog";
-import {Orders} from "./orders";
-import {ShippingOptions} from "./shipping";
-import {Staff} from "./staff";
-import {ReviewModeration} from "./reviews";
-import {JourneyDashboard} from "./journey";
-import {Message,Panel} from "./shared";
+const Products=dynamic(()=>import("./catalog").then(m=>m.Products),{loading:PageSkeleton});
+const Collections=dynamic(()=>import("./catalog").then(m=>m.Collections),{loading:PageSkeleton});
+const Orders=dynamic(()=>import("./orders").then(m=>m.Orders),{loading:PageSkeleton});
+const ShippingOptions=dynamic(()=>import("./shipping").then(m=>m.ShippingOptions),{loading:PageSkeleton});
+const Staff=dynamic(()=>import("./staff").then(m=>m.Staff),{loading:PageSkeleton});
+const ReviewModeration=dynamic(()=>import("./reviews").then(m=>m.ReviewModeration),{loading:PageSkeleton});
+const JourneyDashboard=dynamic(()=>import("./journey").then(m=>m.JourneyDashboard),{loading:PageSkeleton});
+import {Message,Panel,OfficeTip} from "./shared";
 import {Overview} from "./overview";
-import {Inventory} from "./inventory";
+const Inventory=dynamic(()=>import("./inventory").then(m=>m.Inventory),{loading:PageSkeleton});
 
+function PageSkeleton(){return <div className="office-page-skeleton" aria-label="جارٍ تحميل محتوى الصفحة" role="status"><span className="office-skeleton"/><span className="office-skeleton"/><span className="office-skeleton"/></div>}
 const panels=[
   {id:"overview",label:"نظرة عامة",description:"ملخص المتجر والمهام التي تحتاج انتباهك.",icon:LayoutDashboard,component:JourneyDashboard,roles:["Owner","Catalog","Fulfillment"]},
   {id:"journey",label:"رحلة العميل",description:"تابع الزيارات والحملات والسلة وإتمام الطلب.",icon:Users,component:JourneyDashboard,roles:["Owner"]},
@@ -41,10 +48,14 @@ export function AdminDashboard(){
   const [menu,setMenu]=useState(false);
   const [collapsed,setCollapsed]=useState(false);
   const mainScroll=useRef<HTMLDivElement>(null);
+  const scrollPositions=useRef<Record<string,number>>({});
+  const [visited,setVisited]=useState<Record<string,string>>(()=>({[section]:pathname}));
 
   function navigate(id:string){setMenu(false);router.push("/admin/"+id)}
   function editProduct(id:string){setMenu(false);router.push("/admin/products/"+(id||"new"))}
-  useEffect(()=>{mainScroll.current?.scrollTo({top:0,behavior:"instant"})},[pathname]);
+  useLayoutEffect(()=>{if(mainScroll.current)mainScroll.current.scrollTop=scrollPositions.current[pathname]??0},[pathname]);
+  useEffect(()=>{setVisited(current=>({...current,[section]:pathname}));setMenu(false)},[pathname,section]);
+  useEffect(()=>connectOfficeCache(),[]);
   useEffect(()=>{
     if(window.location.hash)router.replace("/admin/"+window.location.hash.slice(1));
     const controller=new AbortController();
@@ -123,21 +134,22 @@ export function AdminDashboard(){
     </section>
   </main>;
 
-  const ActivePanel=active.component;
+  const renderPanel=(id:string)=>id==="overview"?<Overview role={role} navigate={navigate} createProduct={()=>editProduct("")}/>:id==="inventory"?<Inventory editProduct={editProduct}/>:id==="products"?<Products/>:id==="collections"?<Collections/>:id==="orders"?<Orders/>:id==="shipping"?<ShippingOptions/>:id==="staff"?<Staff/>:id==="reviews"?<ReviewModeration/>:id==="integrations"?<IntegrationSettings/>:<JourneyDashboard/>;
+  function prefetchPanel(id:string){router.prefetch("/admin/"+id);if(id==="products")void loadOffice("catalog/index",loadCatalogIndex).catch(()=>{});else{const query:Record<string,string>={orders:"orders?pageSize=20&pageNumber=1",inventory:"inventory?pageSize=30&pageNumber=1&maximumStock=5",collections:"collections",shipping:"shipping",staff:"staff",overview:role==="Owner"?"reports/summary":role==="Catalog"?"products?pageSize=1":"orders?status=pending&pageSize=5",journey:"reports/journey?days=30"};const path=query[id];if(path)void loadOffice(path,signal=>office(path,{signal})).catch(()=>{})}}
+
   const groups=[{label:"إدارة المتجر",ids:["overview","orders","products","inventory","collections"]},{label:"العملاء والتسويق",ids:["journey","reviews"]},{label:"الفريق والإعدادات",ids:["shipping","integrations","staff"]}];
   const initials=(user?.name??"S").trim().split(/\s+/).slice(0,2).map(part=>part[0]).join("");
-  const navigation=<><div className="office-mark" dir="ltr">SIYAG <span>WORKSPACE</span></div>
-    <div className="office-store-identity"><span className="office-store-avatar"><Store size={20}/></span><div><strong>متجر SIYAG</strong></div></div>
-    <nav aria-label="أقسام الإدارة">{groups.map(group=>{const items=group.ids.map(id=>available.find(panel=>panel.id===id)).filter(panel=>panel!==undefined);return items.length?<div className="office-nav-group" key={group.label}><h2>{group.label}</h2>{items.map(({id,label,icon:Icon})=><button type="button" key={id} aria-label={label} title={collapsed?label:undefined} aria-current={active.id===id?"page":undefined} onClick={()=>navigate(id)}><Icon size={18}/><span>{label}</span></button>)}</div>:null})}</nav>
-    <div className="office-sidebar-bottom"><button type="button" onClick={()=>{setMenu(false);setError("");setChange(true)}}><KeyRound size={17}/> أمان الحساب</button><div className="office-account"><span className="office-avatar">{initials}</span><div><strong>{user?.name}</strong><small><ShieldCheck size={12}/>{roleNames[role]}</small></div></div></div></>;
+  const navigation=<><Link href="/admin/overview" className="office-brand-lockup" onClick={()=>setMenu(false)} aria-label="SIYAG الرئيسية"><span className="office-brand-symbol"><Boxes size={21}/></span><div className="office-mark" dir="ltr">SIYAG <span>WORKSPACE</span></div></Link>
+    <nav aria-label="أقسام الإدارة">{groups.map(group=>{const items=group.ids.map(id=>available.find(panel=>panel.id===id)).filter(panel=>panel!==undefined);return items.length?<div className="office-nav-group" key={group.label}><h2>{group.label}</h2>{items.map(({id,label,icon:Icon})=><OfficeTip label={label} side="left" disabled={!collapsed} key={id}><Link href={"/admin/"+id} aria-label={label} aria-current={active.id===id?"page":undefined} onMouseEnter={()=>prefetchPanel(id)} onFocus={()=>prefetchPanel(id)} onClick={()=>setMenu(false)}><Icon size={18}/><span>{label}</span></Link></OfficeTip>)}</div>:null})}</nav>
+    <div className="office-sidebar-bottom"><div className="office-account"><span className="office-avatar">{initials}</span><div><strong>{user?.name}</strong><small><ShieldCheck size={12}/>{roleNames[role]}</small></div><OfficeTip label="أمان الحساب" side="left"><button type="button" className="office-account-security" aria-label="أمان الحساب" onClick={()=>{setMenu(false);setError("");setChange(true)}}><KeyRound size={16}/></button></OfficeTip></div></div></>;
   return <main className="office office-dashboard" data-collapsed={collapsed} dir="rtl" lang="ar">
     <aside className="office-sidebar">{navigation}</aside>
     {menu&&<Panel title="أقسام الإدارة" description="تنقّل بين صفحات المتجر" onClose={()=>setMenu(false)}><div className="office-sidebar office-mobile-navigation">{navigation}</div></Panel>}
-    <div className="office-main" ref={mainScroll} tabIndex={-1} aria-label="محتوى لوحة الإدارة"><div className="office-topbar"><button type="button" className="office-icon office-collapse" aria-label={collapsed?"توسيع القائمة الجانبية":"تصغير القائمة الجانبية"} aria-expanded={!collapsed} onClick={()=>setCollapsed(value=>!value)}>{collapsed?<PanelRightOpen size={19}/>:<PanelRightClose size={19}/>}</button><button className="office-icon office-menu" aria-label="فتح قائمة الإدارة" onClick={()=>setMenu(true)}><Menu size={21}/></button><div className="office-topbar-path"><h1>{active.label}</h1></div><div>{(role==="Owner"||role==="Fulfillment")&&<OfficeNotifications/>}<Link href="/" target="_blank" rel="noreferrer" className="office-button secondary office-store-link" aria-label="فتح المتجر"><ArrowUpRight size={16}/><span>فتح المتجر</span></Link><button type="button" className="office-button secondary" onClick={logout} disabled={busy}><LogOut size={16}/> خروج</button></div></div>
-    <div className="office-workspace">
+    <div className="office-main" ref={mainScroll} onScroll={()=>{if(mainScroll.current)scrollPositions.current[pathname]=mainScroll.current.scrollTop}} tabIndex={-1} aria-label="محتوى لوحة الإدارة"><div className="office-topbar"><button type="button" className="office-icon ghost office-collapse" aria-label={collapsed?"توسيع القائمة الجانبية":"تصغير القائمة الجانبية"} aria-expanded={!collapsed} onClick={()=>setCollapsed(value=>!value)}>{collapsed?<PanelRightOpen size={19}/>:<PanelRightClose size={19}/>}</button><button className="office-icon ghost office-menu" aria-label="فتح قائمة الإدارة" onClick={()=>setMenu(true)}><Menu size={21}/></button><div className="office-topbar-path"><h1>{active.label}</h1></div><OfficeChrome user={user!} destinations={available} busy={busy} security={()=>{setMenu(false);setError("");setChange(true)}} logout={()=>void logout()}/></div>
+    <div className="office-workspace"><OfficeDataStatus/>
 
       <Message message={error} error/>
-      {active.id==="overview"?<Overview role={role} navigate={navigate} createProduct={()=>editProduct("")}/>:active.id==="inventory"?<Inventory editProduct={editProduct}/>:active.id==="products"?<Products/>:<ActivePanel key={active.id}/>}
+      {available.filter(panel=>panel.id===active.id||visited[panel.id]).map(panel=><Activity key={panel.id} mode={panel.id===active.id?"visible":"hidden"}><OfficeRouteContext.Provider value={panel.id===active.id?pathname:visited[panel.id]}><section className="office-page-view" data-page={panel.id}>{renderPanel(panel.id)}</section></OfficeRouteContext.Provider></Activity>)}
     </div></div>
   </main>;
 }

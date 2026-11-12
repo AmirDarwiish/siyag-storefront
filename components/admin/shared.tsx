@@ -1,36 +1,30 @@
 "use client";
-import {Children,cloneElement,isValidElement,useEffect,useId,useRef,useState,type ReactElement,type ReactNode} from "react";
+import {Children,cloneElement,isValidElement,useCallback,useEffect,useId,useRef,useState,useSyncExternalStore,type ReactElement,type ReactNode} from "react";
 import {ArrowDownUp,SlidersHorizontal,Check,Download,LoaderCircle,ChevronLeft,ChevronRight,MoveHorizontal,X,type LucideIcon} from "lucide-react";
 import Link from "next/link";
+import {officeSnapshot,officeServerSnapshot,subscribeOffice,loadOffice,officePolicy} from "@/lib/admin-cache";
+import {useOfficePathname,readOfficeView,writeOfficeView} from "./office-route";
 import {usePathname,useRouter} from "next/navigation";
 import {Popover as OfficePopover,Tooltip as TooltipPrimitive} from "radix-ui";
 import {Dialog,DialogContent,DialogDescription,DialogTitle} from "@/components/ui/dialog";
 import {office} from "@/lib/admin";
 import type {Page} from "@/lib/store";
 
-export function useOfficeData<T>(path:string|null,revision=0,poll=0){
-  const [data,setData]=useState<T>();
-  const [error,setError]=useState("");
+export function useOfficeData<T>(path:string|null,revision=0,poll=0,loader?:(signal:AbortSignal)=>Promise<T>){
+  const key=path??"__disabled",fetcher=useRef(loader);fetcher.current=loader;
+  const previousRevision=useRef(revision);
+  const subscribe=useCallback((listener:()=>void)=>path?subscribeOffice(key,listener):()=>{},[path,key]);
+  const read=useCallback(()=>officeSnapshot<T>(key),[key]);
+  const snapshot=useSyncExternalStore(subscribe,read,()=>officeServerSnapshot() as ReturnType<typeof read>);
   useEffect(()=>{
     if(!path)return;
-    setData(undefined);setError("");
-    const controller=new AbortController();
-    let pending=false;
-    async function load(){
-      if(!path||pending||controller.signal.aborted)return;
-      pending=true;
-      try{
-        const value=await office<T>(path,{signal:controller.signal});
-        if(!controller.signal.aborted){setData(value);setError("")}
-      }catch(error){if(!controller.signal.aborted)setError(error instanceof Error?error.message:"تعذّر تحميل البيانات.")}
-      finally{pending=false}
-    }
-    void load();
-    const changed=()=>void load();window.addEventListener("siyag-office-changed",changed);
-    const timer=poll?setInterval(()=>{if(!document.hidden)void load()},poll):undefined;
-    return()=>{controller.abort();clearInterval(timer);window.removeEventListener("siyag-office-changed",changed)};
+    const force=previousRevision.current!==revision;previousRevision.current=revision;
+    const load=(fresh=false)=>loadOffice<T>(path,signal=>fetcher.current?fetcher.current(signal):office<T>(path,{signal}),fresh).catch(()=>undefined);
+    void load(force);
+    const timer=setInterval(()=>{if(!document.hidden)void load()},poll||officePolicy(path).poll);
+    return()=>clearInterval(timer);
   },[path,revision,poll]);
-  return {data,error};
+  return {data:snapshot.data,error:snapshot.error,refreshing:snapshot.loading,verifiedAt:snapshot.verifiedAt};
 }
 export function Message({message,error=false}:{message:string;error?:boolean}){
   return message?<p className={error?"office-error":"office-message"} role={error?"alert":"status"}>{message}</p>:null;
@@ -40,9 +34,12 @@ const elements=(nodes:ReactNode)=>{const result:TableElement[]=[];Children.forEa
 const nodeText=(node:ReactNode):string=>{if(typeof node==="string"||typeof node==="number")return String(node);if(Array.isArray(node))return node.map(nodeText).join(" ");return isValidElement<{children?:ReactNode}>(node)?nodeText(node.props.children):""};
 const comparable=(value:string)=>value.replace(/[٠-٩]/g,d=>String("٠١٢٣٤٥٦٧٨٩".indexOf(d))).replace(/[\u200e\u200f\u061c]/g,"").trim();
 export type BulkAction={id:string;label:string;icon:LucideIcon;run:(id:string)=>Promise<void>};
+export function OfficeTip({label,children,side="bottom",disabled=false}:{label:string;children:ReactElement;side?:"top"|"bottom"|"left"|"right";disabled?:boolean}){
+ return <TooltipPrimitive.Provider delayDuration={200}><TooltipPrimitive.Root open={disabled?false:undefined}><TooltipPrimitive.Trigger asChild>{children}</TooltipPrimitive.Trigger><TooltipPrimitive.Portal><TooltipPrimitive.Content className="office-grid-tooltip" side={side} sideOffset={8}>{label}<TooltipPrimitive.Arrow/></TooltipPrimitive.Content></TooltipPrimitive.Portal></TooltipPrimitive.Root></TooltipPrimitive.Provider>;
+}
 export function RowAction({label,icon:Icon,onClick,href,disabled=false}:{label:string;icon:LucideIcon;onClick?:()=>void;href?:string;disabled?:boolean}){
   const control=href?<a className="office-row-action" href={href} target="_blank" rel="noreferrer" aria-label={label}><Icon size={18}/></a>:<button type="button" className="office-row-action" aria-label={label} disabled={disabled} onClick={onClick}><Icon size={18}/></button>;
-  return <TooltipPrimitive.Provider delayDuration={250}><TooltipPrimitive.Root><TooltipPrimitive.Trigger asChild>{control}</TooltipPrimitive.Trigger><TooltipPrimitive.Portal><TooltipPrimitive.Content className="office-grid-tooltip" side="right" sideOffset={8}>{label}<TooltipPrimitive.Arrow/></TooltipPrimitive.Content></TooltipPrimitive.Portal></TooltipPrimitive.Root></TooltipPrimitive.Provider>;
+  return <OfficeTip label={label}>{control}</OfficeTip>;
 }
 function SelectBox({label,checked,mixed=false,disabled=false,onChange}:{label:string;checked:boolean;mixed?:boolean;disabled?:boolean;onChange:()=>void}){
   const ref=useRef<HTMLInputElement>(null);
@@ -54,8 +51,9 @@ export function TableFrame({label,children,actions=false,compact=false,total,off
   const [overflow,setOverflow]=useState(false),[selection,setSelection]=useState<Set<string>>(new Set());
   const [pending,setPending]=useState<BulkAction|null>(null),[busy,setBusy]=useState(false),[feedback,setFeedback]=useState(""),[failed,setFailed]=useState(false),[progress,setProgress]=useState(0);
   const hint=useId();
-  const [sort,setSort]=useState<{column:number;direction:1|-1}|null>(null);
-  const [hidden,setHidden]=useState<Set<number>>(new Set());
+  const [sort,setSort]=useState<{column:number;direction:1|-1}|null>(()=>readOfficeView(label+":sort",null));
+  const [hidden,setHidden]=useState<Set<number>>(()=>new Set(readOfficeView<number[]>(label+":columns",[])));
+  useEffect(()=>{writeOfficeView(label+":sort",sort);writeOfficeView(label+":columns",[...hidden])},[label,sort,hidden]);
   const table=elements(children).find(node=>node.type==="table");
   const body=table&&elements(table.props.children).find(node=>node.type==="tbody");
   const head=table&&elements(table.props.children).find(node=>node.type==="thead");
@@ -132,12 +130,12 @@ export function Pagination({data,go,changeSize}:{data?:Page<unknown>;go:(page:nu
     <span>{format(data.pageNumber)} / {format(Math.max(1,data.totalPages))}</span><button type="button" disabled={data.pageNumber>=data.totalPages} onClick={()=>go(data.pageNumber+1)} aria-label="الصفحة التالية">التالي <ChevronLeft size={17}/></button></div></div>;
 }
 export function useEditorRoute(section:string){
-  const pathname=usePathname(),router=useRouter();
+  const pathname=useOfficePathname(),router=useRouter();
   const segment=pathname.split("/")[3];
   return {editor:segment===undefined?null:segment==="new"?"":decodeURIComponent(segment),open:(id:string)=>router.push(`/admin/${section}/${id?encodeURIComponent(id):"new"}`),close:()=>router.push(`/admin/${section}`)};
 }
 export function Panel({title,description,onClose,children}:{title:string;description:string;onClose:()=>void;children:ReactNode}){
-  const pathname=usePathname();
+  const pathname=useOfficePathname();
   const back=pathname.split("/").slice(0,3).join("/");
   if(title!=="أقسام الإدارة")return <section className="office-editor-page"><header className="office-editor-head"><div><Link href={back} className="office-text-button"><ChevronRight size={17}/> العودة للقائمة</Link><h2>{title}</h2></div><button type="button" className="office-icon" aria-label="العودة للقائمة" onClick={onClose}><X size={20}/></button></header><div className="office-editor-body">{children}</div></section>;
   return <Dialog open onOpenChange={open=>{if(!open)onClose()}}><DialogContent placement="side" className="office-modal" showCloseButton={false}>

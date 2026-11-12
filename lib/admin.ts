@@ -1,3 +1,4 @@
+import {invalidateOfficeMutation,resetOfficeCache} from "./admin-cache";
 import type {Product, Variant} from "./store";
 
 export type Role="Owner"|"Catalog"|"Fulfillment";
@@ -33,12 +34,13 @@ export async function office<T>(path:string,{method="GET",data,signal}:{method?:
     headers:data===undefined||form?undefined:{"Content-Type":"application/json"},
     body:data===undefined?undefined:form?data:JSON.stringify(data),
   });
-  if(res.status===204)return undefined as T;
+  if(res.status===204){if(method!=="GET"){if(path==="session")resetOfficeCache();else invalidateOfficeMutation(path)}return undefined as T;}
   const body=await res.json().catch(()=>null);
   if(!res.ok){
-    if(res.status===401&&path!=="session")window.dispatchEvent(new Event("siyag-office-expired"));
+    if(res.status===401&&path!=="session"){resetOfficeCache();window.dispatchEvent(new Event("siyag-office-expired"));}
     const validation=body?.errors&&Object.values(body.errors).flat().filter(value=>typeof value==="string").join(" · ");
     throw new OfficeError(res.status,validation||body?.detail||"تعذّر إكمال الطلب.");
   }
+  if(method!=="GET"){if(path==="session")resetOfficeCache();else if(path!=="realtime/ticket")invalidateOfficeMutation(path)}
   return body as T;
 }

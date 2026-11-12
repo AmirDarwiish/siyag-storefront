@@ -2917,6 +2917,7 @@ html[data-header-hidden=true] {
 .return-request summary {cursor:pointer;font-weight:600}
 .return-request form {display:grid;gap:var(--space-5);padding-top:var(--space-6)}
 .return-request textarea {width:100%;min-height:120px;padding:var(--space-5);font:inherit;background:var(--white);border:var(--border-fine)}
+.hero-carousel[data-slide="0"] .hero-visual img {animation:none}
 @media (hover:hover) {
   .product-visual:hover .product-hover {
   opacity:1}

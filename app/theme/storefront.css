@@ -698,9 +698,13 @@ textarea {
   width:42px;
   height:45px;
   object-fit:cover}
+.store-modal.nav-modal[data-slot=dialog-content] {position:fixed;inset:0;inset-inline-end:auto;translate:none;transform:none;display:flex;flex-direction:column;gap:0;width:min(90vw,420px);max-width:90vw;height:100dvh;max-height:100dvh;margin:0;padding:var(--space-9) var(--space-8);overflow-y:auto;border:0;border-inline-end:var(--border-fine);border-radius:0;z-index:var(--layer-menu)}
+.nav-modal>.wordmark {align-self:flex-start;margin-block:var(--space-5) var(--space-9);flex:none}
 .nav-modal>a {
   display:block;
-  padding:var(--space-5) 0;
+  flex:none;
+  font-size:var(--type-lead);
+  padding:var(--space-6) 0;
   border-bottom:1px solid var(--line)}
 .bag-empty {
   display:grid;

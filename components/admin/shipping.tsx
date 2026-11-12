@@ -4,7 +4,7 @@ import {Plus,SquarePen} from "lucide-react";
 import {office} from "@/lib/admin";
 import {governorates} from "@/lib/governorates";
 import {money,type Shipping} from "@/lib/store";
-import {RowAction,TableFrame,Message,Panel,useOfficeData} from "./shared";
+import {useEditorRoute,RowAction,TableFrame,Message,Panel,useOfficeData} from "./shared";
 
 import {shippingActions} from "./bulk-actions";
 
@@ -13,9 +13,14 @@ const blank:ShippingOption={code:"",nameAr:"",nameEn:"",governorate:"",feeMinor:
 const slugPattern="[a-z0-9]+(?:-[a-z0-9]+)*";
 
 export function ShippingOptions(){
-  const [editing,setEditing]=useState<ShippingOption|null>(null);
+  const {editor,open,close}=useEditorRoute("shipping");
   const [revision,setRevision]=useState(0);
   const {data,error}=useOfficeData<ShippingOption[]>("shipping",revision);
+  const editing=editor===null?null:editor===""?blank:data?.find(item=>item.code===editor);
+  const setEditing=(item:ShippingOption|null)=>item?open(item.code):close();
+  if(editor!==null)return editing?<Panel title={editing.code?"تعديل التوصيل":"إضافة طريقة توصيل"} description="رسوم التوصيل والحد الأدنى للتوصيل المجاني" onClose={()=>setEditing(null)}>
+      <ShippingForm initial={editing} existing={data??[]} saved={()=>{setEditing(null);setRevision(value=>value+1)}}/>
+    </Panel>:<Message message={error||(data?"طريقة التوصيل غير موجودة.":"جارٍ تحميل التوصيل…")} error={!!error||!!data}/>;
   return <>
     <div className="office-toolbar"><p>أضف طريقة توصيل مفعّلة لكل محافظة ترغب في استقبال طلباتها.</p>
       <button className="office-button" onClick={()=>setEditing(blank)}><Plus size={16}/> إضافة طريقة توصيل</button></div>
@@ -24,9 +29,7 @@ export function ShippingOptions(){
       <tbody>{data?.map(option=><tr key={option.code}><td>{option.nameAr}</td><td>{governorates[option.governorate]?.[1]??option.governorate}</td><td>{money(option.feeMinor,"ar")}</td>
         <td>{option.freeFromMinor?money(option.freeFromMinor,"ar"):"—"}</td><td>{option.active?"مفعّلة":"متوقفة"}</td><td><RowAction label={`تعديل توصيل ${option.nameAr}`} icon={SquarePen} onClick={()=>setEditing(option)}/></td></tr>)}</tbody>
     </table>{!data?.length&&!error&&<p className="office-empty">{data?"أضف طريقة توصيل لتظهر في إتمام الطلب.":"جارٍ تحميل طرق التوصيل…"}</p>}</TableFrame>
-    {editing&&<Panel title={editing.code?"تعديل التوصيل":"إضافة طريقة توصيل"} description="رسوم التوصيل والحد الأدنى للتوصيل المجاني" onClose={()=>setEditing(null)}>
-      <ShippingForm initial={editing} existing={data??[]} saved={()=>{setEditing(null);setRevision(value=>value+1)}}/>
-    </Panel>}
+
   </>;
 }
 function ShippingForm({initial,existing,saved}:{initial:ShippingOption;existing:ShippingOption[];saved:()=>void}){

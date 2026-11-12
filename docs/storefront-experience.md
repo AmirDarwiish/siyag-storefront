@@ -24,3 +24,11 @@
 ## Validation
 
 `pnpm check` covers TypeScript, canonical theme/token rules, existing office/cache checks and the new rail/metadata cases. `pnpm build` covers the complete route tree. Browser QA is recorded after the candidate deployment below; field Core Web Vitals cannot be inferred from screenshots or a small number of manual interactions.
+
+### Preview review
+
+Preview inspected at 1440px, iPhone 15 393px, small mobile 360px and large mobile 430px. Verified unique equal-width rail cards, automatic movement, hover/focus pauses, multi-card horizontal native scrolling and resumed recycling without document overflow. Checked bilingual client care, expandable FAQs, independent bag page and full-height bag drawer. Changing a real preview variant to 50ml updated its price to EGP 890; Buy now opened a separate checkout while the original one-item bag remained intact. A navigation issue aligning the new main region underneath the sticky header was identified and corrected in the persistent storefront frame, preserving query filters and history restoration. No live order or payment was submitted.
+
+### Production performance measurement
+
+Initial PageSpeed Insights mobile lab run after deployment (12 November 2026, 20:32 Cairo): Performance 82, Accessibility 96, Best Practices 100, SEO 100. FCP 1.2s, LCP 3.7s, TBT 240ms, CLS 0. Emulated Moto G Power, Slow 4G, Lighthouse 13.6.0. No field/CrUX data was available, so no field INP claim is made. The report identified oversized delivered images (estimated 145KiB savings) and insufficient contrast in the amber mood-card caption. Follow-up uses Next Image responsive sources for bundled brand photography, shared image size hints, and stronger caption contrast. Third-party and API image URLs retain their existing delivery behavior.

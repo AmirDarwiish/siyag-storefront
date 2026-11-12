@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import {StoreImage} from "./store-image";
+import {imageSizes} from "@/lib/image-sizes";
 import {useRouter} from "next/navigation";
 import {track,itemData} from "@/lib/analytics";
 import {useEffect,useRef,useState} from "react";
@@ -37,7 +39,7 @@ function Sizes({product,selected,onSelect,compact=false}:{product:Product;select
   </div>;
 }
 
-export function ProductCard({product,preferred}:{product:Product;preferred?:string}){
+export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{product:Product;preferred?:string;photoSizes?:string}){
   const {lang,ar,tr,pendingVariants,add,saved,toggleSaved}=useStore();
   const busy=product.variants.some(v=>pendingVariants.includes(v.id));
   const initial=variantFor(product,preferred);
@@ -52,8 +54,8 @@ export function ProductCard({product,preferred}:{product:Product;preferred?:stri
   return <article className="product-card">
     <div className="product-visual">
       <Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)} className="product-photo" aria-label={title}>
-        <img src={imageUrl(product.images[0])} alt={title} loading="lazy" width={520} height={560}/>
-        {product.images[1]&&<img className="product-hover" src={imageUrl(product.images[1])} alt="" loading="lazy" width={520} height={560}/>}
+        <StoreImage sizes={photoSizes} src={imageUrl(product.images[0])} alt={title} loading="lazy" width={520} height={560}/>
+        {product.images[1]&&<StoreImage sizes={photoSizes} className="product-hover" src={imageUrl(product.images[1])} alt="" loading="lazy" width={520} height={560}/>}
       </Link>
       <div className="product-labels">{!v.inStock?<span className="product-badge" data-state="unavailable">{availability}</span>:(v.compareAtMinor??0)>v.priceMinor?<span className="product-badge" data-state="sale"><strong>{tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`)}</strong></span>:product.featured?<span className="product-badge" data-state="featured">{tr('SIYAG edit','مختاراتنا')}</span>:null}</div>
       <button type="button" className="icon favorite" aria-pressed={liked} aria-label={liked?tr("Remove from wishlist","إزالة من المفضلة"):tr("Save to wishlist","حفظ في المفضلة")} onClick={()=>toggleSaved(product.slug)}><Heart size={17} fill={liked?"currentColor":"none"}/></button>
@@ -128,7 +130,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
       <div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span><Link href="/shop">{tr("Fragrances","العطور")}</Link><span>/</span><span>{title}</span></div>
       <div className="product-layout">
         <div className="gallery">
-          <div className="gallery-main"><img src={imageUrl(product.images[activeImage])} alt={title} width={800} height={840} fetchPriority="high"/></div>
+          <div className="gallery-main"><StoreImage sizes={imageSizes.half} src={imageUrl(product.images[activeImage])} alt={title} width={800} height={840} fetchPriority="high"/></div>
           {product.images.length>1&&<div className="gallery-thumbs">{product.images.map((src,i)=><button type="button" key={src+i} aria-pressed={i===activeImage} aria-label={tr(`Show image ${i+1}`,`اعرض صورة ${i+1}`)} onClick={()=>setActiveImage(i)}><img src={imageUrl(src)} alt="" width={64} height={70}/></button>)}</div>}
         </div>
         <div className="product-info">

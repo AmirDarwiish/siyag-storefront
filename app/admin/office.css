@@ -1,6 +1,6 @@
 /* Shared office design tokens. All management screens use this single theme. */
 .office,.office-modal,.office-grid-tooltip,.office-table-column-menu {
-  --office-ink:#202b45;--office-muted:#64718a;--office-border:#e0e5f0;
+  --office-ink:#202b45;--office-muted:#56647e;--office-border:#e0e5f0;
   --office-paper:#f3f5fa;--office-surface:#fff;--office-soft:#edf1f8;
   --office-primary:#256452;--office-primary-hover:#194b3d;
   --office-sidebar:#19243d;--office-sidebar-muted:#a8b6d0;--office-sidebar-active:#e8f3ec;
@@ -40,7 +40,7 @@
 .office-login .office-form {margin:26px 0 18px}
 .office-login .office-form>button {justify-self:stretch}
 .office-dashboard {display:grid;grid-template-columns:var(--office-sidebar-width) minmax(0,1fr);height:100dvh;min-height:0;overflow:hidden}
-.office-sidebar {background:var(--office-sidebar);color:var(--office-sidebar-ink);padding:var(--office-space-4) var(--office-space-3);display:flex;flex-direction:column;gap:var(--office-space-3);height:100%;min-height:0;overflow-y:auto;overflow-x:hidden;border-inline-end:var(--office-border-width) solid var(--office-sidebar-border);scrollbar-width:thin;scrollbar-color:var(--office-border) transparent;scrollbar-gutter:stable;overscroll-behavior-y:contain}
+.office-sidebar {background:var(--office-sidebar);color:var(--office-sidebar-ink);padding:var(--office-space-4) var(--office-space-3);display:flex;flex-direction:column;gap:var(--office-space-3);height:100%;min-height:0;overflow-y:auto;overflow-x:hidden;border-inline-end:var(--office-border-width) solid var(--office-sidebar-border);scrollbar-width:thin;scrollbar-color:var(--office-sidebar-border) transparent;scrollbar-gutter:stable;overscroll-behavior-y:contain}
 .office-store-identity {display:flex;align-items:center;gap:10px;padding:var(--office-space-2);border:var(--office-border-width) solid var(--office-sidebar-border);border-radius:var(--office-small-radius);background:var(--office-sidebar-soft);flex:none}
 .office-store-identity small,.office-account small {font-size:var(--office-caption);color:var(--office-sidebar-muted);display:flex;align-items:center;gap:5px;line-height:1.6}
 .office-sidebar nav {display:grid;align-content:start;gap:var(--office-space-3);flex:1 0 auto;padding-inline:2px}
@@ -261,7 +261,7 @@
 .office-table-feedback {padding:0 18px}
 .office-spinning {animation:office-spin 1s linear infinite}
 @keyframes office-spin {to {transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce) {.office-spinning,.office-skeleton {animation:none}}
+@media(prefers-reduced-motion:reduce) {.office-spinning,.office-skeleton {animation:none}.office-kpi {transition:none;transform:none}}
 
 
 .office-sidebar .office-mark {color:var(--office-sidebar-brand)}
@@ -316,6 +316,8 @@
 .office-analytics-stats>section[data-tone=amber],.office-insights>div[data-tone=amber] {background:var(--office-amber-soft);border-color:var(--office-amber-soft)}
 .office-kpi>header>svg {width:var(--office-icon-metric);height:var(--office-icon-metric)}
 .office-empty>svg {width:var(--office-icon-empty);height:var(--office-icon-empty)}
+.office-disclosure {margin-bottom:var(--office-space-3);font-size:var(--office-caption)}
+.office-disclosure>summary {cursor:pointer;color:var(--office-muted);padding:var(--office-space-2) 0}
 @media(max-width:1100px) {
   .office-dashboard {grid-template-columns:var(--office-sidebar-width) minmax(0,1fr)}
   .office-bento-metrics {grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -331,6 +333,10 @@
   .office-kpi[data-tone=hero] {grid-column:span 2}
   .office-kpi[data-tone=hero] strong {font-size:var(--office-metric)}
   .office-kpi strong {font-size:var(--office-title-md)}
+  .office-kpi[data-tone=amber] {grid-column:span 2;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--office-space-1) var(--office-space-4)}
+  .office-kpi[data-tone=amber]>header {grid-column:1;grid-row:1}
+  .office-kpi[data-tone=amber]>strong {grid-column:2;grid-row:1 / span 2;font-size:var(--office-metric)}
+  .office-kpi[data-tone=amber]>small {grid-column:1;grid-row:2}
   .office-dashboard,.office-dashboard[data-collapsed=true] {grid-template-columns:1fr}
   .office-collapse {display:none}
   .office-dashboard>.office-sidebar {display:none}

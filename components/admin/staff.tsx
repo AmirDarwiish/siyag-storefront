@@ -65,7 +65,7 @@ export function Staff(){
     </form></Panel>;}
   return <section className="office-staff-page">
     <div className="office-toolbar"><p className="office-help">حساب مستقل لكل موظف، بصلاحيات تناسب دوره.</p><button type="button" className="office-button" onClick={()=>{setEditing(null);setOpen(true);setError("")}}><UserPlus size={17}/> إضافة موظف</button></div>
-    <div className="office-info-note"><ShieldCheck size={19}/><p>مالك المتجر يملك جميع الصلاحيات. موظف الكتالوج يدير المنتجات، وموظف التنفيذ يتابع الطلبات والتوصيل.</p></div>
+    <details className="office-disclosure"><summary>صلاحيات فريق المتجر</summary><div className="office-info-note"><ShieldCheck size={19}/><p>مالك المتجر يملك جميع الصلاحيات. موظف الكتالوج يدير المنتجات، وموظف التنفيذ يتابع الطلبات والتوصيل.</p></div></details>
     <label className="office-search office-collection-search"><Search size={17}/><input aria-label="البحث في الموظفين" placeholder="ابحث بالاسم أو البريد أو الصلاحية…" value={query} onChange={e=>setQuery(e.target.value)}/></label>
     {!open&&<Message message={error} error/>}<Message message={notice}/>
     {!loaded&&!error&&<p role="status">جارٍ تحميل الفريق…</p>}

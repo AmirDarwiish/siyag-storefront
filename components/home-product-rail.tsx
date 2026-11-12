@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from "react";
 import {flushSync} from "react-dom";
+import {imageSizes} from "@/lib/image-sizes";
 import {normalizeRail} from "@/lib/rail-motion";
 import type {Product} from "@/lib/store";
 import {useStore} from "./store-context";
@@ -49,6 +50,6 @@ export function HomeProductRail({products}:{products:Product[]}){
  useEffect(()=>{const release=()=>{if(dragging.current){dragging.current=false;rest()}};window.addEventListener("pointerup",release);window.addEventListener("pointercancel",release);return()=>{window.removeEventListener("pointerup",release);window.removeEventListener("pointercancel",release)}},[]);
  return <div ref={rail} className="home-product-rail" data-flow={ar?"left":"right"} data-count={count} data-motion={reduced?"reduced":visible?"running":"offscreen"} style={{"--rail-visible":Math.max(1,Math.min(count-1,3))} as CSSProperties} tabIndex={0} role="region" aria-label={tr("Selected fragrances. Focus to pause; use arrow keys to browse and Escape to resume.","مختارات العطور. ركّز لإيقاف الحركة، واستخدم الأسهم للتصفح وEscape لاستئنافها.")}
  onPointerEnter={event=>{if(event.pointerType==="mouse")hovered.current=true}} onPointerLeave={()=>{hovered.current=false;rest()}} onPointerDown={()=>{dragging.current=true;rest()}} onBlurCapture={event=>{if(!event.currentTarget.contains(event.relatedTarget))rest()}} onScroll={event=>{if(dragging.current||performance.now()<resumeAt.current){position.current=event.currentTarget.scrollLeft;resumeAt.current=performance.now()+settings.current.resume}}} onWheel={rest} onKeyDown={event=>{rest();if(event.key==="Escape")event.currentTarget.blur()}}>
-  <div ref={track} className="home-product-track">{ordered.map(product=><div className="home-rail-item" dir={ar?"rtl":"ltr"} key={product.id}><ProductCard product={product}/></div>)}</div>
+  <div ref={track} className="home-product-track">{ordered.map(product=><div className="home-rail-item" dir={ar?"rtl":"ltr"} key={product.id}><ProductCard product={product} photoSizes={imageSizes.rail}/></div>)}</div>
  </div>;
 }

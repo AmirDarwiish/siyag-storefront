@@ -2806,7 +2806,7 @@ html[data-header-hidden=true] {
   margin-top:var(--space-7)}
 .mood-card p {
   font-size:var(--type-label);
-  color:var(--muted);
+  color:var(--ink);
   margin-top:var(--space-4)}
 .mood-action {
   display:flex;
@@ -2839,7 +2839,7 @@ html[data-header-hidden=true] {
   gap:var(--space-3);
   background:var(--stone);
   padding:var(--space-2) var(--space-4);
-  border-radius:var(--radius-pill);
+  border-radius:var(--radius-surface);
   color:var(--ink);
   font-size:var(--type-caption)}
 .family-tag[data-family=floral] {

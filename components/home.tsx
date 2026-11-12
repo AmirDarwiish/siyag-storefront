@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import {StoreImage} from "./store-image";
+import {imageSizes} from "@/lib/image-sizes";
 import {useEffect, useRef, useState} from "react";
 import {Sun, Leaf, Flower2, Moon} from "lucide-react";
 import {api, imageUrl, name, type Collection, type Page, type Product} from "@/lib/store";
@@ -36,7 +38,7 @@ function HeroSlider() {
         if(Math.abs(distance)>55&&Math.abs(distance)>Math.abs(vertical))move((distance<0?1:-1)*(ar?-1:1));
       }}
       onTouchCancel={()=>{touchStart.current=null}}>
-      <figure className="hero-visual" key={slide.image}><img src={slide.image} alt="" width={1280} height={960} fetchPriority={active===0?"high":"auto"}/></figure>
+      <figure className="hero-visual" key={slide.image}><StoreImage sizes={imageSizes.hero} src={slide.image} alt="" width={1280} height={960} fetchPriority={active===0?"high":"auto"}/></figure>
       <div className="hero-content" key={slide.title} aria-live={playing?"off":"polite"}>
         <div className="hero-kicker"><span/>{slide.label}</div>
         <span className="hero-edition">{tr("AN EGYPTIAN FRAGRANCE HOUSE", "دار عطور مصرية")}</span><h1>{slide.title}</h1>
@@ -99,7 +101,7 @@ export function Home() {
       <div className="collections-grid home-collection-mosaic">
         {categories.map((category) => <Link className="collection-card" href={category.href} key={category.href}>
           <div className="collection-visual">
-            <img src={category.image} alt="" width={600} height={600} loading="lazy"/>
+            <StoreImage sizes={imageSizes.collection} src={category.image} alt="" width={600} height={600} loading="lazy"/>
           </div>
           <div className="collection-caption">
             <h3>{category.title}</h3>
@@ -119,7 +121,7 @@ export function Home() {
 
     <section className="scent-pathways container section" data-reveal><div className="section-head"><div><span className="eyebrow">{tr('FOLLOW YOUR INSTINCT','اتبع إحساسك')}</span><h2>{tr('What’s your mood?','أي طابع يشبهك؟')}</h2></div><p>{tr('Explore a different side of scent.','اكتشف جانب جديد من عالم العطور.')}</p></div><div className="mood-grid">{moods.map(({family,title,copy,icon:Icon})=><Link href={'/shop?family='+family} className="mood-card" data-family={family} key={family}><Icon size={38}/><h3>{title}</h3><p>{copy}</p><span className="mood-action">{tr('Explore','اكتشف')}</span></Link>)}</div></section>
     <section className="story" id="maison" data-reveal>
-      <img src="/brand/olive-notes.webp" alt="" width={1140} height={855} loading="lazy"/>
+      <StoreImage sizes={imageSizes.half} src="/brand/olive-notes.webp" alt="" width={1140} height={855} loading="lazy"/>
       <div>
         <span className="eyebrow">{tr("THE HOUSE OF SIYAG", "دار SIYAG")}</span>
         <h2>{tr("More than a fragrance. A feeling.", "أكثر من عطر… إحساس")}</h2>

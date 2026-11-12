@@ -1,5 +1,7 @@
 "use client";
 import Link from "next/link";
+import {StoreImage} from "./store-image";
+import {imageSizes} from "@/lib/image-sizes";
 import {useEffect,useState} from "react";
 import {Mail,Package,ShieldCheck,ShoppingBag,ChevronDown} from "lucide-react";
 import {api,money,type Content,type Settings,type Shipping} from "@/lib/store";
@@ -16,7 +18,7 @@ export function CarePage({page}:{page:CarePageKey}){
   <nav className="crumb" aria-label={tr("Breadcrumb","مسار الصفحة")}><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span><span>{copy(definition.title)}</span></nav>
   <header className="care-heading"><span className="eyebrow">{page==="about"?"SIYAG PARFUMS":tr("SIYAG CLIENT CARE","خدمة عملاء SIYAG")}</span><h1>{copy(definition.title)}</h1><p>{copy(definition.intro)}</p></header>
   <div className="care-layout"><article className="care-content">
-   {page==="about"&&<figure className="care-image"><img src="/brand/olive-notes.webp" width={1140} height={855} alt={tr("Citrus, woods and resins in sunlight","حمضيات وأخشاب وراتنجات في ضوء الشمس")}/></figure>}
+   {page==="about"&&<figure className="care-image"><StoreImage sizes={imageSizes.care} src="/brand/olive-notes.webp" width={1140} height={855} alt={tr("Citrus, woods and resins in sunlight","حمضيات وأخشاب وراتنجات في ضوء الشمس")}/></figure>}
    {content?<section className="care-section"><h2>{ar?content.titleAr:content.titleEn}</h2><p className="care-published">{ar?content.textAr:content.textEn}</p></section>:definition.sections.map((section,index)=>page==="faq"?<details className="care-faq" key={index}><summary>{copy(section.title)}<ChevronDown size={18}/></summary><p>{copy(section.body)}</p></details>:<section className="care-section" key={index}><span className="care-section-index">{String(index+1).padStart(2,"0")}</span><div><h2>{copy(section.title)}</h2><p>{copy(section.body)}</p></div></section>)}
    {page==="contact"&&<section className="care-contact-panel"><Mail size={24}/><div><h2>{tr("Write to SIYAG","راسل SIYAG")}</h2>{email&&/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)?<a className="text-link" href={"mailto:"+encodeURIComponent(email)}>{email}</a>:<p role="status">{!settings&&!unavailable?tr("Loading contact details…","جاري تحميل بيانات التواصل…"):tr("A client-care email has not been published yet. You can still access your order through secure tracking.","لم يُنشر بريد خدمة العملاء بعد. تقدر توصل لطلبك من التتبع الآمن.")}</p>}</div></section>}
    {page==="shipping"&&<section className="care-rates"><h2>{tr("Current delivery options","خيارات التوصيل الحالية")}</h2>{shipping?.length?<div className="care-rate-list">{shipping.map(option=><div key={option.governorate+option.code}><span>{governorates[option.governorate]?.[ar?1:0]??option.governorate}<small>{ar?option.nameAr:option.nameEn}</small></span><strong>{money(option.feeMinor,lang)}</strong></div>)}</div>:<p role="status">{unavailable?tr("Delivery options could not be loaded. Check again at checkout.","تعذّر تحميل خيارات التوصيل. راجعها في إتمام الطلب."):shipping?tr("No delivery options are currently published.","لا توجد خيارات توصيل منشورة حاليًا."):tr("Loading delivery options…","جاري تحميل خيارات التوصيل…")}</p>}</section>}

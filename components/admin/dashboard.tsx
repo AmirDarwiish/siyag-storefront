@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import {useEffect,useState,type FormEvent} from "react";
-import {ArrowUpRight,LayoutDashboard,Menu,Warehouse,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Star,Truck,Users} from "lucide-react";
+import {ArrowUpRight,Plus,Store,ShieldCheck,LayoutDashboard,Menu,Warehouse,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Star,Truck,Users} from "lucide-react";
 import {office,roleNames,type StaffUser} from "@/lib/admin";
 import {Collections,Products} from "./catalog";
 import {Orders} from "./orders";
@@ -116,16 +116,18 @@ export function AdminDashboard(){
   </main>;
 
   const ActivePanel=active.component;
-  const navigation=<><div className="office-mark" dir="ltr">SIYAG <span>OFFICE</span></div>
-    <div className="office-store-identity"><span>متجر SIYAG</span><small>إدارة المتجر</small></div>
-    <nav aria-label="أقسام الإدارة">{available.map(({id,label,icon:Icon})=><button type="button" key={id} aria-current={active.id===id?"page":undefined} onClick={()=>navigate(id)}><Icon size={19}/>{label}</button>)}</nav>
-    <div className="office-sidebar-bottom"><Link href="/" target="_blank" rel="noreferrer"><ArrowUpRight size={17}/> فتح المتجر</Link><button type="button" onClick={()=>{setMenu(false);setError("");setChange(true)}}><KeyRound size={17}/> تغيير كلمة المرور</button><div className="office-account"><span>{user?.name}</span><small>{roleNames[role]}</small></div></div></>;
+  const groups=[{label:"إدارة المتجر",ids:["overview","orders","products","inventory","collections"]},{label:"العملاء والتسويق",ids:["journey","reviews"]},{label:"الفريق والإعدادات",ids:["shipping","staff"]}];
+  const initials=(user?.name??"S").trim().split(/\s+/).slice(0,2).map(part=>part[0]).join("");
+  const navigation=<><div className="office-mark" dir="ltr">SIYAG <span>WORKSPACE</span></div>
+    <div className="office-store-identity"><span className="office-store-avatar"><Store size={20}/></span><div><strong>متجر SIYAG</strong><small>لوحة إدارة المتجر</small></div></div>
+    <nav aria-label="أقسام الإدارة">{groups.map(group=>{const items=group.ids.map(id=>available.find(panel=>panel.id===id)).filter(panel=>panel!==undefined);return items.length?<div className="office-nav-group" key={group.label}><h2>{group.label}</h2>{items.map(({id,label,icon:Icon})=><button type="button" key={id} aria-current={active.id===id?"page":undefined} onClick={()=>navigate(id)}><Icon size={18}/><span>{label}</span></button>)}</div>:null})}</nav>
+    <div className="office-sidebar-bottom"><button type="button" onClick={()=>{setMenu(false);setError("");setChange(true)}}><KeyRound size={17}/> أمان الحساب</button><div className="office-account"><span className="office-avatar">{initials}</span><div><strong>{user?.name}</strong><small><ShieldCheck size={12}/>{roleNames[role]}</small></div></div></div></>;
   return <main className="office office-dashboard" dir="rtl" lang="ar">
     <aside className="office-sidebar">{navigation}</aside>
     {menu&&<Panel title="أقسام الإدارة" description="تنقّل بين صفحات المتجر" onClose={()=>setMenu(false)}><div className="office-sidebar office-mobile-navigation">{navigation}</div></Panel>}
-    <div className="office-main"><div className="office-topbar"><button className="office-icon office-menu" aria-label="فتح قائمة الإدارة" onClick={()=>setMenu(true)}><Menu size={21}/></button><span>SIYAG <small>مساحة إدارة المتجر</small></span><div><span className="office-role">{roleNames[role]}</span><button type="button" className="office-button secondary" onClick={logout} disabled={busy}><LogOut size={16}/> خروج</button></div></div>
+    <div className="office-main"><div className="office-topbar"><button className="office-icon office-menu" aria-label="فتح قائمة الإدارة" onClick={()=>setMenu(true)}><Menu size={21}/></button><div className="office-topbar-path"><span>مساحة العمل</span><span>/</span><strong>{active.label}</strong></div><div><Link href="/" target="_blank" rel="noreferrer" className="office-button secondary office-store-link" aria-label="فتح المتجر"><ArrowUpRight size={16}/><span>فتح المتجر</span></Link><button type="button" className="office-button secondary" onClick={logout} disabled={busy}><LogOut size={16}/> خروج</button></div></div>
     <div className="office-workspace">
-      <header className="office-header"><div><span>إدارة المتجر / {active.label}</span><h1>{active.label}</h1><p>{active.description}</p></div></header>
+      <header className="office-header"><div><span className="office-section-kicker">SIYAG OFFICE</span><h1>{active.label}</h1><p>{active.description}</p></div>{(role==="Owner"||role==="Catalog")&&active.id!=="products"&&<button className="office-button" type="button" onClick={()=>editProduct("")}><Plus size={17}/> إضافة منتج</button>}</header>
       <Message message={error} error/>
       {active.id==="overview"?<Overview role={role} navigate={navigate} createProduct={()=>editProduct("")}/>:active.id==="inventory"?<Inventory editProduct={editProduct}/>:active.id==="products"?<Products key={productIntent??"list"} initialEditing={productIntent}/>:<ActivePanel key={active.id}/>}
     </div></div>

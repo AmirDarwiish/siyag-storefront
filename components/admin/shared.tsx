@@ -1,6 +1,6 @@
 "use client";
-import {useEffect,useState,type ReactNode} from "react";
-import {ChevronLeft,ChevronRight,X} from "lucide-react";
+import {useEffect,useId,useRef,useState,type ReactNode} from "react";
+import {ChevronLeft,ChevronRight,MoveHorizontal,X} from "lucide-react";
 import {Dialog,DialogContent,DialogDescription,DialogTitle} from "@/components/ui/dialog";
 import {office} from "@/lib/admin";
 import type {Page} from "@/lib/store";
@@ -31,10 +31,30 @@ export function useOfficeData<T>(path:string|null,revision=0,poll=0){
 export function Message({message,error=false}:{message:string;error?:boolean}){
   return message?<p className={error?"office-error":"office-message"} role={error?"alert":"status"}>{message}</p>:null;
 }
+export function TableFrame({label,children,actions=false,compact=false,total}:{label:string;children:ReactNode;actions?:boolean;compact?:boolean;total?:number}){
+  const viewport=useRef<HTMLDivElement>(null);
+  const [overflow,setOverflow]=useState(false);
+  const hint=useId();
+  useEffect(()=>{
+    const element=viewport.current;if(!element)return;
+    const measure=()=>setOverflow(element.scrollWidth>element.clientWidth+2);
+    measure();const observer=new ResizeObserver(measure);observer.observe(element);
+    if(element.firstElementChild)observer.observe(element.firstElementChild);
+    return()=>observer.disconnect();
+  },[children]);
+  return <section className="office-data-table" data-actions={actions} data-compact={compact}>
+    <header className="office-table-heading"><h2>{label}</h2>{total!==undefined&&<span className="office-count">{total.toLocaleString("ar-EG")}</span>}<span className="office-table-view">عرض الجدول</span></header>
+    <div className="office-table-wrap" ref={viewport} role="region" aria-label={label} aria-describedby={overflow?hint:undefined} tabIndex={overflow?0:undefined}>{children}</div>
+    {overflow&&<p className="office-table-hint" id={hint}><MoveHorizontal size={16}/> مرّر أفقيًا لعرض باقي الأعمدة. يمكنك استخدام أسهم لوحة المفاتيح.</p>}
+  </section>;
+}
 export function Pagination({data,go}:{data?:Page<unknown>;go:(page:number)=>void}){
-  if(!data||data.totalPages<2)return null;
-  return <div className="office-pagination"><button type="button" disabled={data.pageNumber<=1} onClick={()=>go(data.pageNumber-1)} aria-label="الصفحة السابقة"><ChevronRight size={18}/></button>
-    <span>{data.pageNumber} / {data.totalPages}</span><button type="button" disabled={data.pageNumber>=data.totalPages} onClick={()=>go(data.pageNumber+1)} aria-label="الصفحة التالية"><ChevronLeft size={18}/></button></div>;
+  if(!data)return null;
+  const first=data.totalCount?(data.pageNumber-1)*data.pageSize+1:0;
+  const last=Math.min(data.pageNumber*data.pageSize,data.totalCount);
+  const format=(n:number)=>n.toLocaleString("ar-EG");
+  return <div className="office-pagination"><p>عرض {format(first)}–{format(last)} من {format(data.totalCount)}</p><div><button type="button" disabled={data.pageNumber<=1} onClick={()=>go(data.pageNumber-1)} aria-label="الصفحة السابقة"><ChevronRight size={17}/> السابق</button>
+    <span>{format(data.pageNumber)} / {format(Math.max(1,data.totalPages))}</span><button type="button" disabled={data.pageNumber>=data.totalPages} onClick={()=>go(data.pageNumber+1)} aria-label="الصفحة التالية">التالي <ChevronLeft size={17}/></button></div></div>;
 }
 export function Panel({title,description,onClose,children}:{title:string;description:string;onClose:()=>void;children:ReactNode}){
   return <Dialog open onOpenChange={open=>{if(!open)onClose()}}><DialogContent placement="side" className="office-modal" showCloseButton={false}>

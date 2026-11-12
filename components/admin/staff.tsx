@@ -1,12 +1,13 @@
 "use client";
-import {useEffect,useState,type FormEvent} from "react";
+import {useState,type FormEvent} from "react";
 import {office,roleNames,type StaffUser} from "@/lib/admin";
 import {UserPlus,Search,ShieldCheck,Users,SquarePen} from "lucide-react";
-import {useEditorRoute,RowAction,Message,Panel,TableFrame} from "./shared";
+import {useOfficeData,useEditorRoute,RowAction,Message,Panel,TableFrame} from "./shared";
 
 export function Staff(){
-  const [people,setPeople]=useState<StaffUser[]>([]);
-  const [loaded,setLoaded]=useState(false);
+  const peopleResource=useOfficeData<StaffUser[]>("staff");
+  const people=peopleResource.data??[];
+  const loaded=peopleResource.data!==undefined;
   const {editor,open:openEditor,close:closeEditor}=useEditorRoute("staff");
   const editing=editor?people.find(person=>person.id===editor)??null:null;
   const open=editor!==null;
@@ -16,13 +17,6 @@ export function Staff(){
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
   const [notice,setNotice]=useState("");
-
-  useEffect(()=>{
-    const controller=new AbortController();
-    office<StaffUser[]>("staff",{signal:controller.signal}).then(items=>{setPeople(items);setLoaded(true)})
-      .catch(error=>{if(!controller.signal.aborted)setError(error.message)});
-    return()=>controller.abort();
-  },[]);
 
   async function save(event:FormEvent<HTMLFormElement>){
     event.preventDefault();
@@ -38,7 +32,7 @@ export function Staff(){
         data:editing?{role,active:fields.has("active"),temporaryPassword:temporaryPassword||null}:
           {role,name:fields.get("name"),email:fields.get("email"),temporaryPassword},
       });
-      setPeople(items=>[...items.filter(item=>item.id!==user.id),user].sort((a,b)=>a.email.localeCompare(b.email)));
+
       form.reset();setEditing(null);setOpen(false);setNotice(editing?"اتحفظت بيانات الموظف.":"اتضاف الموظف. شارك معاه كلمة المرور المؤقتة بشكل خاص.");
     }catch(error){setError(error instanceof Error?error.message:"تعذّر حفظ الموظف.")}
     finally{setBusy(false)}
@@ -61,13 +55,13 @@ export function Staff(){
       <div><button className="office-button" disabled={busy||!loaded}>{editing?"حفظ التعديلات":"إضافة الموظف"}</button>{" "}
         {editing&&<button className="office-text-button" type="button" disabled={busy} onClick={()=>{setEditing(null);setOpen(false)}}>إلغاء</button>}
       </div>
-      <Message message={error} error/>
+      <Message message={error||peopleResource.error} error/>
     </form></Panel>;}
   return <section className="office-staff-page">
     <div className="office-toolbar"><p className="office-help">حساب مستقل لكل موظف، بصلاحيات تناسب دوره.</p><button type="button" className="office-button" onClick={()=>{setEditing(null);setOpen(true);setError("")}}><UserPlus size={17}/> إضافة موظف</button></div>
     <details className="office-disclosure"><summary>صلاحيات فريق المتجر</summary><div className="office-info-note"><ShieldCheck size={19}/><p>مالك المتجر يملك جميع الصلاحيات. موظف الكتالوج يدير المنتجات، وموظف التنفيذ يتابع الطلبات والتوصيل.</p></div></details>
     <label className="office-search office-collection-search"><Search size={17}/><input aria-label="البحث في الموظفين" placeholder="ابحث بالاسم أو البريد أو الصلاحية…" value={query} onChange={e=>setQuery(e.target.value)}/></label>
-    {!open&&<Message message={error} error/>}<Message message={notice}/>
+    {!open&&<Message message={error||peopleResource.error} error/>}<Message message={notice}/>
     {!loaded&&!error&&<p role="status">جارٍ تحميل الفريق…</p>}
     <TableFrame label="فريق المتجر" actions total={filtered.length} scope={query}><table className="office-table"><thead><tr>
       <th>الاسم</th><th>البريد الإلكتروني</th><th>الصلاحية</th><th>الحالة</th><th>الإجراء</th>

@@ -15,3 +15,10 @@ export function railStepProgress(elapsed:number,duration:number){
  const t=duration>0?Math.max(0,Math.min(1,elapsed/duration)):1;
  return t*t*(3-2*t);
 }
+
+/** Production CSS can minify 4200ms to 4.2s; never discard the time unit. */
+export function cssMilliseconds(value:string){
+ const text=value.trim(),amount=Number.parseFloat(text);
+ if(!Number.isFinite(amount))return 0;
+ return Math.max(0,amount*(text.endsWith("ms")?1:text.endsWith("s")?1000:1));
+}

@@ -2,7 +2,7 @@
 import {useEffect,useLayoutEffect,useRef,useState,type CSSProperties} from "react";
 import {flushSync} from "react-dom";
 import {imageSizes} from "@/lib/image-sizes";
-import {normalizeRail,mobileRailPlan,railStepProgress} from "@/lib/rail-motion";
+import {normalizeRail,mobileRailPlan,railStepProgress,cssMilliseconds} from "@/lib/rail-motion";
 import type {Product} from "@/lib/store";
 import {useStore} from "./store-context";
 import {ProductCard} from "./product";
@@ -34,7 +34,7 @@ export function HomeProductRail({products}:{products:Product[]}){
    if(!element||!strip)return;
    const css=getComputedStyle(strip),theme=getComputedStyle(element),next=(strip.firstElementChild?.getBoundingClientRect().width??0)+(parseFloat(css.columnGap)||0);
    setMobile(theme.getPropertyValue("--rail-step-mode").trim()==="1");
-   settings.current={speed:parseFloat(theme.getPropertyValue("--motion-rail-speed"))||0,resume:parseFloat(theme.getPropertyValue("--motion-rail-resume"))||0,interval:parseFloat(theme.getPropertyValue("--motion-rail-step-interval"))||0,duration:parseFloat(theme.getPropertyValue("--motion-rail-step-duration"))||0};
+   settings.current={speed:parseFloat(theme.getPropertyValue("--motion-rail-speed"))||0,resume:cssMilliseconds(theme.getPropertyValue("--motion-rail-resume")),interval:cssMilliseconds(theme.getPropertyValue("--motion-rail-step-interval")),duration:cssMilliseconds(theme.getPropertyValue("--motion-rail-step-duration"))};
    if(Math.abs(next-step.current)<.1)return;
    step.current=next;position.current=ar||reduced?0:next;pending.current=false;element.dataset.stepping="false";paint();
   }
@@ -63,7 +63,7 @@ export function HomeProductRail({products}:{products:Product[]}){
  // No animation frames during the reading interval. A first mobile interaction
  // cancels the current transition synchronously and disables autoplay for this visit.
  useEffect(()=>{
-  const element=rail.current;if(!element||!mobile||mobilePaused||reduced||!visible||count<2)return;
+  const element=rail.current;if(!element||!mobile||mobilePaused||reduced||!visible||count<2||settings.current.interval<=0)return;
   let timer:ReturnType<typeof setTimeout>|undefined,frame=0,disposed=false;
   const blocked=()=>hovered.current||dragging.current||element.contains(document.activeElement)||!!document.querySelector('[role="dialog"][data-state="open"]')||document.visibilityState!=="visible"||performance.now()<resumeAt.current;
   function schedule(){if(!disposed&&!mobileStopped.current)timer=setTimeout(cycle,settings.current.interval)}

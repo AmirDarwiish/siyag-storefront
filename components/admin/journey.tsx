@@ -1,6 +1,6 @@
 "use client";
 import {useState,type CSSProperties} from "react";
-import {Activity,Info,MousePointerClick,RefreshCw,ShoppingBag,Users,Wallet} from "lucide-react";
+import {CreditCard,CheckCircle2,Activity,Info,MousePointerClick,RefreshCw,ShoppingBag,Users,Wallet} from "lucide-react";
 import {money} from "@/lib/store";
 import {Message,TableFrame,useOfficeData} from "./shared";
 
@@ -21,10 +21,10 @@ export function JourneyDashboard(){
     {label:"قيمة الطلبات",value:report?money(report.revenueMinor,"ar"):"—",icon:Wallet,caption:"قبل احتساب صافي التحصيل"},
   ];
   const journey=report?[
-    {label:"زيارة المتجر",value:report.sessions},
-    {label:"إضافة للحقيبة",value:report.addToCartSessions},
-    {label:"بدء إتمام الطلب",value:report.checkoutSessions},
-    {label:"إتمام الشراء",value:report.purchaseSessions},
+    {label:"زيارة المتجر",value:report.sessions,icon:Users,tone:"blue"},
+    {label:"إضافة للحقيبة",value:report.addToCartSessions,icon:ShoppingBag,tone:"violet"},
+    {label:"بدء إتمام الطلب",value:report.checkoutSessions,icon:CreditCard,tone:"teal"},
+    {label:"إتمام الشراء",value:report.purchaseSessions,icon:CheckCircle2,tone:"amber"},
   ]:[];
   const audience=report?[...report.devices.map(d=>({label:deviceNames[d.device]??d.device,metrics:d.metrics})),...report.visitorsByType.map(d=>({label:d.returning?"زائر عائد":"زائر جديد",metrics:d.metrics}))]:[];
   return <div className="office-analytics">
@@ -33,12 +33,9 @@ export function JourneyDashboard(){
     {report?.truncated&&<Message message="الفترة تجاوزت ١٠٠ ألف حدث. اختر فترة أقصر لعرض تقرير كامل." error/>}
     <div className="office-stats office-analytics-stats">{stats.map(({label,value,icon:Icon,caption},index)=><section key={label} data-tone={["blue","violet","teal","amber"][index]}><div className="office-metric-label"><span>{label}</span><Icon size={19}/></div><strong>{value}</strong><small>{caption}</small></section>)}</div>
     {!report&&!error&&<p className="office-help" role="status">جارٍ تحميل بيانات التقرير…</p>}
-    <div className="office-info-note"><Info size={18}/><p>الأرقام تخص الزوار الذين وافقوا على القياس. قيمة الطلبات تشمل الدفع عند الاستلام المسجّل والمدفوعات الإلكترونية المؤكدة؛ ولا تمثل صافي المبالغ المحصّلة.</p></div>
+    <details className="office-report-help"><summary><Info size={15}/> كيف تُحسب الأرقام؟</summary><p>الأرقام تخص الزوار الذين وافقوا على القياس. قيمة الطلبات تشمل الدفع عند الاستلام المسجّل والمدفوعات الإلكترونية المؤكدة؛ ولا تمثل صافي التحصيل. المراحل اختيارية، والشراء المباشر قد يتجاوز الحقيبة.</p></details>
     {report&&<>
-      <section className="office-card"><header><div><h2>خطوات رحلة العميل</h2><p>عدد الجلسات التي وصلت لكل خطوة، ونسبتها من جميع الجلسات</p></div><span className="office-badge">{number(report.sessions)} جلسة</span></header>
-        <div className="office-funnel">{journey.map((item,index)=><div key={item.label}><span className="office-funnel-step">{number(index+1).padStart(2,"٠")}</span><span>{item.label}</span><strong>{number(item.value)}</strong><div className="office-funnel-track"><span style={{"--office-progress":`${report.sessions?Math.min(100,item.value/report.sessions*100):0}%`} as CSSProperties}/></div><small>{rate(item.value,report.sessions)}</small></div>)}</div>
-        <p className="office-help">الجلسة قد تصل لأكثر من خطوة، والشراء المباشر قد يتجاوز خطوة الحقيبة؛ لذلك لا تمثل الأعمدة مسارًا إلزاميًا واحدًا.</p>
-      </section>
+      <section className="office-card office-journey-card"><header><h2>مسار التحويل</h2><span className="office-badge">{number(report.sessions)} جلسة</span></header><div className="office-journey-stages">{journey.map(({label,value,icon:Icon,tone})=><article key={label} data-tone={tone}><header><span className="office-stage-icon"><Icon size={18}/></span><h3>{label}</h3></header><div className="office-stage-value"><strong>{number(value)}</strong><span>{rate(value,report.sessions)}</span></div><div className="office-stage-track" role="progressbar" aria-label={label+" من إجمالي الجلسات"} aria-valuemin={0} aria-valuemax={report.sessions||1} aria-valuenow={value}><span style={{"--office-progress":`${report.sessions?Math.min(100,value/report.sessions*100):0}%`} as CSSProperties}/></div></article>)}</div></section>
       <div className="office-insights">{[
         ["متوسط قيمة الطلب",money(Math.round(report.aovMinor),"ar")],
         ["السلة ← بدء الطلب",rate(report.bagToCheckoutSessions,report.addToCartSessions)],

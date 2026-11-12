@@ -26,6 +26,9 @@
 :root {
   --rail-visible: 3;
   --rail-offset: 0px;
+  --rail-step-mode: 0;
+  --motion-rail-step-interval: 4200ms;
+  --motion-rail-step-duration: 520ms;
   --care-width: 1120px;
   --care-copy-width: 66ch;
   --care-aside-width: 220px;
@@ -41,7 +44,7 @@
   --home-border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
   --home-card-border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
   --home-rail-gap: var(--space-8);
-  --home-rail-mobile-card: 78%;
+  --home-rail-mobile-card: 100%;
   --home-card-lift: -3px;
   --motion-header: 260ms;
   --motion-ui: 220ms;
@@ -154,6 +157,7 @@
 @media (max-width:767px) {
   :root {
     --page-gutter: 20px;
+    --rail-step-mode: 1;
     --mood-card-height: 260px;
     --section-space: 52px;
     --panel-space: 28px;

@@ -2759,6 +2759,9 @@ html[data-header-hidden=true] {
   scrollbar-width:none;
   scroll-behavior:auto;
   padding-block:var(--space-2) var(--space-6)}
+.home-product-rail[data-mode=step] {scroll-snap-type:x mandatory}
+.home-product-rail[data-mode=step][data-stepping=true] {scroll-snap-type:none}
+.home-product-rail[data-mode=step] .home-rail-item {scroll-snap-align:start;scroll-snap-stop:always}
 .home-product-rail:focus-visible {
   outline:1px solid var(--olive);
   outline-offset:var(--space-4)}

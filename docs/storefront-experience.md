@@ -36,3 +36,11 @@ Initial PageSpeed Insights mobile lab run after deployment (12 November 2026, 20
 Second mobile lab run (20:40 Cairo): Performance 87, Accessibility 100, Best Practices 100, SEO 100; FCP 1.4s, LCP 3.6s, TBT 20ms, CLS 0. The follow-up LCP audit exposed Next Image’s default lazy loading on the high-priority hero (1,350ms load delay), plus a 1,000ms image reveal delay. The shared StoreImage wrapper now makes high-priority images eager, and the first hero photograph paints without its intro animation. Subsequent slide transitions retain their motion.
 
 Final measured mobile lab run after the eager-hero fix (20:46 Cairo): Performance 99, Accessibility 100, Best Practices 100, SEO 100; FCP 0.9s, LCP 2.1s, TBT 0ms, CLS 0. This is a lab session under Slow 4G emulation, not a field guarantee. A final menu smoke test found that selecting side placement without an explicit viewport inset left the navigation dialog at its static document position. The canonical navigation-drawer rule now fixes it to the viewport, with logical RTL anchoring and independent overflow only when its content exceeds the screen.
+
+### Mobile one-card interaction refinement
+
+The mobile rail now has its own stepped mode controlled by shared theme variables: a full-width card, a 4.2-second reading interval, and a 520ms one-card transition. Arabic advances physically left, English physically right, using the same unique card instances. Native scroll snap and `scroll-snap-stop: always` support manual browsing. The desktop continuous presentation is preserved.
+
+Pointer/touch start, click, focus, wheel or keyboard input inside the mobile rail synchronously cancels its movement and permanently disables autoplay for the current homepage visit. It cannot restart while a customer chooses a size, uses quick view, saves an item or adds to the bag. Leaving the homepage creates a fresh visit; changing language alone does not restart a rail the customer has paused. Idle mobile intervals use timers rather than a continuously running animation loop. Reduced-motion preference disables autoplay. Native touch scrolling and vertical page scrolling are not prevented.
+
+The prior navigation-drawer fix was verified live at 393×852: the panel spans y=0..852, remains inside the viewport, and exposes all six navigation links.

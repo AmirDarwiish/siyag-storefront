@@ -4,3 +4,14 @@ export function normalizeRail(offset:number,step:number){
  const crossed=Math.floor(offset/step);
  return {crossed,offset:offset-crossed*step};
 }
+
+/** Mobile always travels exactly one card in the language's visual direction. */
+export function mobileRailPlan(scrollLeft:number,step:number,ar:boolean){
+ const width=Number.isFinite(step)&&step>0?step:0;
+ const anchor=ar?0:width,advance=ar?1:-1;
+ return {anchor,advance,target:anchor+advance*width,rebase:width?Math.round(scrollLeft/width)-(ar?0:1):0};
+}
+export function railStepProgress(elapsed:number,duration:number){
+ const t=duration>0?Math.max(0,Math.min(1,elapsed/duration)):1;
+ return t*t*(3-2*t);
+}

@@ -106,7 +106,8 @@ export function Header(){
       <button type="button" className="icon mobile-menu" aria-label={tr("Menu","القائمة")} onClick={()=>setMenu(true)}><Menu size={22}/></button>
       <Link href="/" className="nav-brand" aria-label="SIYAG"><Wordmark/></Link>
       <nav aria-label={tr("Store navigation","تصفح المتجر")}>
-        <Link href="/shop">{tr("Fragrances","العطور")}</Link><Link href="/shop?format=decant">{tr("Discovery","عينات التجربة")}</Link><Link href="/about">{tr("The house","دار SIYAG")}</Link>
+        <Link href="/shop" aria-current={path==="/shop"?"page":undefined}>{tr("Fragrances","العطور")}</Link><Link href="/shop?format=decant">{tr("Discovery","عينات التجربة")}</Link><Link href="/about" aria-current={path==="/about"?"page":undefined}>{tr("The house","دار SIYAG")}</Link>
+        <Link className="desktop-track-link" href="/track" aria-current={path==="/track"?"page":undefined}>{tr("Track order","تتبّع طلبك")}</Link>
       </nav>
       <div className="nav-tools">
         <button type="button" className="language-switch" onClick={toggleLanguage} aria-label={tr("Switch to Arabic","التبديل للإنجليزية")}>{ar?"EN":"العربية"}</button>

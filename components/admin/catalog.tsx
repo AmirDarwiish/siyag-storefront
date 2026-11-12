@@ -1,9 +1,10 @@
 "use client";
 import {useEffect,useRef,useState,type FormEvent} from "react";
+import {usePathname,useRouter} from "next/navigation";
 import {Plus,Search,Boxes,ArrowUp,ArrowDown,ExternalLink,RefreshCw,SquarePen,Eye,EyeOff} from "lucide-react";
 import {office,type AdminCollection,type AdminProduct,type AdminVariant,type ProductSummary} from "@/lib/admin";
 import {concentrations,families,formats,imageUrl,money,type Page} from "@/lib/store";
-import {RowAction,TableFrame,Message,Pagination,Panel,Upload,useOfficeData} from "./shared";
+import {useEditorRoute,RowAction,TableFrame,Message,Pagination,Panel,Upload,useOfficeData} from "./shared";
 
 import {productActions,collectionActions} from "./bulk-actions";
 
@@ -18,9 +19,9 @@ const slugPattern="[a-z0-9]+(?:-[a-z0-9]+)*";
 const notes=(value:FormDataEntryValue|null)=>String(value??"").split(/[،,\n]+/).map(note=>note.trim()).filter(Boolean);
 const variantOrder=(variants:AdminVariant[])=>[...variants].sort((a,b)=>a.sizeMl-b.sizeMl);
 
-export function Products({initialEditing=null}:{initialEditing?:string|null}={}){
+export function Products(){
   const [page,setPage]=useState(1),[query,setQuery]=useState(""),[filter,setFilter]=useState("all");
-  const [editing,setEditing]=useState<string|null>(initialEditing);
+  const {editor:editing,open:setEditing,close:closeEditor}=useEditorRoute("products");
   const [revision,setRevision]=useState(0);
   const [products,setProducts]=useState<ProductSummary[]>();
   const [details,setDetails]=useState<Record<string,AdminProduct>>({});
@@ -61,6 +62,7 @@ export function Products({initialEditing=null}:{initialEditing?:string|null}={})
     }
     void loadDetails();return()=>controller.abort();
   },[visibleIds,revision]);
+  if(editing!==null)return <Panel title={editing?"إدارة العطر":"إضافة عطر"} description="البيانات، الصور، الأحجام والأسعار والمخزون" onClose={closeEditor}><Message message={collectionError} error/><ProductEditor id={editing} collections={collections} changed={()=>setRevision(value=>value+1)}/></Panel>;
   return <>
     <div className="office-toolbar"><p>{products?`${products.length} منتج في الكتالوج`:"جارٍ تحميل الكتالوج…"}</p><div className="office-tools"><button className="office-icon" aria-label="تحديث المنتجات" onClick={()=>setRevision(v=>v+1)}><RefreshCw size={17}/></button><button className="office-button" onClick={()=>setEditing("")}><Plus size={17}/> إضافة عطر</button></div></div>
     <div className="office-list-controls"><div className="office-tabs" role="group" aria-label="حالة المنتج">{[["all","الكل"],["published","منشور"],["draft","مسودة"]].map(([value,label])=><button key={value} aria-pressed={filter===value} onClick={()=>{setFilter(value);setPage(1)}}>{label}</button>)}</div><label className="office-search"><Search size={17}/><input aria-label="البحث في المنتجات" placeholder="اسم المنتج أو المعرّف…" value={query} onChange={e=>{setQuery(e.target.value);setPage(1)}}/></label></div>
@@ -75,7 +77,7 @@ export function Products({initialEditing=null}:{initialEditing?:string|null}={})
         <td><div className="office-row-actions"><RowAction label={`تعديل ${product.nameAr}`} icon={SquarePen} onClick={()=>setEditing(product.id)}/>{product.published&&<RowAction label={`معاينة ${product.nameAr}`} icon={ExternalLink} href={"/products/"+product.slug}/>}</div></td></tr>})}</tbody></table>
       {!rows?.length&&!error&&<div className="office-empty"><Boxes size={28}/><strong>{!products?"جارٍ تحميل العطور…":products.length?"لا توجد منتجات مطابقة":"ابدأ بأول عطر في مجموعتك"}</strong><p>{products?.length?"جرّب اسمًا آخر أو غيّر حالة العرض.":"احفظ المنتج كمسودة، ثم أضف الأحجام والمخزون قبل النشر."}</p></div>}</TableFrame>
     {filtered&&<Pagination data={{data:rows??[],totalCount:filtered.length,totalPages:Math.ceil(filtered.length/20),pageNumber:currentPage,pageSize:20}} go={setPage}/>}
-    {editing!==null&&<Panel title={editing?"إدارة العطر":"إضافة عطر"} description="البيانات، الصور، الأحجام والأسعار والمخزون" onClose={()=>setEditing(null)}><Message message={collectionError} error/><ProductEditor id={editing} collections={collections} changed={()=>setRevision(value=>value+1)}/></Panel>}
+
   </>;
 }
 
@@ -86,6 +88,8 @@ function ProductEditor({id,collections,changed}:{id:string;collections?:AdminCol
 }
 
 function ProductForm({initial,collections,changed}:{initial:AdminProduct;collections?:AdminCollection[];changed:()=>void}){
+  const router=useRouter(),pathname=usePathname();
+  const [drafts,setDrafts]=useState([{key:"first",sku:"",sizeMl:50,format:"fullBottle",price:"",compareAt:"",stock:0,active:true}]);
   const [product,setProduct]=useState(initial);
   const [slug,setSlug]=useState(initial.slug);
   const [customSlug,setCustomSlug]=useState(!!initial.slug);
@@ -94,7 +98,9 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
   const [feedback,setFeedback]=useState("");
   const [failed,setFailed]=useState(false);
   const [busy,setBusy]=useState(false);
-  const [variant,setVariant]=useState<AdminVariant|null>(null);
+  const variantSegment=pathname.split("/")[5];
+  const variant=variantSegment==="new"?blankVariant:product.variants.find(item=>item.id===variantSegment);
+  const setVariant=(item:AdminVariant|null)=>router.push(`/admin/products/${product.id}`+(item?`/variants/${item.id||"new"}`:""));
   function addImage(value:string){
     const image=value.trim();
     if(!image)return;
@@ -108,8 +114,8 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
     event.preventDefault();
     if(busy||!collections)return;
     const form=new FormData(event.currentTarget);
-    const published=!!product.id&&form.has("published");
-    if(published&&!product.variants.some(v=>v.active)){setFailed(true);setFeedback("فعّل مقاسًا واحدًا على الأقل قبل نشر العطر.");return}
+    const published=form.has("published");
+    if(published&&!(product.id?product.variants:drafts).some(v=>v.active)){setFailed(true);setFeedback("فعّل مقاسًا واحدًا على الأقل قبل نشر العطر.");return}
     setBusy(true);setFeedback("");setFailed(false);
     const values={
       slug:String(form.get("slug")),nameAr:String(form.get("nameAr")),nameEn:String(form.get("nameEn")),
@@ -117,16 +123,19 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
       family:String(form.get("family")),concentration:String(form.get("concentration")),audience:String(form.get("audience")),
       brand:product.brand,seo:product.seo,topNotes:notes(form.get("topNotes")),heartNotes:notes(form.get("heartNotes")),baseNotes:notes(form.get("baseNotes")),
       published,featured:form.has("featured"),images,collections:form.getAll("collections").map(String),
+      ...(!product.id?{variants:drafts.map(item=>({sku:item.sku.trim()||`${slug}-${item.sizeMl}-${item.format}`.toUpperCase(),sizeMl:item.sizeMl,format:item.format,priceMinor:Math.round(Number(item.price)*100),compareAtMinor:item.compareAt?Math.round(Number(item.compareAt)*100):null,stock:item.stock,active:item.active}))}:{}),
     };
     try{
       const result=await office<{id:string}|undefined>(product.id?"products/"+product.id:"products",{method:product.id?"PUT":"POST",data:values});
-      setProduct(current=>({...current,...values,id:result?.id??current.id}));
+      setProduct(current=>({...current,...values,variants:current.variants,id:result?.id??current.id}));
       changed();setFeedback("تم حفظ العطر.");
+      if(!product.id&&result?.id)router.replace("/admin/products/"+result.id);
     }catch(error){setFailed(true);setFeedback(error instanceof Error?error.message:"تعذّر حفظ العطر.")}
     finally{setBusy(false)}
   }
+  if(pathname.split("/")[4]==="variants")return variant?<section className="office-detail"><header><h3>{variant.id?`تعديل صنف ${variant.sku}`:"إضافة صنف للمنتج"}</h3><p className="office-help">{product.nameAr} · سعر ومخزون مستقل لكل صنف.</p></header><VariantForm key={variant.id||"new"} productId={product.id} initial={variant} onCancel={()=>setVariant(null)} onSave={value=>{setProduct(current=>({...current,variants:[...current.variants.filter(item=>item.id!==value.id),value]}));if(!variant.id)router.replace(`/admin/products/${product.id}/variants/${value.id}`);changed()}}/></section>:<Message message="الصنف غير موجود." error/>;
   return <div className="office-detail">
-    <div className="office-product-progress"><strong>{product.id?"بيانات المنتج محفوظة":"١. ابدأ ببيانات المنتج"}</strong><span>{product.id?product.variants.length?"راجع المخزون ثم فعّل النشر واحفظ التغييرات.":"الخطوة التالية: أضف حجمًا وسعرًا ومخزونًا أسفل البيانات.":"احفظ المسودة أولًا لإتاحة الأحجام والأسعار والمخزون."}</span></div>
+    <div className="office-product-progress"><strong>{product.id?"بيانات المنتج محفوظة":"منتج جديد وأصنافه"}</strong><span>{product.id?product.variants.length?"راجع المخزون ثم فعّل النشر واحفظ التغييرات.":"الخطوة التالية: أضف حجمًا وسعرًا ومخزونًا أسفل البيانات.":"أضف بيانات المنتج والأحجام والأسعار والمخزون، ثم احفظها معًا."}</span></div>
     <form className="office-form" onSubmit={save}>
       <section className="office-editor-section"><h3>بيانات العطر</h3>
       <div className="office-fields">
@@ -147,20 +156,18 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
         {images.length<12&&<><Upload onUpload={addImage}/><div className="office-image-link"><input value={url} onChange={event=>setUrl(event.target.value)} aria-label="رابط الصورة" placeholder="https://…" dir="ltr"/><button className="office-button secondary" type="button" onClick={()=>addImage(url)}>إضافة رابط</button></div></>}
         <div className="office-images">{images.map((image,index)=><div key={image}><img src={imageUrl(image)} alt={"صورة "+(index+1)}/><span>{index===0?"رئيسية":index===1?"صورة المرور":index+1}</span><div className="office-image-actions"><button type="button" className="office-icon" aria-label={"تقديم صورة "+(index+1)} disabled={index===0} onClick={()=>setImages(items=>{const next=[...items];[next[index-1],next[index]]=[next[index],next[index-1]];return next})}><ArrowUp size={14}/></button><button type="button" className="office-icon" aria-label={"تأخير صورة "+(index+1)} disabled={index===images.length-1} onClick={()=>setImages(items=>{const next=[...items];[next[index+1],next[index]]=[next[index],next[index+1]];return next})}><ArrowDown size={14}/></button></div><button type="button" className="office-text-button" onClick={()=>setImages(items=>items.filter(item=>item!==image))}>إزالة</button></div>)}</div>
       </section>
+      {!product.id&&<section className="office-editor-section"><div className="office-toolbar"><div><h3>الأصناف والأحجام</h3><p className="office-help">لكل حجم رمز وسعر ومخزون مستقل. كل البيانات تُحفظ مع المنتج في عملية واحدة.</p></div><button type="button" className="office-button secondary" onClick={()=>setDrafts(items=>[...items,{key:crypto.randomUUID(),sku:"",sizeMl:100,format:"fullBottle",price:"",compareAt:"",stock:0,active:true}])}><Plus size={16}/> إضافة صنف</button></div>{drafts.map((item,index)=>{const update=(patch:Partial<typeof item>)=>setDrafts(items=>items.map(current=>current.key===item.key?{...current,...patch}:current));return <fieldset className="office-draft-variant" key={item.key}><legend>الصنف {index+1}</legend><div className="office-fields"><label>الحجم بالمل<input type="number" min={1} max={1000} required value={item.sizeMl} onChange={e=>update({sizeMl:Number(e.target.value)})}/></label><label>نوع العبوة<select value={item.format} onChange={e=>update({format:e.target.value})}>{Object.entries(formats).map(([value,label])=><option key={value} value={value}>{label[1]}</option>)}</select></label><label>السعر بالجنيه<input type="number" min=".01" max={1000000} step=".01" required value={item.price} onChange={e=>update({price:e.target.value})}/></label><label>السعر قبل الخصم (اختياري)<input type="number" min={item.price?Number(item.price)+.01:.01} max={1000000} step=".01" value={item.compareAt} onChange={e=>update({compareAt:e.target.value})}/></label><label>المخزون الافتتاحي<input type="number" min={0} max={100000} required value={item.stock} onChange={e=>update({stock:Number(e.target.value)})}/></label><label>رمز الصنف SKU<input dir="ltr" maxLength={80} value={item.sku} placeholder={`${slug||"SIYAG"}-${item.sizeMl}-${item.format}`.toUpperCase()} onChange={e=>update({sku:e.target.value})}/><small>يُنشأ تلقائيًا إذا تركته فارغًا.</small></label></div><div className="office-toolbar"><label className="office-check"><input type="checkbox" checked={item.active} onChange={e=>update({active:e.target.checked})}/> الصنف مفعّل</label><button type="button" className="office-text-button" disabled={drafts.length===1} onClick={()=>setDrafts(items=>items.filter(current=>current.key!==item.key))}>إزالة الصنف</button></div></fieldset>})}</section>}
       <section className="office-editor-section"><h3>الظهور في المتجر</h3><div className="office-tools"><label className="office-check"><input name="featured" type="checkbox" defaultChecked={product.featured}/> يظهر ضمن المختارات</label>
-        {!!product.id&&<label className="office-check"><input name="published" type="checkbox" defaultChecked={product.published}/> نشر في المتجر</label>}</div>
+        <label className="office-check"><input name="published" type="checkbox" defaultChecked={product.published}/> نشر في المتجر</label></div>
       {!!product.id&&product.published&&<a className="office-text-button" href={"/products/"+product.slug} target="_blank" rel="noreferrer">فتح المنتج في المتجر <ExternalLink size={14}/></a>}
-      </section><div className="office-save-bar"><Message message={feedback} error={failed}/><button className="office-button" disabled={busy||!collections}>{busy?"جارٍ الحفظ…":product.id?"حفظ التغييرات":"حفظ المسودة"}</button></div>
+      </section><div className="office-save-bar"><Message message={feedback} error={failed}/><button className="office-button" disabled={busy||!collections}>{busy?"جارٍ الحفظ…":product.id?"حفظ التغييرات":"حفظ المنتج والأصناف"}</button></div>
     </form>
     {!!product.id&&<section className="office-form-section">
       <div className="office-toolbar"><h3>الأحجام والأسعار والمخزون</h3><button type="button" className="office-button secondary" onClick={()=>setVariant(blankVariant)}><Plus size={16}/> إضافة حجم</button></div>
       <TableFrame label="الأحجام والأسعار" actions compact total={product.variants.length} bulkActions={[true,false].map(active=>({id:active?"activate":"deactivate",label:active?"تفعيل الأحجام":"إيقاف الأحجام",icon:active?Eye:EyeOff,run:async(id:string)=>{const current=await office<AdminProduct>("products/"+product.id);const item=current.variants.find(v=>v.id===id);if(!item)throw new Error("الحجم لم يعد متاحًا");const updated=await office<AdminVariant>(`products/${product.id}/variants/${id}`,{method:"PUT",data:{...item,active}});setProduct(value=>({...value,variants:value.variants.map(v=>v.id===id?updated:v)}))}}))} onBulkComplete={changed}><table className="office-table"><thead><tr><th>SKU</th><th>الحجم</th><th>السعر</th><th>المخزون</th><th>الحالة</th><th>الإجراء</th></tr></thead><tbody>
         {variantOrder(product.variants).map(item=><tr key={item.id}><td dir="ltr">{item.sku}</td><td>{item.sizeMl} مل</td><td>{money(item.priceMinor,"ar")}</td><td>{item.stock}</td><td>{item.active?"مفعّل":"متوقف"}</td><td><RowAction label={`تعديل الحجم ${item.sizeMl} مل`} icon={SquarePen} onClick={()=>setVariant(item)}/></td></tr>)}
       </tbody></table>{!product.variants.length&&<p className="office-empty">أضف حجمًا قبل نشر العطر.</p>}</TableFrame>
-      {variant&&<VariantForm key={variant.id||"new"} productId={product.id} initial={variant} onCancel={()=>setVariant(null)} onSave={value=>{
-        setProduct(current=>({...current,variants:[...current.variants.filter(item=>item.id!==value.id),value]}));
-        setVariant(value);
-      }}/>}
+
     </section>}
   </div>;
 }
@@ -189,7 +196,7 @@ function VariantForm({productId,initial,onSave,onCancel}:{productId:string;initi
         const priceMinor=Math.round(Number(form.get("price"))*100);
         const compareAtMinor=form.get("compare")?Math.round(Number(form.get("compare"))*100):null;
         value=await office<AdminVariant>("products/"+productId+"/variants"+(item.id?"/"+item.id:""),{method:item.id?"PUT":"POST",
-          data:{sku:form.get("sku"),sizeMl:Number(form.get("size")),format:form.get("format"),priceMinor,compareAtMinor,active:form.has("active")}});
+          data:{sku:form.get("sku"),sizeMl:Number(form.get("size")),format:form.get("format"),priceMinor,compareAtMinor,active:form.has("active"),...(!item.id?{initialStock:Number(form.get("initialStock"))}:{})}});
       }
       setItem(value);onSave(value);setMessage(stock?"تم تحديث المخزون.":"تم حفظ الحجم.");
     }catch(error){setFailed(true);setMessage(error instanceof Error?error.message:"تعذّر حفظ التعديل.")}
@@ -201,10 +208,11 @@ function VariantForm({productId,initial,onSave,onCancel}:{productId:string;initi
         <label>رمز SKU<input name="sku" defaultValue={item.sku} required maxLength={80} dir="ltr"/></label>
         <label>الحجم بالمل<input name="size" type="number" defaultValue={item.sizeMl} min={1} max={1000} required/></label>
         <label>نوع العبوة<select name="format" defaultValue={item.format}>{Object.entries(formats).map(([value,label])=><option value={value} key={value}>{label[1]}</option>)}</select></label>
-        <label>السعر بالجنيه<input name="price" type="number" min=".01" max={10000} step=".01" defaultValue={item.priceMinor?item.priceMinor/100:""} required/></label>
-        <label>السعر قبل الخصم<input name="compare" type="number" min=".01" max={10000} step=".01" defaultValue={item.compareAtMinor?item.compareAtMinor/100:""}/></label>
+        <label>السعر بالجنيه<input name="price" type="number" min=".01" max={1000000} step=".01" defaultValue={item.priceMinor?item.priceMinor/100:""} required/></label>
+        <label>السعر قبل الخصم<input name="compare" type="number" min=".01" max={1000000} step=".01" defaultValue={item.compareAtMinor?item.compareAtMinor/100:""}/></label>
+        {!item.id&&<label>المخزون الافتتاحي<input name="initialStock" type="number" min={0} max={100000} defaultValue={0} required/></label>}
         <label className="office-check"><input name="active" type="checkbox" defaultChecked={item.active}/> الحجم مفعّل</label>
-      </div><div className="office-tools"><button className="office-button" disabled={busy}>حفظ الحجم</button><button type="button" className="office-button secondary" onClick={onCancel}>إغلاق</button></div>
+      </div><div className="office-tools"><button className="office-button" disabled={busy}>حفظ الحجم</button><button type="button" className="office-button secondary" onClick={onCancel}>العودة للمنتج</button></div>
     </form>
     {!!item.id&&<form className="office-form office-form-section" onSubmit={event=>void submit(event,true)}>
       <h3>تسوية المخزون · المتاح {item.stock}</h3><p className="office-help">اكتب كمية موجبة للإضافة أو سالبة للخصم، وليس إجمالي المخزون الجديد.</p>
@@ -216,10 +224,15 @@ function VariantForm({productId,initial,onSave,onCancel}:{productId:string;initi
 }
 
 export function Collections(){
-  const [editing,setEditing]=useState<AdminCollection|null>(null);
+  const {editor,open,close}=useEditorRoute("collections");
   const [query,setQuery]=useState("");
   const [revision,setRevision]=useState(0);
   const {data,error}=useOfficeData<AdminCollection[]>("collections",revision);
+  const editing=editor===null?null:editor===""?blankCollection:data?.find(item=>item.slug===editor);
+  const setEditing=(item:AdminCollection|null)=>item?open(item.slug):close();
+  if(editor!==null)return editing?<Panel title={editing.slug?"تعديل التصنيف":"إضافة تصنيف"} description="الاسم والصورة وترتيب الظهور في المتجر" onClose={()=>setEditing(null)}>
+      <CollectionForm initial={editing} existing={data??[]} saved={()=>{setRevision(value=>value+1);setEditing(null)}}/>
+    </Panel>:<Message message={error||(data?"القسم غير موجود.":"جارٍ تحميل القسم…")} error={!!error||!!data}/>;
   return <>
     <div className="office-toolbar"><p>نظّم المنتجات في تصنيفات قابلة للنشر على المتجر.</p><button className="office-button" onClick={()=>setEditing(blankCollection)}><Plus size={17}/> إضافة تصنيف</button></div>
     <label className="office-search office-collection-search"><Search size={17}/><input aria-label="البحث في الأقسام" placeholder="ابحث عن قسم…" value={query} onChange={e=>setQuery(e.target.value)}/></label><Message message={error} error/>
@@ -228,9 +241,7 @@ export function Collections(){
         <td><span className="office-badge" data-status={collection.published?"confirmed":"pending"}>{collection.published?"منشور":"مسودة"}</span></td>
         <td><RowAction label={`تعديل ${collection.nameAr}`} icon={SquarePen} onClick={()=>setEditing(collection)}/></td></tr>)}
     </tbody></table>{!data?.length&&!error&&<p className="office-empty">{data?"يمكنك إنشاء أول تصنيف الآن.":"جارٍ تحميل التصنيفات…"}</p>}</TableFrame>
-    {editing&&<Panel title={editing.slug?"تعديل التصنيف":"إضافة تصنيف"} description="الاسم والصورة وترتيب الظهور في المتجر" onClose={()=>setEditing(null)}>
-      <CollectionForm initial={editing} existing={data??[]} saved={()=>{setRevision(value=>value+1);setEditing(null)}}/>
-    </Panel>}
+
   </>;
 }
 

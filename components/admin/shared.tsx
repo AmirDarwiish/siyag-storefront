@@ -1,6 +1,8 @@
 "use client";
 import {Children,cloneElement,isValidElement,useEffect,useId,useRef,useState,type ReactElement,type ReactNode} from "react";
 import {Check,Download,LoaderCircle,ChevronLeft,ChevronRight,MoveHorizontal,X,type LucideIcon} from "lucide-react";
+import Link from "next/link";
+import {usePathname,useRouter} from "next/navigation";
 import {Tooltip as TooltipPrimitive} from "radix-ui";
 import {Dialog,DialogContent,DialogDescription,DialogTitle} from "@/components/ui/dialog";
 import {office} from "@/lib/admin";
@@ -24,8 +26,9 @@ export function useOfficeData<T>(path:string|null,revision=0,poll=0){
       finally{pending=false}
     }
     void load();
+    const changed=()=>void load();window.addEventListener("siyag-office-changed",changed);
     const timer=poll?setInterval(()=>{if(!document.hidden)void load()},poll):undefined;
-    return()=>{controller.abort();clearInterval(timer)};
+    return()=>{controller.abort();clearInterval(timer);window.removeEventListener("siyag-office-changed",changed)};
   },[path,revision,poll]);
   return {data,error};
 }
@@ -110,7 +113,15 @@ export function Pagination({data,go}:{data?:Page<unknown>;go:(page:number)=>void
   return <div className="office-pagination"><p>عرض {format(first)}–{format(last)} من {format(data.totalCount)}</p><div><button type="button" disabled={data.pageNumber<=1} onClick={()=>go(data.pageNumber-1)} aria-label="الصفحة السابقة"><ChevronRight size={17}/> السابق</button>
     <span>{format(data.pageNumber)} / {format(Math.max(1,data.totalPages))}</span><button type="button" disabled={data.pageNumber>=data.totalPages} onClick={()=>go(data.pageNumber+1)} aria-label="الصفحة التالية">التالي <ChevronLeft size={17}/></button></div></div>;
 }
+export function useEditorRoute(section:string){
+  const pathname=usePathname(),router=useRouter();
+  const segment=pathname.split("/")[3];
+  return {editor:segment===undefined?null:segment==="new"?"":decodeURIComponent(segment),open:(id:string)=>router.push(`/admin/${section}/${id?encodeURIComponent(id):"new"}`),close:()=>router.push(`/admin/${section}`)};
+}
 export function Panel({title,description,onClose,children}:{title:string;description:string;onClose:()=>void;children:ReactNode}){
+  const pathname=usePathname();
+  const back=pathname.split("/").slice(0,3).join("/");
+  if(title!=="أقسام الإدارة")return <section className="office-editor-page"><header className="office-editor-head"><div><Link href={back} className="office-text-button"><ChevronRight size={17}/> العودة للقائمة</Link><h2>{title}</h2><p>{description}</p></div><button type="button" className="office-icon" aria-label="العودة للقائمة" onClick={onClose}><X size={20}/></button></header><div className="office-editor-body">{children}</div></section>;
   return <Dialog open onOpenChange={open=>{if(!open)onClose()}}><DialogContent placement="side" className="office-modal" showCloseButton={false}>
     <div className="office-modal-head"><div><DialogTitle>{title}</DialogTitle><DialogDescription>{description}</DialogDescription></div>
       <button type="button" className="office-icon" aria-label="إغلاق" onClick={onClose}><X size={20}/></button></div>

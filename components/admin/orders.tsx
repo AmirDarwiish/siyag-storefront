@@ -3,7 +3,7 @@ import {useState,type FormEvent} from "react";
 import {RefreshCw,Search,Eye} from "lucide-react";
 import {office,orderDate,paymentNames,statusNames,type AdminOrder,type OrderRow} from "@/lib/admin";
 import {money,type Page} from "@/lib/store";
-import {RowAction,TableFrame,Message,Pagination,Panel,useOfficeData} from "./shared";
+import {useEditorRoute,RowAction,TableFrame,Message,Pagination,Panel,useOfficeData} from "./shared";
 
 import {orderActions} from "./bulk-actions";
 
@@ -17,13 +17,14 @@ export function Orders(){
   const [status,setStatus]=useState("");
   const [number,setNumber]=useState("");
   const [search,setSearch]=useState("");
-  const [selected,setSelected]=useState("");
+  const {editor:selected,open:setSelected,close}=useEditorRoute("orders");
   const [revision,setRevision]=useState(0);
   const query=new URLSearchParams({pageSize:"20",pageNumber:String(page)});
   if(status)query.set("status",status);
   if(number)query.set("number",number);
   const {data,error}=useOfficeData<Page<OrderRow>>("orders?"+query,revision,20_000);
   const refresh=()=>setRevision(value=>value+1);
+  if(selected!==null)return <Panel title={"طلب "+selected} description="تفاصيل العميل والأصناف وسجل التنفيذ" onClose={close}><OrderDetail key={selected} number={selected} changed={refresh}/></Panel>;
   return <>
     <div className="office-toolbar">
       <form className="office-search" onSubmit={event=>{event.preventDefault();setNumber(search.trim().toUpperCase());setPage(1)}}>
@@ -44,7 +45,7 @@ export function Orders(){
       </tr>)}</tbody>
     </table>{!data?.data.length&&<p className="office-empty">{error?"":data?"لا توجد طلبات بهذه الخيارات.":"جارٍ تحميل الطلبات…"}</p>}</TableFrame>
     <Pagination data={data} go={setPage}/>
-    {selected&&<Panel title={"طلب "+selected} description="تفاصيل العميل والأصناف وسجل التنفيذ" onClose={()=>setSelected("")}><OrderDetail number={selected} changed={refresh}/></Panel>}
+
   </>;
 }
 

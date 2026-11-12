@@ -20,7 +20,7 @@
 .office {background:var(--office-paper);min-height:100dvh}
 .office :is(h1,h2,h3,p),.office-modal :is(h1,h2,h3,p) {margin:0}
 .office :is(h1,h2,h3),.office-modal :is(h1,h2,h3) {font-family:inherit;font-weight:600;letter-spacing:0;line-height:1.5}
-.office h2,.office-modal h3 {font-size:var(--office-subtitle)}
+.office h2,.office h3,.office-modal h3 {font-size:var(--office-subtitle)}
 .office :is(button,a,input,select,textarea):focus-visible,.office-modal :is(button,a,input,select,textarea):focus-visible {outline:2px solid var(--office-primary);outline-offset:3px}
 .office :is(button,a),.office-modal :is(button,a) {touch-action:manipulation}
 .office button:disabled,.office-modal button:disabled {opacity:.5;cursor:not-allowed}
@@ -86,7 +86,7 @@
 .office-error {background:var(--office-error-bg);color:var(--office-error)}
 .office input:not([type=checkbox]),.office select,.office textarea,.office-modal :is(input:not([type=checkbox]),select,textarea) {min-width:0;max-width:100%;background:var(--office-surface);color:var(--office-ink);border:1px solid var(--office-border);border-radius:var(--office-small-radius);min-height:var(--office-control);padding:9px 12px;font:inherit}
 .office :is(input,textarea)::placeholder,.office-modal :is(input,textarea)::placeholder {color:var(--office-muted);opacity:.85}
-.office-modal textarea {min-height:120px;resize:vertical}
+.office textarea,.office-modal textarea {min-height:120px;resize:vertical}
 .office-search,.office-image-link {display:flex;align-items:center;gap:8px}
 .office-search {background:var(--office-surface);border:1px solid var(--office-border);border-radius:var(--office-small-radius);padding-inline:12px;color:var(--office-muted)}
 .office-search input:not([type=checkbox]) {width:clamp(150px,23vw,290px);border:0;padding-inline:0}
@@ -324,3 +324,38 @@
   .office-login>section {padding:28px 24px}
 }
 
+.office-editor-page {display:grid;gap:24px;min-width:0}
+.office-editor-head {display:flex;justify-content:space-between;align-items:flex-start;gap:20px;border-bottom:1px solid var(--office-border);padding-bottom:20px}
+.office-editor-head h2 {font-size:var(--office-title-md);margin-top:8px}
+.office-editor-head p {color:var(--office-muted);margin-top:5px}
+.office-editor-body {min-width:0}
+.office-editor-body .office-detail {max-width:1120px}
+.office-editor-page .office-save-bar {bottom:16px}
+.office-draft-variant {min-width:0;padding:20px;border:1px solid var(--office-border);border-radius:var(--office-radius);background:var(--office-paper)}
+.office-draft-variant legend {padding:0 8px;font-weight:600}
+.office-draft-variant>.office-toolbar {margin:18px 0 0}
+.office-integrations {display:grid;gap:24px}
+.office-integrations h2 {display:flex;align-items:center;gap:10px}
+.office-carrier-grid {display:flex;gap:12px;flex-wrap:wrap;margin:20px 0}
+.office-carrier-card {display:grid;gap:8px;text-align:start;padding:16px;border:1px solid var(--office-border);border-radius:var(--office-small-radius);background:var(--office-surface);color:var(--office-ink);cursor:pointer}
+.office-notification-control {position:relative}
+.office-notification-control>.office-icon {position:relative}
+.office-notification-count {position:absolute;top:-6px;inset-inline-end:-7px;background:var(--office-primary);color:var(--office-surface);font-size:10px;min-width:19px;padding:0 4px;border-radius:var(--office-small-radius);border:2px solid var(--office-surface)}
+.office-notification-popover {position:absolute;top:calc(100% + 12px);inset-inline-end:0;width:min(380px,calc(100vw - 32px));background:var(--office-surface);border:1px solid var(--office-border);border-radius:var(--office-radius);box-shadow:var(--office-shadow);z-index:40;overflow:hidden}
+.office-notification-popover>header {display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px;border-bottom:1px solid var(--office-border)}
+.office-notification-popover h2 {font-size:var(--office-subtitle)}
+.office-notification-popover small {font-size:var(--office-caption);color:var(--office-muted)}
+.office-notification-popover small[data-state=connected] {color:var(--office-success)}
+.office-notification-tools {display:flex;justify-content:space-between;gap:12px;padding:8px 18px;border-bottom:1px solid var(--office-border);font-size:var(--office-caption)}
+.office-notification-list {max-height:60dvh;overflow-y:auto;overscroll-behavior:contain}
+.office-notification-list>button {display:grid;gap:6px;width:100%;padding:16px 18px;text-align:start;background:var(--office-surface);color:var(--office-ink);border:0;border-bottom:1px solid var(--office-border);cursor:pointer}
+.office-notification-list>button:hover {background:var(--office-paper)}
+.office-notification-list>button>span {font-size:var(--office-caption);color:var(--office-primary);text-align:start}
+.office-notification-popover>.office-error {margin:12px}
+@media(max-width:760px){
+ .office-notification-popover {position:fixed;top:76px;inset-inline:16px;width:auto}
+ .office-topbar .office-button {padding-inline:10px}
+ .office-draft-variant {padding:16px}
+ .office-editor-head {gap:12px}
+ .office-integrations .office-card>header {flex-wrap:wrap}
+}

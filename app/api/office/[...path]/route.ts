@@ -6,6 +6,11 @@ const guid="[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}";
 const slug="[a-z0-9]+(?:-[a-z0-9]+)*";
 const number="SYG-[A-F0-9]{16}";
 const rules=[
+  {method:"POST",pattern:/^realtime\/ticket$/},
+  {method:"GET",pattern:/^notifications$/},
+  {method:"PUT",pattern:/^notifications\/read$/},
+  {method:"GET",pattern:/^integrations\/(paymob|shipping|status)$/},
+  {method:"PUT",pattern:/^integrations\/(paymob\/(test|live)|shipping\/[a-z0-9]+(?:-[a-z0-9]+)*)$/},
   {method:"GET",pattern:/^reports\/(journey|summary)$/},
   {method:"GET",pattern:/^inventory$/},
   {method:"GET",pattern:new RegExp(`^reviews(?:/${guid}/photo)?$`,"i")},

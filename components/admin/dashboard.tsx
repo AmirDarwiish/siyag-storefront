@@ -1,7 +1,10 @@
 "use client";
 import Link from "next/link";
+import {usePathname,useRouter} from "next/navigation";
+import {IntegrationSettings} from "./integration-settings";
+import {OfficeNotifications} from "./office-notifications";
 import {useEffect,useRef,useState,type FormEvent} from "react";
-import {PanelRightClose,PanelRightOpen,ArrowUpRight,Plus,Store,ShieldCheck,LayoutDashboard,Menu,Warehouse,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Star,Truck,Users} from "lucide-react";
+import {CreditCard,PanelRightClose,PanelRightOpen,ArrowUpRight,Plus,Store,ShieldCheck,LayoutDashboard,Menu,Warehouse,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Star,Truck,Users} from "lucide-react";
 import {office,roleNames,type StaffUser} from "@/lib/admin";
 import {Collections,Products} from "./catalog";
 import {Orders} from "./orders";
@@ -23,6 +26,7 @@ const panels=[
   {id:"collections",label:"الأقسام",description:"أدر مجموعات العطور وترتيب ظهورها في المتجر.",icon:FolderOpen,component:Collections,roles:["Owner","Catalog"]},
   {id:"reviews",label:"التقييمات",description:"راجع تعليقات العملاء وصورهم قبل نشرها.",icon:Star,component:ReviewModeration,roles:["Owner","Catalog"]},
   {id:"staff",label:"الموظفون",description:"أضف موظفين وحدد صلاحياتهم وأدر حالة الحساب.",icon:Users,component:Staff,roles:["Owner"]},
+  {id:"integrations",label:"الدفع والتكاملات",description:"إعدادات Paymob ومفاتيح شركات الشحن.",icon:CreditCard,component:IntegrationSettings,roles:["Owner"]},
 ];
 
 export function AdminDashboard(){
@@ -32,20 +36,22 @@ export function AdminDashboard(){
   const [configured,setConfigured]=useState<boolean>();
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState("");
-  const [section,setSection]=useState("");
+  const pathname=usePathname(),router=useRouter();
+  const section=pathname.split("/")[2]||"overview";
   const [menu,setMenu]=useState(false);
   const [collapsed,setCollapsed]=useState(false);
   const mainScroll=useRef<HTMLDivElement>(null);
-  const [productIntent,setProductIntent]=useState<string|null>(null);
-  function navigate(id:string){setProductIntent(null);setSection(id);setMenu(false);window.history.replaceState(null,"","#"+id);mainScroll.current?.scrollTo({top:0,behavior:"instant"})}
-  function editProduct(id:string){navigate("products");setProductIntent(id)}
+
+  function navigate(id:string){setMenu(false);router.push("/admin/"+id)}
+  function editProduct(id:string){setMenu(false);router.push("/admin/products/"+(id||"new"))}
+  useEffect(()=>{mainScroll.current?.scrollTo({top:0,behavior:"instant"})},[pathname]);
   useEffect(()=>{
-    setSection(window.location.hash.slice(1));
+    if(window.location.hash)router.replace("/admin/"+window.location.hash.slice(1));
     const controller=new AbortController();
     office<{configured:boolean;user:StaffUser|null}>("session",{signal:controller.signal})
       .then(session=>{setConfigured(session.configured);setUser(session.user)})
       .catch(()=>{if(!controller.signal.aborted){setConfigured(false);setError("تعذّر التحقق من جلسة الإدارة.")}});
-    function expired(){setUser(null);setSection("");setChange(false);setError("انتهت جلسة الإدارة. سجّل الدخول من جديد.")}
+    function expired(){setUser(null);setChange(false);setError("انتهت جلسة الإدارة. سجّل الدخول من جديد.")}
     window.addEventListener("siyag-office-expired",expired);
     return()=>{controller.abort();window.removeEventListener("siyag-office-expired",expired)};
   },[]);
@@ -76,7 +82,7 @@ export function AdminDashboard(){
   }
   async function logout(){
     setBusy(true);setError("");
-    try{await office("session",{method:"DELETE"});setUser(null);setSection("");setChange(false)}
+    try{await office("session",{method:"DELETE"});setUser(null);setChange(false)}
     catch(error){setError(error instanceof Error?error.message:"تعذّر تسجيل الخروج.")}
     finally{setBusy(false)}
   }
@@ -118,7 +124,7 @@ export function AdminDashboard(){
   </main>;
 
   const ActivePanel=active.component;
-  const groups=[{label:"إدارة المتجر",ids:["overview","orders","products","inventory","collections"]},{label:"العملاء والتسويق",ids:["journey","reviews"]},{label:"الفريق والإعدادات",ids:["shipping","staff"]}];
+  const groups=[{label:"إدارة المتجر",ids:["overview","orders","products","inventory","collections"]},{label:"العملاء والتسويق",ids:["journey","reviews"]},{label:"الفريق والإعدادات",ids:["shipping","integrations","staff"]}];
   const initials=(user?.name??"S").trim().split(/\s+/).slice(0,2).map(part=>part[0]).join("");
   const navigation=<><div className="office-mark" dir="ltr">SIYAG <span>WORKSPACE</span></div>
     <div className="office-store-identity"><span className="office-store-avatar"><Store size={20}/></span><div><strong>متجر SIYAG</strong><small>لوحة إدارة المتجر</small></div></div>
@@ -127,11 +133,11 @@ export function AdminDashboard(){
   return <main className="office office-dashboard" data-collapsed={collapsed} dir="rtl" lang="ar">
     <aside className="office-sidebar">{navigation}</aside>
     {menu&&<Panel title="أقسام الإدارة" description="تنقّل بين صفحات المتجر" onClose={()=>setMenu(false)}><div className="office-sidebar office-mobile-navigation">{navigation}</div></Panel>}
-    <div className="office-main" ref={mainScroll} tabIndex={-1} aria-label="محتوى لوحة الإدارة"><div className="office-topbar"><button type="button" className="office-icon office-collapse" aria-label={collapsed?"توسيع القائمة الجانبية":"تصغير القائمة الجانبية"} aria-expanded={!collapsed} onClick={()=>setCollapsed(value=>!value)}>{collapsed?<PanelRightOpen size={19}/>:<PanelRightClose size={19}/>}</button><button className="office-icon office-menu" aria-label="فتح قائمة الإدارة" onClick={()=>setMenu(true)}><Menu size={21}/></button><div className="office-topbar-path"><span>مساحة العمل</span><span>/</span><strong>{active.label}</strong></div><div><Link href="/" target="_blank" rel="noreferrer" className="office-button secondary office-store-link" aria-label="فتح المتجر"><ArrowUpRight size={16}/><span>فتح المتجر</span></Link><button type="button" className="office-button secondary" onClick={logout} disabled={busy}><LogOut size={16}/> خروج</button></div></div>
+    <div className="office-main" ref={mainScroll} tabIndex={-1} aria-label="محتوى لوحة الإدارة"><div className="office-topbar"><button type="button" className="office-icon office-collapse" aria-label={collapsed?"توسيع القائمة الجانبية":"تصغير القائمة الجانبية"} aria-expanded={!collapsed} onClick={()=>setCollapsed(value=>!value)}>{collapsed?<PanelRightOpen size={19}/>:<PanelRightClose size={19}/>}</button><button className="office-icon office-menu" aria-label="فتح قائمة الإدارة" onClick={()=>setMenu(true)}><Menu size={21}/></button><div className="office-topbar-path"><span>مساحة العمل</span><span>/</span><strong>{active.label}</strong></div><div>{(role==="Owner"||role==="Fulfillment")&&<OfficeNotifications/>}<Link href="/" target="_blank" rel="noreferrer" className="office-button secondary office-store-link" aria-label="فتح المتجر"><ArrowUpRight size={16}/><span>فتح المتجر</span></Link><button type="button" className="office-button secondary" onClick={logout} disabled={busy}><LogOut size={16}/> خروج</button></div></div>
     <div className="office-workspace">
-      <header className="office-header"><div><span className="office-section-kicker">SIYAG OFFICE</span><h1>{active.label}</h1><p>{active.description}</p></div>{(role==="Owner"||role==="Catalog")&&active.id==="overview"&&<button className="office-button" type="button" onClick={()=>editProduct("")}><Plus size={17}/> إضافة منتج</button>}</header>
+      {pathname.split("/").filter(Boolean).length<3&&<header className="office-header"><div><span className="office-section-kicker">SIYAG OFFICE</span><h1>{active.label}</h1><p>{active.description}</p></div>{(role==="Owner"||role==="Catalog")&&active.id==="overview"&&<button className="office-button" type="button" onClick={()=>editProduct("")}><Plus size={17}/> إضافة منتج</button>}</header>}
       <Message message={error} error/>
-      {active.id==="overview"?<Overview role={role} navigate={navigate} createProduct={()=>editProduct("")}/>:active.id==="inventory"?<Inventory editProduct={editProduct}/>:active.id==="products"?<Products key={productIntent??"list"} initialEditing={productIntent}/>:<ActivePanel key={active.id}/>}
+      {active.id==="overview"?<Overview role={role} navigate={navigate} createProduct={()=>editProduct("")}/>:active.id==="inventory"?<Inventory editProduct={editProduct}/>:active.id==="products"?<Products/>:<ActivePanel key={active.id}/>}
     </div></div>
   </main>;
 }

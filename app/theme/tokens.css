@@ -24,6 +24,17 @@
   font-display: swap;
 }
 :root {
+  --rail-visible: 3;
+  --motion-rail-speed: 18;
+  --motion-rail-resume: 1800ms;
+  --motion-hero-drift: 9000ms;
+  --home-icon-stroke: 1.4;
+  --home-icon-surface: color-mix(in srgb, var(--stone) 72%, var(--white));
+  --home-border: 1px solid color-mix(in srgb, var(--ink) 16%, transparent);
+  --home-card-border: 1px solid color-mix(in srgb, var(--ink) 10%, transparent);
+  --home-rail-gap: var(--space-8);
+  --home-rail-mobile-card: 78%;
+  --home-card-lift: -3px;
   --motion-header: 260ms;
   --motion-ui: 220ms;
   --motion-reveal: 650ms;

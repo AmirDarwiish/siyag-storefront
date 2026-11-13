@@ -14,7 +14,7 @@ import {StoreReviewsLink} from "./reviews";
 function HouseCampaign() {
   const {tr, ar}=useStore();
   return <section className="home-cover" aria-labelledby="house-campaign-title">
-    <StoreImage className="home-cover-image" sizes={imageSizes.campaign} src="/brand/hero.webp" alt="" width={1536} height={1024} fetchPriority="high"/>
+    <StoreImage className="home-cover-image" sizes={imageSizes.campaign} src="/brand/hero-v2.webp" alt="" width={1536} height={1024} fetchPriority="high"/>
     <div className="home-cover-layout container"><div className="home-cover-copy" dir={ar?"rtl":"ltr"}>
       <span className="eyebrow">{tr("SIYAG · AN EGYPTIAN FRAGRANCE HOUSE", "SIYAG · دار عطور مصرية")}</span>
       <h1 id="house-campaign-title">{tr("Some things stay with you.", "بعض الحضور… لا يُنسى")}</h1>
@@ -89,8 +89,8 @@ export function Home() {
     </div></section>}
 
 
-    <EditorialFeature tone="house" eyebrow={tr("INSIDE THE HOUSE","من عالم SIYAG")} title={tr("Before the fragrance, there is a feeling.","قبل أن يصبح عطرًا… يبدأ بإحساس")} copy={tr("The brightness of citrus. The depth of woods. The warmth that lingers. Step into the world of notes and discover a more personal way to choose your fragrance.","إشراقة الحمضيات، وعمق الأخشاب، ودفء يبقى في الذاكرة. اقترب من عالم النوتات واكتشف طريقة أكثر خصوصية لاختيار عطرك.")} image="/brand/olive-notes.webp" href="/about" action={tr("Discover the house","اكتشف دار SIYAG")} caption={tr("SIYAG PARFUMS · EGYPT","SIYAG PARFUMS · مصر")}/>
-    {products.some(product=>product.variants.some(variant=>variant.format!=="fullBottle")) && <EditorialFeature tone="discovery" eyebrow={tr("THE ART OF DISCOVERY","متعة الاكتشاف")} title={tr("A little curiosity. A new favourite.","ابدأ بفضول… واكتشف عطرك")} copy={tr("A new scent deserves a little time. Explore the available discovery sizes and find the one you want to return to.","بعض العطور تحتاج لقاءً أقرب. اكتشف أحجام التجربة المتاحة، وامنح نفسك فرصة لتجد العطر الذي تحب العودة إليه.")} image="/brand/olive-hero.webp" href="/shop?format=decant" action={tr("Explore discovery sizes","اكتشف أحجام التجربة")} caption={tr("Available sizes and prices on each product","الأحجام والأسعار المتاحة داخل كل منتج")}/>}
+    <EditorialFeature tone="house" eyebrow={tr("INSIDE THE HOUSE","من عالم SIYAG")} title={tr("Before the fragrance, there is a feeling.","قبل أن يصبح عطرًا… يبدأ بإحساس")} copy={tr("The brightness of citrus. The depth of woods. The warmth that lingers. Step into the world of notes and discover a more personal way to choose your fragrance.","إشراقة الحمضيات، وعمق الأخشاب، ودفء يبقى في الذاكرة. اقترب من عالم النوتات واكتشف طريقة أكثر خصوصية لاختيار عطرك.")} image="/brand/fragrance-ingredients.webp" href="/about" action={tr("Discover the house","اكتشف دار SIYAG")} caption={tr("SIYAG PARFUMS · EGYPT","SIYAG PARFUMS · مصر")}/>
+    {products.some(product=>product.variants.some(variant=>variant.format!=="fullBottle")) && <EditorialFeature tone="discovery" eyebrow={tr("THE ART OF DISCOVERY","متعة الاكتشاف")} title={tr("A little curiosity. A new favourite.","ابدأ بفضول… واكتشف عطرك")} copy={tr("A new scent deserves a little time. Explore the available discovery sizes and find the one you want to return to.","بعض العطور تحتاج لقاءً أقرب. اكتشف أحجام التجربة المتاحة، وامنح نفسك فرصة لتجد العطر الذي تحب العودة إليه.")} image="/brand/discovery-vials.webp" href="/shop?format=decant" action={tr("Explore discovery sizes","اكتشف أحجام التجربة")} caption={tr("Available sizes and prices on each product","الأحجام والأسعار المتاحة داخل كل منتج")}/>}
     <StoreReviewsLink/>
     <nav className="home-care container" aria-label={tr("Shopping assistance","مساعدة التسوق")}>
       <Link href="/shop?format=decant"><FlaskConical aria-hidden="true"/><span><strong>{tr("Discover at your pace","اكتشف على مهل")}</strong><small>{tr("Explore smaller sizes","تصفّح أحجام التجربة")}</small></span></Link>

@@ -15,7 +15,7 @@ const products=[
 ];
 export const demoProducts:Product[]=products.map(([slug,nameEn,nameAr,family,descriptionEn,descriptionAr,collection,top,heart,base],index)=>({
   id:`demo-${slug}`,slug,nameEn,nameAr,descriptionEn,descriptionAr,brand:"SIYAG",family,concentration:"eauDeParfum",audience:"unisex",
-  topNotes:[top],heartNotes:[heart],baseNotes:[base],images:index<4?[`/brand/${slug}.webp`,`/brand/${slug}-detail.webp`]:[`/brand/${slug}.webp`],featured:index<4,collections:[collection,"discovery"],
+  topNotes:[top],heartNotes:[heart],baseNotes:[base],images:[`/brand/${slug}.webp`,`/brand/${slug}-detail.webp`],featured:index<4,collections:[collection,"discovery"],
   variants:[
     {id:`demo-${slug}-10`,sku:`DEMO-${slug}-10`,sizeMl:10,format:"decant",priceMinor:19000+index*1000,inStock:true},
     {id:`demo-${slug}-50`,sku:`DEMO-${slug}-50`,sizeMl:50,format:"fullBottle",priceMinor:89000+index*10000,inStock:true},

@@ -13,11 +13,11 @@ import {StoreReviewsLink} from "./reviews";
 import {HomeBanners} from "./home-banners";
 import {ShopByCategory} from "./shop-by-category";
 
-type FeatureProps={tone:"discovery"|"house"; eyebrow:string; title:string; copy:string; image:string; href:string; action:string; caption:string};
-function EditorialFeature({tone,eyebrow,title,copy,image,href,action,caption}:FeatureProps) {
-  return <section className="home-feature container" data-tone={tone} data-reveal>
+type FeatureProps={tone:"discovery"|"house"; eyebrow:string; title:string; copy:string; image:string; href:string; action:string};
+function EditorialFeature({tone,eyebrow,title,copy,image,href,action}:FeatureProps) {
+  return <section className="home-feature" data-tone={tone} aria-labelledby={`home-feature-${tone}`} data-reveal>
     <div className="home-feature-visual"><StoreImage sizes={imageSizes.half} src={image} alt="" width={1280} height={960} loading="lazy"/></div>
-    <div className="home-feature-copy"><span className="eyebrow">{eyebrow}</span><h2>{title}</h2><p>{copy}</p><Link href={href} className="action ink">{action}</Link><span className="home-feature-caption">{caption}</span></div>
+    <div className="home-feature-copy"><span className="eyebrow">{eyebrow}</span><h2 id={`home-feature-${tone}`}>{title}</h2><p>{copy}</p><Link href={href} className="action ink">{action}</Link></div>
   </section>;
 }
 
@@ -79,13 +79,17 @@ export function Home() {
     </div></section>}
 
 
-    <EditorialFeature tone="house" eyebrow={tr("INSIDE THE HOUSE","من عالم SIYAG")} title={tr("Before the fragrance, there is a feeling.","قبل أن يصبح عطرًا… يبدأ بإحساس")} copy={tr("The brightness of citrus. The depth of woods. The warmth that lingers. Step into the world of notes and discover a more personal way to choose your fragrance.","إشراقة الحمضيات، وعمق الأخشاب، ودفء يبقى في الذاكرة. اقترب من عالم النوتات واكتشف طريقة أكثر خصوصية لاختيار عطرك.")} image="/brand/fragrance-ingredients.webp" href="/about" action={tr("Discover the house","اكتشف دار SIYAG")} caption={tr("SIYAG PARFUMS · EGYPT","SIYAG PARFUMS · مصر")}/>
-    {products.some(product=>product.variants.some(variant=>variant.format!=="fullBottle")) && <EditorialFeature tone="discovery" eyebrow={tr("THE ART OF DISCOVERY","متعة الاكتشاف")} title={tr("A little curiosity. A new favourite.","ابدأ بفضول… واكتشف عطرك")} copy={tr("A new scent deserves a little time. Explore the available discovery sizes and find the one you want to return to.","بعض العطور تحتاج لقاءً أقرب. اكتشف أحجام التجربة المتاحة، وامنح نفسك فرصة لتجد العطر الذي تحب العودة إليه.")} image="/brand/discovery-vials.webp" href="/shop?format=decant" action={tr("Explore discovery sizes","اكتشف أحجام التجربة")} caption={tr("Available sizes and prices on each product","الأحجام والأسعار المتاحة داخل كل منتج")}/>}
+    <div className="home-stories container">
+    <EditorialFeature tone="house" eyebrow={tr("INSIDE THE HOUSE","من عالم SIYAG")} title={tr("Find the notes that feel like you.","عطرك يبدأ من نوتة تحبّها")} copy={tr("Bright citrus, warm woods, soft amber. Discover the notes behind your next signature.","حمضيات منعشة، أخشاب دافئة ولمسات عنبر. اكتشف عالم النوتات، واقترب من العطر اللي يشبهك.")} image="/brand/fragrance-ingredients.webp" href="/about" action={tr("Discover the house","اكتشف دار SIYAG")}/>
+    {products.some(product=>product.variants.some(variant=>variant.format!=="fullBottle")) && <EditorialFeature tone="discovery" eyebrow={tr("THE ART OF DISCOVERY","متعة الاكتشاف")} title={tr("Try a little. Find your favourite.","جرّب على مهلك، واختار عطرك")} copy={tr("Meet your next scent in a smaller size. Wear it, live with it, and choose at your own pace.","ابدأ بحجم صغير، وعيش مع العطر يومك. أحجام التجربة تديك وقتك قبل ما تختار المفضّل.")} image="/brand/discovery-vials.webp" href="/shop?format=decant" action={tr("Explore discovery sizes","اكتشف أحجام التجربة")}/>}
+    </div>
+    <section className="home-confidence container" aria-labelledby="home-confidence-title">
     <StoreReviewsLink/>
-    <nav className="home-care container" aria-label={tr("Shopping assistance","مساعدة التسوق")}>
-      <Link href="/shop?format=decant"><FlaskConical aria-hidden="true"/><span><strong>{tr("Discover at your pace","اكتشف على مهل")}</strong><small>{tr("Explore smaller sizes","تصفّح أحجام التجربة")}</small></span></Link>
-      <Link href="/track"><PackageCheck aria-hidden="true"/><span><strong>{tr("Stay close to your order","تابع رحلة طلبك")}</strong><small>{tr("Track with your phone number","تتبّع برقم هاتفك")}</small></span></Link>
-      <Link href="/contact"><Search aria-hidden="true"/><span><strong>{tr("A little help choosing","اختيارك يهمّنا")}</strong><small>{tr("Talk to the house","تواصل مع دار SIYAG")}</small></span></Link>
+    <nav className="home-care" aria-label={tr("Shopping assistance","مساعدة التسوق")}>
+      <Link href="/shop?format=decant"><span className="home-care-icon"><FlaskConical aria-hidden="true"/></span><span><strong>{tr("Discover at your pace","اكتشف على مهل")}</strong><small>{tr("Explore smaller sizes","تصفّح أحجام التجربة")}</small></span></Link>
+      <Link href="/track"><span className="home-care-icon"><PackageCheck aria-hidden="true"/></span><span><strong>{tr("Stay close to your order","تابع رحلة طلبك")}</strong><small>{tr("Track with your phone number","تتبّع برقم هاتفك")}</small></span></Link>
+      <Link href="/contact"><span className="home-care-icon"><Search aria-hidden="true"/></span><span><strong>{tr("A little help choosing","اختيارك يهمّنا")}</strong><small>{tr("Talk to the house","تواصل مع دار SIYAG")}</small></span></Link>
     </nav>
+    </section>
   </main>;
 }

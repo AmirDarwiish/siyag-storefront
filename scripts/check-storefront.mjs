@@ -30,3 +30,14 @@ for(const path of ['/shop','/shop?collection=bestsellers','/products/musk?varian
 for(const path of ['//example.com','https://example.com','javascript:alert(1)','/\\example.com','/shop\n'])assert.equal(bannerHref(path),path==='/shop\n'?'/shop':null);
 assert.equal(bannerHref(undefined),null);
 console.log('Banner action checks passed: internal storefront actions accepted; external and malformed actions rejected.');
+
+const {primaryRail}=await source('lib/rail-autoplay.ts');
+assert.equal(primaryRail([{top:-600,bottom:-100},{top:1000,bottom:1500}],100,900),-1,'offscreen rails must stay still');
+assert.equal(primaryRail([{top:130,bottom:530},{top:600,bottom:1000}],100,900),0,'two visible sections must have one dominant rail');
+assert.equal(primaryRail([{top:-150,bottom:250},{top:320,bottom:720}],100,900),1,'focus must transfer as the customer scrolls');
+assert.equal(primaryRail([{top:760,bottom:1160}],100,900),-1,'a small glimpse must not start autoplay');
+assert.equal(primaryRail([{top:0,bottom:400}],350,900),-1,'content behind the sticky header must not count as visible');
+assert.equal(primaryRail([{top:50,bottom:1250}],100,900),0,'a tall rail filling the viewport must remain eligible');
+assert.equal(primaryRail([{top:0,bottom:0}],0,800),-1);
+assert.equal(primaryRail([{top:0,bottom:400}],900,100),-1);
+console.log('Autoplay checks passed: one dominant visible rail, header occlusion, partial visibility, focus transfer and tall viewports.');

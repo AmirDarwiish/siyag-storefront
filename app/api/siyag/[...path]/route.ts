@@ -1,4 +1,4 @@
-import { DEMO, demoGet, requestStore } from "@/lib/server-store";
+import { requestStore } from "@/lib/server-store";
 
 const readPaths=/^store\/(products(?:\/[a-z0-9-]+)?|collections(?:\/[a-z0-9-]+)?|content(?:\/[a-z0-9-]+)?|settings|shipping|cart)$/;
 const postPaths=/^store\/(events|carts|cart\/quote|orders(?:\/track|\/payment\/paymob)?)$/;
@@ -21,10 +21,6 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
     if(request.headers.get("sec-fetch-site")==="cross-site" || (origin && origin!==incoming.origin && origin!=="https://"+incoming.host)) {
       return Response.json({detail:"Origin not allowed."},{status:403});
     }
-  }
-  if(DEMO && !media) {
-    const value=method==="GET"?demoGet(path,incoming.searchParams):undefined;
-    return value===undefined?Response.json({detail:"Unavailable in preview."},{status:404}):Response.json(value);
   }
   try {
     const headers=new Headers();

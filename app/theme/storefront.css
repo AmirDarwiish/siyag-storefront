@@ -508,12 +508,12 @@ textarea {
 .site-footer {
   padding:var(--space-11) max(var(--space-8),calc((100% - 1296px)/2)) var(--space-6);
   padding-top:var(--space-9);
-  color:var(--color-paper);
   padding-block:var(--section-space) var(--space-5);
   border-top:0;
-  background:var(--color-forest)}
+  background:var(--white);
+  color:var(--ink)}
 .site-footer .eyebrow {
-  color:var(--color-line)}
+  color:var(--muted)}
 .footer-inner {
   display:grid;
   grid-template-columns:1.6fr 1fr 1fr 1fr auto;
@@ -2363,10 +2363,10 @@ textarea {
 .utility :is(input,select,textarea) {
   font-size:var(--type-input)}
 .site-footer p {
-  color:var(--color-line)}
+  color:var(--muted)}
 .site-footer .footer-end {
-  color:var(--color-line);
-  border-color:var(--color-muted)}
+  border-color:var(--color-muted);
+  color:var(--muted)}
 .site-footer .footer-inner a:not(.back-to-top) {
   min-height:40px;
   display:flex;
@@ -2719,7 +2719,7 @@ html[data-header-hidden=true] {
 .return-request form {display:grid;gap:var(--space-5);padding-top:var(--space-6)}
 .return-request textarea {width:100%;min-height:120px;padding:var(--space-5);font:inherit;background:var(--white);border:var(--border-fine)}
 /* Homepage editorial system: campaign, photographic edits and reusable stories. */
-.home-cover {position:relative;isolation:isolate;background:var(--home-night);color:var(--white);min-height:var(--home-cover-height);overflow:hidden}
+.home-cover {position:relative;isolation:isolate;min-height:var(--home-cover-height);overflow:hidden;background:var(--white);color:var(--ink)}
 .home-cover-image {position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:var(--home-cover-image-position)}
 .home-cover-layout {position:relative;direction:ltr;display:flex;align-items:center;min-height:var(--home-cover-height)}
 .home-cover-copy {width:var(--home-cover-copy-width);padding-block:var(--space-12);position:relative}
@@ -2764,6 +2764,13 @@ html[data-header-hidden=true] {
 .home-care svg {stroke-width:var(--home-icon-stroke);width:var(--space-8);height:var(--space-8);flex:none;color:var(--dark)}
 .home-care strong {font-size:var(--type-body);font-weight:600;display:block}
 .home-care small {font-size:var(--type-label);color:var(--muted);display:block;margin-top:var(--space-2)}
+.catalog-banner {display:flex;align-items:center;justify-content:space-between;gap:var(--space-6);min-height:var(--catalog-banner-height);margin-block:var(--space-6);background:var(--white);overflow:hidden}
+.catalog-banner>div {padding-block:var(--space-5)}
+.catalog-banner h2 {font-size:var(--type-subtitle);margin-bottom:var(--space-3)}
+.catalog-banner img {width:20%;height:var(--catalog-banner-height);object-fit:cover;flex:none}
+.catalog-links {display:flex;gap:var(--space-7);flex-wrap:wrap;margin-block:var(--space-5)}
+.catalog-links a {min-height:var(--control-height);display:flex;align-items:center;color:var(--muted)}
+.catalog-links a[aria-current=page] {color:var(--ink);font-weight:700}
 @media (hover:hover) {
   .product-visual:hover .product-hover {
   opacity:1}.home-edit:hover img,.home-family:hover img {transform:scale(var(--home-photo-hover-scale))}.home-care a:hover {background:var(--stone)}.home-cover .action:hover {background:var(--yellow);border-color:var(--yellow)}
@@ -3374,7 +3381,7 @@ body {
 .story>div {
   padding:var(--panel-space)}
 .home-product-rail {
-    gap:var(--home-rail-gap)}
+    gap:var(--home-rail-gap);--home-rail-gap:var(--space-5)}
 .home-rail-item {
     flex-basis:var(--home-rail-mobile-card)}
 .home-product-rail[data-count="1"] .home-rail-item,
@@ -3499,3 +3506,14 @@ to {
  .site-header[data-checkout=true] {grid-template-columns:auto 1fr auto}
  .site-header[data-checkout=true] .nav-tools {grid-column:3}
 }
+
+@media (max-width:767px){
+ .home-cover-copy .eyebrow,.home-cover p {color:var(--muted)}
+ .home-cover .action {background:var(--ink);color:var(--white);border-color:var(--ink)}
+ .home-cover-link {color:var(--ink)}
+ .home-product-rail[data-count="2"] .home-rail-item {flex-basis:var(--home-rail-mobile-card)}
+ .catalog-banner {min-height:var(--catalog-banner-height)}
+ .catalog-banner img {width:28%}
+}
+
+@media (min-width:768px){.home-cover {color:var(--white)}}

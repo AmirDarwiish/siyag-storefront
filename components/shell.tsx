@@ -174,12 +174,23 @@ export function BagContents({page=false}:{page?:boolean}){
 export function Bag(){const {cartOpen,setCartOpen,tr}=useStore();return <Modal open={cartOpen} onOpenChange={setCartOpen} title={tr("Your bag","حقيبتك")} className="bag-modal" placement="side"><BagContents/></Modal>}
 export function CartPage(){return <main className="container section cart-page"><BagContents page/></main>}
 
+function FooterGroup({id,title,children}:{id:string;title:string;children:ReactNode}){
+  const [expanded,setExpanded]=useState(true);
+  useEffect(()=>{
+    const mobile=matchMedia("(max-width:767px)");
+    const update=()=>setExpanded(!mobile.matches);
+    update();mobile.addEventListener("change",update);
+    return()=>mobile.removeEventListener("change",update);
+  },[]);
+  return <section className="footer-group"><h3><button type="button" aria-expanded={expanded} aria-controls={id} onClick={()=>setExpanded(value=>!value)}>{title}{expanded?<Minus size={15}/>:<Plus size={15}/>}</button></h3><nav id={id} aria-label={title} hidden={!expanded}>{children}</nav></section>;
+}
+
 export function Footer(){
   const {tr}=useStore();
   return <footer className="site-footer"><div className="footer-inner">
-    <div><Wordmark/><p>{tr("An Egyptian fragrance house.","دار عطور مصرية.")}</p></div>
-    <div><div className="eyebrow">{tr("Explore","استكشف")}</div><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/shop?format=decant">{tr("Discovery sizes","أحجام التجربة")}</Link><Link href="/about">{tr("The house of SIYAG","دار SIYAG")}</Link><Link href="/cart">{tr("Your bag","حقيبتك")}</Link></div>
-    <div><div className="eyebrow">{tr("Client care","خدمة العملاء")}</div><Link href="/track">{tr("Track your order","تتبّع طلبك")}</Link><Link href="/reviews">{tr("Store reviews","تقييمات المتجر")}</Link><Link href="/shop?saved=1">{tr("Your wishlist","مفضلتك")}</Link><Link href="/contact">{tr("Contact us","تواصل معنا")}</Link><Link href="/faq">{tr("FAQ","الأسئلة الشائعة")}</Link></div><div><div className="eyebrow">{tr("The details","المعلومات")}</div><Link href="/policies/shipping">{tr("Shipping & delivery","الشحن والتوصيل")}</Link><Link href="/policies/returns">{tr("Returns & refunds","الاسترجاع")}</Link><Link href="/policies/privacy">{tr("Privacy","الخصوصية")}</Link><Link href="/policies/terms">{tr("Terms","شروط التسوق")}</Link></div>
-    <a href="#" className="back-to-top" aria-label={tr("Back to top","العودة لأعلى")}><ArrowDownLeft size={19}/></a>
-  </div><div className="footer-end"><span>© {new Date().getFullYear()} SIYAG PARFUMS</span><span>{tr("EGYPT · EGP","مصر · جنيه مصري")}</span></div></footer>;
+    <div className="footer-brand"><Wordmark/><p>{tr("An Egyptian fragrance house.","دار عطور مصرية.")}</p></div>
+    <FooterGroup id="footer-explore" title={tr("Explore","استكشف")}><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/shop?format=decant">{tr("Discovery sizes","أحجام التجربة")}</Link><Link href="/about">{tr("The house of SIYAG","دار SIYAG")}</Link><Link href="/cart">{tr("Your bag","حقيبتك")}</Link></FooterGroup>
+    <FooterGroup id="footer-care" title={tr("Client care","خدمة العملاء")}><Link href="/track">{tr("Track your order","تتبّع طلبك")}</Link><Link href="/reviews">{tr("Store reviews","تقييمات المتجر")}</Link><Link href="/shop?saved=1">{tr("Your wishlist","مفضلتك")}</Link><Link href="/contact">{tr("Contact us","تواصل معنا")}</Link><Link href="/faq">{tr("FAQ","الأسئلة الشائعة")}</Link></FooterGroup>
+    <FooterGroup id="footer-information" title={tr("The details","المعلومات")}><Link href="/policies/shipping">{tr("Shipping & delivery","الشحن والتوصيل")}</Link><Link href="/policies/returns">{tr("Returns & refunds","الاسترجاع")}</Link><Link href="/policies/privacy">{tr("Privacy","الخصوصية")}</Link><Link href="/policies/terms">{tr("Terms","شروط التسوق")}</Link></FooterGroup>
+  </div><div className="footer-end"><span>© {new Date().getFullYear()} SIYAG PARFUMS</span><span>{tr("EGYPT · EGP","مصر · جنيه مصري")}</span><button className="footer-privacy" type="button" onClick={()=>window.dispatchEvent(new Event("siyag-open-privacy"))}>{tr("Privacy preferences","إعدادات الخصوصية")}</button><button type="button" className="back-to-top" aria-label={tr("Back to top","العودة لأعلى")} onClick={()=>window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})}><ArrowDownLeft size={17}/></button></div></footer>;
 }

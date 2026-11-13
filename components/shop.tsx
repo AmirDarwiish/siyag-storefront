@@ -5,7 +5,7 @@ import {track} from "@/lib/analytics";
 import {useRouter,useSearchParams} from "next/navigation";
 import {useEffect,useState} from "react";
 import {ArrowLeft,ArrowRight,ArrowUpRight,Heart,Search,SlidersHorizontal} from "lucide-react";
-import {api,imageUrl,concentrations,families,formats,name,type Collection,type Page,type Product,type Content} from "@/lib/store";
+import {api,imageUrl,concentrations,families,formats,name,money,type Collection,type Page,type Product,type Content} from "@/lib/store";
 import {useStore} from "./store-context";
 import {ProductCard} from "./product";
 import {Modal} from "./shell";
@@ -60,6 +60,11 @@ export function Shop(){
   const collection=collections.find(c=>c.slug===query.get("collection"));
   const term=query.get("q")?.trim();
   const title=query.get("sort")==="newest"?tr("New arrivals","وصل حديثًا"):savedOnly?tr("Your favourites","عطورك المفضّلة"):collection?name(collection,lang):term?tr("Search results","نتائج البحث"):tr("The fragrance collection","مجموعة SIYAG");
+  const activeFilters=filters.filter(key=>!["sort","pageNumber"].includes(key)&&query.has(key)).map(key=>{
+    const value=query.get(key)!;
+    const label=key==="collection"?name(collections.find(c=>c.slug===value)??{nameEn:value,nameAr:value},lang):key==="family"?(families[value]?.[ar?1:0]??value):key==="concentration"?(concentrations[value]?.[ar?1:0]??value):key==="format"?(formats[value as keyof typeof formats]?.[ar?1:0]??value):key==="sizeMl"?`${value} ${tr("ml","مل")}`:key==="maxPriceMinor"?tr(`Up to ${money(Number(value),lang)}`,`حتى ${money(Number(value),lang)}`):key==="inStock"?tr("In stock","متوفر"):value;
+    return {key,label};
+  });
   const hasTools=!savedOnly&&catalogAvailable&&!error;
   const status=error?"error":result?.catalogEmpty?"launch":savedOnly?"wishlist":"filtered";
   const showState=error||Boolean(page&&!page.data.length);
@@ -83,10 +88,11 @@ export function Shop(){
   return <main className="shop-page">
     <div className="shop-intro"><div className="container"><div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span>{tr("The collection","التشكيلة")}</div><span className="eyebrow">SIYAG PARFUMS</span><h1>{title}</h1><p>{term?tr(`Search for “${term}”`,`البحث عن «${term}»`):savedOnly?tr("A place for the fragrances you’d like to revisit.","مساحة للعطور التي تودّ العودة إليها."):tr("Explore by scent family, concentration and size.","تصفّح العطور بحسب العائلة العطرية والتركيز والحجم.")}</p></div></div>
     <div className="container shop-content">
- {!savedOnly&&!term&&<>{banner&&<section className="catalog-banner" aria-label={name({nameEn:banner.titleEn,nameAr:banner.titleAr},lang)}><div><h2>{ar?banner.titleAr:banner.titleEn}</h2><Link className="text-link" href={banner.actionUrl?.startsWith("/")&&!banner.actionUrl.startsWith("//")?banner.actionUrl:"/shop"}>{ar?banner.actionAr:banner.actionEn}</Link></div>{banner.imageUrl&&<img src={imageUrl(banner.imageUrl)} alt="" width={400} height={112}/>}</section>}<nav className="catalog-links" aria-label={tr("Shop edits","أقسام المتجر")}><Link href="/shop">{tr("All fragrances","كل العطور")}</Link>{collections.map(collection=><Link key={collection.slug} href={"/shop?collection="+encodeURIComponent(collection.slug)}>{name(collection,lang)}</Link>)}</nav></>}
+ {!savedOnly&&!term&&<>{banner&&<section className="catalog-banner" aria-label={name({nameEn:banner.titleEn,nameAr:banner.titleAr},lang)}><div><h2>{ar?banner.titleAr:banner.titleEn}</h2><Link className="text-link" href={banner.actionUrl?.startsWith("/")&&!banner.actionUrl.startsWith("//")?banner.actionUrl:"/shop"}>{ar?banner.actionAr:banner.actionEn}</Link></div>{banner.imageUrl&&<img src={imageUrl(banner.imageUrl)} alt="" width={400} height={112}/>}</section>}<nav className="catalog-links" aria-label={tr("Shop edits","أقسام المتجر")}><Link href="/shop" aria-current={!query.has("collection")?"page":undefined}>{tr("All fragrances","كل العطور")}</Link>{collections.map(collection=><Link key={collection.slug} aria-current={query.get("collection")===collection.slug?"page":undefined} href={"/shop?collection="+encodeURIComponent(collection.slug)}>{name(collection,lang)}</Link>)}</nav></>}
         {hasTools&&<div className="shop-tools">
         <div><button type="button" className="filter-toggle" onClick={()=>setMobileFilters(!mobileFilters)} aria-expanded={mobileFilters}><SlidersHorizontal size={17}/>{tr("Filters","التصفية")}</button><select className="sort-control" aria-label={tr("Sort","الترتيب")} value={query.get("sort")??""} onChange={e=>change("sort",e.target.value)}><option value="">{tr("Newest","الأحدث")}</option><option value="price-asc">{tr("Price, low to high","السعر من الأقل")}</option><option value="price-desc">{tr("Price, high to low","السعر من الأعلى")}</option></select></div>
       </div>}
+      {!savedOnly&&activeFilters.length>0&&<nav className="active-filters" aria-label={tr("Active filters","التصفية الحالية")}>{activeFilters.map(({key,label})=><button type="button" key={key} aria-label={tr(`Remove filter: ${label}`,`إزالة التصفية: ${label}`)} onClick={()=>change(key,"")}><span>{label}</span><span aria-hidden="true">×</span></button>)}<Link href="/shop">{tr("Clear all","مسح الكل")}</Link></nav>}
       <div className={`shop-layout ${hasTools?"":"saved-layout"}`}>
         {hasTools&&<aside className="filters">{filterControls()}</aside>}
         <div className="shop-results" aria-live="polite">

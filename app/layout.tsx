@@ -10,7 +10,7 @@ export const metadata:Metadata={
   ...storeMetadata("SIYAG Parfums | Egyptian Fragrance House"),
   metadataBase:siteUrl,
   title:{default:"SIYAG Parfums | Egyptian Fragrance House",template:"%s | SIYAG Parfums"},
-  ...(DEMO?{robots:{index:false,follow:false}}:{}),
+  ...(process.env.VERCEL_ENV==="preview"?{robots:{index:false,follow:false}}:{}),
 };
 export default function RootLayout({children}:{children:React.ReactNode}) {
   return <html lang="en" dir="ltr" suppressHydrationWarning><body><StorefrontFrame demo={DEMO}>{children}</StorefrontFrame></body></html>;

@@ -22,14 +22,12 @@ function Price({variant}:{variant:Variant}){
   </span>;
 }
 
-const previewProduct=(product:Product)=>product.variants.length>0&&product.variants.every(v=>v.sku.startsWith("PREVIEW-")&&!v.inStock);
 
 function Sizes({product,selected,onSelect,compact=false}:{product:Product;selected:Variant;onSelect:(v:Variant)=>void;compact?:boolean}){
   const {ar,tr}=useStore();
-  const preview=previewProduct(product);
   return <div className={compact?"sizes sizes-compact":"sizes"} role="group" aria-label={tr("Choose a size","اختر الحجم")}>
     {product.variants.map(v=><button type="button" aria-pressed={v.id===selected.id}
-      disabled={!preview&&!v.inStock} aria-label={tr(`${v.sizeMl} ml · ${formats[v.format][0]} · ${money(v.priceMinor,"en")}`,`${v.sizeMl} مل · ${formats[v.format][1]} · ${money(v.priceMinor,"ar")}`)} title={formats[v.format][ar?1:0]} key={v.id} onClick={()=>{track("select_variant",itemData(product,v));onSelect(v)}}>
+      disabled={!v.inStock} aria-label={tr(`${v.sizeMl} ml · ${formats[v.format][0]} · ${money(v.priceMinor,"en")}`,`${v.sizeMl} مل · ${formats[v.format][1]} · ${money(v.priceMinor,"ar")}`)} title={formats[v.format][ar?1:0]} key={v.id} onClick={()=>{track("select_variant",itemData(product,v));onSelect(v)}}>
       <span>{v.sizeMl} {tr("ml","مل")}</span>{product.variants.some(other=>other.id!==v.id&&other.sizeMl===v.sizeMl)?<small>{formats[v.format][ar?1:0]}</small>:null}
     </button>)}
   </div>;
@@ -44,8 +42,7 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
   const v=variantFor(product,selection);
   if(!v)return null;
   const title=name(product,lang);
-  const preview=previewProduct(product);
-  const availability=preview?tr("For preview only","للمعاينة فقط"):tr("Sold out","نفد المخزون");
+  const availability=tr("Sold out","نفد المخزون");
   const liked=saved.includes(product.slug);
   return <article className="product-card" data-unavailable={!v.inStock}>
     <div className="product-visual">
@@ -55,7 +52,7 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
       </Link>
       <div className="product-labels">{!v.inStock?<span className="product-badge" data-state="unavailable">{availability}</span>:(v.compareAtMinor??0)>v.priceMinor?<span className="product-badge" data-state="sale"><strong>{tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`)}</strong></span>:product.featured?<span className="product-badge" data-state="featured">{tr('SIYAG edit','مختاراتنا')}</span>:null}</div>
       <button type="button" className="icon favorite" aria-pressed={liked} aria-label={liked?tr("Remove from wishlist","إزالة من المفضلة"):tr("Save to wishlist","حفظ في المفضلة")} onClick={()=>toggleSaved(product.slug)}><Heart size={17} fill={liked?"currentColor":"none"}/></button>
-      {(preview||v.inStock)&&<button type="button" className="photo-quick" onClick={()=>setQuick(true)}>{tr("Quick view","عرض سريع")}</button>}
+      {v.inStock&&<button type="button" className="photo-quick" onClick={()=>setQuick(true)}>{tr("Quick view","عرض سريع")}</button>}
     </div>
     <div className="product-card-body">
       <div className="product-meta"><span className="family-tag" data-family={product.family}>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
@@ -121,8 +118,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
   },[product.family,product.id,product.collections]);
   if(!v)return null;
   const title=name(product,lang);
-  const preview=previewProduct(product);
-  const availability=preview?tr("For preview only","للمعاينة فقط"):tr("Sold out","نفد المخزون");
+  const availability=tr("Sold out","نفد المخزون");
   function choose(value:Variant){
     setSelection(value.id);
     const url=new URL(window.location.href);

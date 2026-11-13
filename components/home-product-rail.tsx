@@ -1,6 +1,7 @@
 "use client";
 import {useEffect,useRef,useState,type CSSProperties} from "react";
 import {imageSizes} from "@/lib/image-sizes";
+import {registerRailAutoplay} from "@/lib/rail-autoplay";
 import {cssMilliseconds} from "@/lib/rail-motion";
 import type {Product} from "@/lib/store";
 import {useStore} from "./store-context";
@@ -15,7 +16,7 @@ export function HomeProductRail({products}:{products:Product[]}) {
   const element=rail.current;if(!element)return;
   resumeAt.current=0;element.scrollTo({left:0,behavior:"instant"});
   const preference=matchMedia("(prefers-reduced-motion: reduce)");
-  let visible=false,direction=1;
+  let direction=1;
   const update=()=>{
    const items=element.querySelectorAll<HTMLElement>(".home-rail-item");
    const step=items.length>1?Math.abs(items[1].offsetLeft-items[0].offsetLeft):0;
@@ -29,17 +30,16 @@ export function HomeProductRail({products}:{products:Product[]}) {
   update();
   const resize=new ResizeObserver(update);resize.observe(element);
   element.addEventListener("scroll",update,{passive:true});
-  const observer=new IntersectionObserver(([entry])=>{visible=entry.isIntersecting},{threshold:.15});observer.observe(element);
   const interval=cssMilliseconds(getComputedStyle(element).getPropertyValue("--motion-rail-step-interval"));
-  const timer=setInterval(()=>{
-   if(dragging.current||performance.now()<resumeAt.current||preference.matches||!visible||document.hidden||element.parentElement?.contains(document.activeElement)&&!!document.activeElement?.matches(":focus-visible")||(matchMedia("(hover: hover)").matches&&element.matches(":hover"))||document.querySelector('[role="dialog"][data-state="open"]'))return;
+  const unregister=registerRailAutoplay({element,interval:interval||4200,advance:()=>{
+   if(dragging.current||performance.now()<resumeAt.current||preference.matches||document.hidden||element.parentElement?.contains(document.activeElement)&&!!document.activeElement?.matches(":focus-visible")||(matchMedia("(hover: hover)").matches&&element.matches(":hover"))||document.querySelector('[role="dialog"][data-state="open"]'))return;
    const pages=targets.current;if(pages.length<2)return;
    const position=Math.abs(element.scrollLeft);
    const active=pages.reduce((best,target,i)=>Math.abs(target-position)<Math.abs(pages[best]-position)?i:best,0);
    if(active===pages.length-1)direction=-1;else if(active===0)direction=1;
    element.scrollTo({left:(ar?-1:1)*pages[active+direction],behavior:"smooth"});
-  },interval||4200);
-  return()=>{clearInterval(timer);observer.disconnect();resize.disconnect();element.removeEventListener("scroll",update)};
+  }});
+  return()=>{unregister();resize.disconnect();element.removeEventListener("scroll",update)};
  },[ar,products.length]);
  const stop=()=>{const element=rail.current;if(!element)return;resumeAt.current=performance.now()+cssMilliseconds(getComputedStyle(element).getPropertyValue("--motion-rail-resume"));element.scrollTo({left:element.scrollLeft,behavior:"instant"})};
  const goTo=(index:number)=>{stop();rail.current?.scrollTo({left:(ar?-1:1)*targets.current[index],behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})};

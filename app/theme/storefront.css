@@ -2880,6 +2880,7 @@ body:has([role=dialog][data-state=open]) .product-purchase-dock {visibility:hidd
 .catalog-home>.section {padding-block:var(--home-section-space) 0}
 .home-experience .home-care {padding-block:var(--space-5);margin-bottom:var(--space-4)}
 body:has(.site-header) :is(.checkout-form,.review-form,.promo,.return-request) :is(input:not([type=checkbox]):not([type=radio]),select,textarea) {background:var(--glass-surface);border:1px solid var(--line);border-radius:var(--radius-control);box-shadow:var(--glass-shadow)}
+body:has(.site-header) :is(.payment-choice,.cart-content>.bag-footer,.quick-copy,.filter-modal,.search-results,.confirmation-actions>*,.dock-add,.dock-buy,.pagination button,.season-choice,.day-night>button) {background-image:var(--glass-highlight);box-shadow:var(--glass-shadow)}
 @media (hover:hover) {
   .product-visual:hover .product-hover {
   opacity:1}.home-edit:hover img,.home-family:hover img {transform:scale(var(--home-photo-hover-scale))}.home-care a:hover {background:var(--stone)}.home-cover .action:hover {background:var(--yellow);border-color:var(--yellow)}
@@ -3524,7 +3525,7 @@ body {
 .home-care {grid-template-columns:1fr;gap:var(--space-5);padding-block:var(--space-7)}.footer-group {
     padding:0}
 .footer-group nav {padding-bottom:var(--space-5)}
-.composition-layers dt>span {display:none}.footer-group:last-child {grid-column:1/-1}
+.composition-layers dt>span {display:none}.footer-group:last-child {grid-column:1/-1}.footer-group:last-child nav {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:var(--space-5)}
 }
 @media (max-width:359px) {
 .product-purchase-dock button svg {

@@ -175,14 +175,7 @@ export function Bag(){const {cartOpen,setCartOpen,tr}=useStore();return <Modal o
 export function CartPage(){return <main className="container section cart-page"><BagContents page/></main>}
 
 function FooterGroup({id,title,children}:{id:string;title:string;children:ReactNode}){
-  const [expanded,setExpanded]=useState(true);
-  useEffect(()=>{
-    const mobile=matchMedia("(max-width:767px)");
-    const update=()=>setExpanded(!mobile.matches);
-    update();mobile.addEventListener("change",update);
-    return()=>mobile.removeEventListener("change",update);
-  },[]);
-  return <section className="footer-group"><h3><button type="button" aria-expanded={expanded} aria-controls={id} onClick={()=>setExpanded(value=>!value)}>{title}{expanded?<Minus size={15}/>:<Plus size={15}/>}</button></h3><nav id={id} aria-label={title} hidden={!expanded}>{children}</nav></section>;
+  return <section className="footer-group"><h3 id={id+"-title"}>{title}</h3><nav id={id} aria-labelledby={id+"-title"}>{children}</nav></section>;
 }
 
 export function Footer(){

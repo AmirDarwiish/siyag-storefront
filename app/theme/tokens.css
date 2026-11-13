@@ -51,14 +51,14 @@
   --layer-feedback: 70;
   --motion-hover: 180ms;
   --motion-rail-speed: 18;
-  --motion-rail-resume: 1800ms;
+  --motion-rail-resume: 8000ms;
   --motion-hero-drift: 9000ms;
   --home-icon-stroke: 1.4;
   --home-icon-surface: var(--white);
   --home-border: 0;
   --home-card-border: 0;
   --home-rail-gap: var(--space-8);
-  --home-rail-mobile-card: 100%;
+  --home-rail-mobile-card: calc((100% - var(--space-5)) / 2);
   --home-card-lift: -3px;
   --motion-header: 260ms;
   --motion-ui: 220ms;
@@ -84,9 +84,9 @@
   --tone-fresh: #e7eddf;
   --tone-floral: #eee6e0;
   --tone-amber: #ebe4d1;
-  --color-paper: #fffaf3;
-  --color-white: #fffefd;
-  --color-stone: #f6eddf;
+  --color-paper: #ffffff;
+  --color-white: #ffffff;
+  --color-stone: #ffffff;
   --color-ink: #29251f;
   --color-forest: #384632;
   --color-muted: #706354;
@@ -164,6 +164,7 @@
   --hero-panel: var(--paper);
   --color-moss: #6a795d;
   --layer-header: 45;
+  --catalog-banner-height: 112px;
 }
 [dir=rtl] {
   --sans: "Plex Arabic", Manrope, sans-serif;

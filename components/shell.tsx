@@ -6,7 +6,7 @@ import {useRouter,usePathname} from "next/navigation";
 import {useEffect,useRef,useState,type ReactNode} from "react";
 import {ArrowDownLeft,ArrowRight,ArrowUpRight,Heart,Menu,Minus,Plus,Search,ShoppingBag,X} from "lucide-react";
 import {Dialog,DialogContent,DialogTitle,DialogDescription} from "@/components/ui/dialog";
-import {api,imageUrl,money,name,productUrl,variantFor,type Page,type Product,type Content} from "@/lib/store";
+import {api,imageUrl,money,name,productUrl,variantFor,type Page,type Product,type Content,type Collection} from "@/lib/store";
 import {useStore} from "./store-context";
 
 export function Wordmark(){return <span className="wordmark"><span>SIYAG</span><small>PARFUMS</small></span>}
@@ -62,6 +62,8 @@ export function Header(){
   const {tr,ar,toggleLanguage,cart,cartOpen,setCartOpen,demo}=useStore();
   const router=useRouter();
   const path=usePathname();
+  const [navigationCollections,setNavigationCollections]=useState<Collection[]>([]);
+  useEffect(()=>{const controller=new AbortController();api<Collection[]>("store/collections",{signal:controller.signal}).then(items=>setNavigationCollections(items.filter(item=>["bestsellers","new-arrivals"].includes(item.slug)))).catch(()=>{});return()=>controller.abort()},[]);
   const checkoutRoute=path==="/checkout"||path==="/payment/result";
   const headerRef=useRef<HTMLElement>(null);
   useEffect(()=>{const element=headerRef.current;if(!element)return;const update=()=>document.documentElement.style.setProperty("--store-header-height",`${element.getBoundingClientRect().height}px`);update();const observer=new ResizeObserver(update);observer.observe(element);return()=>{observer.disconnect();document.documentElement.style.removeProperty("--store-header-height")}},[]);
@@ -105,9 +107,7 @@ export function Header(){
     <div className="nav-wrap">
       <button type="button" className="icon mobile-menu" aria-label={tr("Menu","القائمة")} onClick={()=>setMenu(true)}><Menu size={22}/></button>
       <Link href="/" className="nav-brand" aria-label="SIYAG"><Wordmark/></Link>
-      <nav aria-label={tr("Store navigation","تصفح المتجر")}>
-        <Link href="/shop" aria-current={path==="/shop"?"page":undefined}>{tr("Fragrances","العطور")}</Link><Link href="/shop?format=decant">{tr("Discovery","عينات التجربة")}</Link><Link href="/about" aria-current={path==="/about"?"page":undefined}>{tr("The house","دار SIYAG")}</Link>
-        <Link className="desktop-track-link" href="/track" aria-current={path==="/track"?"page":undefined}>{tr("Track order","تتبّع طلبك")}</Link>
+      <nav aria-label={tr("Store navigation","تصفح المتجر")}><Link href="/shop">{tr("All fragrances","كل العطور")}</Link>{navigationCollections.map(collection=><Link key={collection.slug} href={"/shop?collection="+encodeURIComponent(collection.slug)}>{name(collection,ar?"ar":"en")}</Link>)}<Link href="/shop?format=decant">{tr("Discovery sizes","أحجام التجربة")}</Link>
       </nav>
       <div className="nav-tools">
         <button type="button" className="language-switch" onClick={toggleLanguage} aria-label={tr("Switch to Arabic","التبديل للإنجليزية")}>{ar?"EN":"العربية"}</button>
@@ -116,7 +116,7 @@ export function Header(){
       </div>
     </div>
     <Modal open={menu} onOpenChange={setMenu} title={tr("Menu","القائمة")} className="nav-modal" placement="side">
-      <Wordmark/><Link href="/shop" onClick={()=>setMenu(false)}>{tr("Fragrances","العطور")}</Link><Link href="/shop?format=decant" onClick={()=>setMenu(false)}>{tr("Discovery","عينات التجربة")}</Link><Link href="/about" onClick={()=>setMenu(false)}>{tr("The house","دار SIYAG")}</Link><Link href="/shop?saved=1" onClick={()=>setMenu(false)}>{tr("Wishlist","المفضلة")}</Link><Link href="/track" onClick={()=>setMenu(false)}>{tr("Track your order","تتبّع طلبك")}</Link><Link href="/contact" onClick={()=>setMenu(false)}>{tr("Client care","خدمة العملاء")}</Link>
+      <Wordmark/>{navigationCollections.map(collection=><Link key={collection.slug} href={"/shop?collection="+encodeURIComponent(collection.slug)} onClick={()=>setMenu(false)}>{name(collection,ar?"ar":"en")}</Link>)}<Link href="/shop" onClick={()=>setMenu(false)}>{tr("Fragrances","العطور")}</Link><Link href="/shop?format=decant" onClick={()=>setMenu(false)}>{tr("Discovery","عينات التجربة")}</Link><Link href="/about" onClick={()=>setMenu(false)}>{tr("The house","دار SIYAG")}</Link><Link href="/shop?saved=1" onClick={()=>setMenu(false)}>{tr("Wishlist","المفضلة")}</Link><Link href="/track" onClick={()=>setMenu(false)}>{tr("Track your order","تتبّع طلبك")}</Link><Link href="/contact" onClick={()=>setMenu(false)}>{tr("Client care","خدمة العملاء")}</Link>
     </Modal>
     <div className="container header-search" onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))setSearch(false)}}
       onKeyDown={event=>{if(event.key==="Escape")setSearch(false)}}>

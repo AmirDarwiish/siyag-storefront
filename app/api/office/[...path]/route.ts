@@ -18,9 +18,9 @@ const rules=[
   {method:"GET",pattern:/^staff$/},
   {method:"POST",pattern:/^staff$/},
   {method:"PUT",pattern:new RegExp(`^staff/${guid}$`,"i")},
-  {method:"GET",pattern:new RegExp(`^(products(?:/${guid})?|collections)$`,"i")},
+  {method:"GET",pattern:new RegExp(`^(products(?:/${guid})?|collections|content)$`,"i")},
   {method:"POST",pattern:new RegExp(`^(products|products/${guid}/variants|variants/${guid}/stock|media/images)$`,"i")},
-  {method:"PUT",pattern:new RegExp(`^(products/${guid}(?:/variants/${guid})?|collections/${slug})$`,"i")},
+  {method:"PUT",pattern:new RegExp(`^(products/${guid}(?:/variants/${guid})?|collections/${slug}|content/${slug})$`,"i")},
   {method:"GET",pattern:new RegExp(`^(orders(?:/${number})?|shipping)$`)},
   {method:"PUT",pattern:new RegExp(`^(orders/${number}/(status|payment)|shipping/${slug})$`)},
 ];

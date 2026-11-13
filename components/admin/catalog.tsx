@@ -243,7 +243,8 @@ function CollectionForm({initial,existing,saved}:{initial:AdminCollection;existi
       <label>المعرّف في الرابط<input name="slug" defaultValue={initial.slug} readOnly={!!initial.slug} required pattern={slugPattern} maxLength={100} dir="ltr"/></label>
       <label>ترتيب الظهور <small>الأرقام الأصغر تظهر أولًا</small><input name="sortOrder" type="number" min={-10000} max={10000} defaultValue={initial.sortOrder} required/></label>
     </div>
-    <label>رابط الصورة<input value={image} onChange={event=>setImage(event.target.value)} dir="ltr" placeholder="https://…"/></label>
+    <label>صورة القسم في الرئيسية<input value={image} onChange={event=>setImage(event.target.value)} dir="ltr" placeholder="https://…"/></label>
+    <p className="office-help">استخدم صورة مربعة تعبّر عن القسم نفسه، وليست صورة منتج. تظهر في «تسوّق حسب القسم» تحت البانر الرئيسي. المقاس المقترح 640 × 640 بكسل.</p>
     <Upload onUpload={setImage}/>
     {/^https:\/\//i.test(image)||image.startsWith("/media/")?<div className="office-images"><div><img src={imageUrl(image)} alt="صورة التصنيف"/></div></div>:null}
     <label className="office-check"><input name="published" type="checkbox" defaultChecked={initial.published}/> نشر في المتجر</label>

@@ -1,9 +1,9 @@
 import type { Collection, Product } from "./store";
 
 export const collections:Collection[]=[
-  {slug:"signature",nameEn:"The signature collection",nameAr:"تشكيلة سيجنتشر",imageUrl:"/brand/noir.webp"},
-  {slug:"oud",nameEn:"The oud collection",nameAr:"تشكيلة العود",imageUrl:"/brand/oud.webp"},
-  {slug:"discovery",nameEn:"Discovery sizes",nameAr:"أحجام التجربة",imageUrl:"/brand/neroli.webp"},
+  {slug:"signature",nameEn:"The signature collection",nameAr:"تشكيلة سيجنتشر",imageUrl:"/brand/categories/signature.webp"},
+  {slug:"oud",nameEn:"The oud collection",nameAr:"تشكيلة العود",imageUrl:"/brand/categories/oud.webp"},
+  {slug:"discovery",nameEn:"Discovery sizes",nameAr:"أحجام التجربة",imageUrl:"/brand/categories/discovery.webp"},
 ];
 const products=[
   ["noir","Noir","نوار","woody","Dark woods, warm spice and a trace of smoke.","أخشاب داكنة وتوابل دافئة ولمسة دخان.","signature","Black pepper","Cedar","Vetiver"],

@@ -154,6 +154,14 @@
   --radius-surface: 3px;
   --surface-radius: var(--radius-surface);
   --border-fine: 1px solid var(--line);
+  --home-section-space: 28px;
+  --radius-glass: 18px;
+  --glass-surface: color-mix(in srgb, var(--white) 86%, transparent);
+  --glass-edge: color-mix(in srgb, var(--white) 84%, var(--sage));
+  --glass-shadow: 0 4px 18px color-mix(in srgb, var(--dark) 7%, transparent), inset 0 1px 0 var(--white);
+  --footer-glass: color-mix(in srgb, var(--white) 7%, transparent);
+  --footer-edge: color-mix(in srgb, var(--white) 18%, transparent);
+  --footer-muted: #e3e9db;
   --shadow-float: 0 12px 40px color-mix(in srgb, var(--ink) 12%, transparent);
   --content-width: 1320px;
   --hero-width: 1520px;
@@ -175,6 +183,7 @@
 }
 @media (max-width:767px) {
   :root {
+    --home-section-space: 20px;
     --page-gutter: 16px;
     --type-card-title: 16px;
     --home-edit-height: 210px;

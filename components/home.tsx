@@ -11,6 +11,7 @@ import {HomeProductRail} from "./home-product-rail";
 import {track} from "@/lib/analytics";
 import {StoreReviewsLink} from "./reviews";
 import {HomeBanners} from "./home-banners";
+import {ShopByCategory} from "./shop-by-category";
 
 type FeatureProps={tone:"discovery"|"house"; eyebrow:string; title:string; copy:string; image:string; href:string; action:string; caption:string};
 function EditorialFeature({tone,eyebrow,title,copy,image,href,action,caption}:FeatureProps) {
@@ -64,6 +65,7 @@ export function Home() {
 
   return <main className="home-experience" ref={homeRef}>
     <HomeBanners/>
+    <ShopByCategory collections={collections}/>
 
     <div id="collections">{collections.map(collection=><HomeCollection key={collection.slug} collection={collection}/>)}</div>
 

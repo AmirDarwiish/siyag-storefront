@@ -34,6 +34,7 @@ export function demoGet(path:string, query:URLSearchParams) {
   if(path.startsWith("store/products/")) return demoProducts.find(p=>p.slug===path.split("/")[2]);
   if(path==="store/collections") return collections;
   if(path==="store/settings") return {name:"SIYAG Perfumes",acceptOrders:false,paymentMethods:[],supportEmail:null};
+  if(path==="store/content"&&query.get("area")==="catalog-banner") return [{slug:"preview-catalog-cover",titleEn:"Discover the SIYAG collection",titleAr:"اكتشف مجموعة SIYAG",textEn:"Preview",textAr:"معاينة",imageUrl:"/brand/catalog-cover.webp",actionUrl:"/shop?format=decant"}];
   if(path==="store/content"&&query.get("area")==="home-hero") return [
     {slug:"preview-house",titleEn:"Explore SIYAG fragrances",titleAr:"اكتشف عطور SIYAG",textEn:"Preview",textAr:"معاينة",imageUrl:"/brand/hero-v2.webp",actionUrl:"/shop"},
     {slug:"preview-discovery",titleEn:"Explore discovery sizes",titleAr:"اكتشف أحجام التجربة",textEn:"Preview",textAr:"معاينة",imageUrl:"/brand/discovery-vials.webp",actionUrl:"/shop?format=decant"},

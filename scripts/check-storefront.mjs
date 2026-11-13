@@ -24,3 +24,9 @@ assert.equal(metadata.openGraph.url,new URL('/products/neroli',siteUrl).href);
 assert.equal(metadata.alternates.canonical,metadata.openGraph.url);
 assert.equal(metadata.twitter.card,'summary_large_image');assert(metadata.openGraph.images[0].url.startsWith('https://'));
 console.log('Storefront checks passed: one-card language-aware mobile steps, reverse recycling, subpixel continuity and canonical social metadata.');
+
+const {bannerHref}=await source('lib/banners.ts');
+for(const path of ['/shop','/shop?collection=bestsellers','/products/musk?variant=example','/policies/shipping'])assert.equal(bannerHref(path),path);
+for(const path of ['//example.com','https://example.com','javascript:alert(1)','/\\example.com','/shop\n'])assert.equal(bannerHref(path),path==='/shop\n'?'/shop':null);
+assert.equal(bannerHref(undefined),null);
+console.log('Banner action checks passed: internal storefront actions accepted; external and malformed actions rejected.');

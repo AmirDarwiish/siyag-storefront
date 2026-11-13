@@ -6,7 +6,7 @@ import {imageSizes} from "@/lib/image-sizes";
 import {useRouter} from "next/navigation";
 import {track,itemData} from "@/lib/analytics";
 import {useEffect,useRef,useState} from "react";
-import {ArrowUpRight,Heart,Minus,Plus,ShoppingBag} from "lucide-react";
+import {ArrowUpRight,Check,Heart,Minus,Plus,ShoppingBag} from "lucide-react";
 import {Accordion,AccordionContent,AccordionItem,AccordionTrigger} from "@/components/ui/accordion";
 import {api,concentrations,families,formats,imageUrl,money,name,productUrl,variantFor,type Page,type Product,type Variant} from "@/lib/store";
 import {useStore} from "./store-context";
@@ -27,14 +27,10 @@ const previewProduct=(product:Product)=>product.variants.length>0&&product.varia
 function Sizes({product,selected,onSelect,compact=false}:{product:Product;selected:Variant;onSelect:(v:Variant)=>void;compact?:boolean}){
   const {ar,tr}=useStore();
   const preview=previewProduct(product);
-  if(compact)return <select className="size-select" aria-label={tr("Choose a size","اختر الحجم")} value={selected.id}
-    onChange={event=>{const choice=product.variants.find(variant=>variant.id===event.target.value);if(choice&&(preview||choice.inStock))onSelect(choice)}}>
-    {product.variants.map(variant=><option key={variant.id} value={variant.id} disabled={!preview&&!variant.inStock}>{variant.sizeMl} {tr("ml","مل")} · {formats[variant.format][ar?1:0]}</option>)}
-  </select>;
-  return <div className="sizes" role="group" aria-label={tr("Choose a size","اختر الحجم")}>
+  return <div className={compact?"sizes sizes-compact":"sizes"} role="group" aria-label={tr("Choose a size","اختر الحجم")}>
     {product.variants.map(v=><button type="button" aria-pressed={v.id===selected.id}
-      disabled={!preview&&!v.inStock} title={formats[v.format][ar?1:0]} key={v.id} onClick={()=>{track("select_variant",itemData(product,v));onSelect(v)}}>
-      {v.sizeMl} {tr("ml","مل")}{product.variants.some(other=>other.id!==v.id&&other.sizeMl===v.sizeMl)?<small>{formats[v.format][ar?1:0]}</small>:null}
+      disabled={!preview&&!v.inStock} aria-label={tr(`${v.sizeMl} ml · ${formats[v.format][0]} · ${money(v.priceMinor,"en")}`,`${v.sizeMl} مل · ${formats[v.format][1]} · ${money(v.priceMinor,"ar")}`)} title={formats[v.format][ar?1:0]} key={v.id} onClick={()=>{track("select_variant",itemData(product,v));onSelect(v)}}>
+      {compact&&v.id===selected.id&&<Check className="size-tick" size={10} aria-hidden="true"/>}<span>{v.sizeMl} {tr("ml","مل")}</span>{product.variants.some(other=>other.id!==v.id&&other.sizeMl===v.sizeMl)?<small>{formats[v.format][ar?1:0]}</small>:null}
     </button>)}
   </div>;
 }
@@ -66,6 +62,7 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
       <div className="product-title"><Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
       <p className="product-card-notes">{(product.topNotes.length?product.topNotes.slice(0,3).map(note=>noteName(note,ar)).join(" · "):(ar?product.descriptionAr:product.descriptionEn))||" "}</p>
       <div className="card-options">
+        <span>{tr("Choose your size","اختر الحجم")}</span>
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)} compact/>
       </div>
       <button className="card-add" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>

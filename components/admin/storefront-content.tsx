@@ -8,7 +8,7 @@ export function StorefrontContent(){
  const {data,error}=useOfficeData<(Content&{area:string;published:boolean;sortOrder:number})[]>("content",revision);
  if(!data)return <Message message={error||"جارٍ تحميل محتوى المتجر…"} error={!!error}/>;
  const banner=data.find(item=>item.area==="catalog-banner");
- return <><p className="office-help">بانر صغير داخل الكتالوج. عدّل النصوص والصورة والرابط أو أوقف ظهوره.</p><Message message={message}/><BannerForm key={revision} initial={banner} saved={()=>{setRevision(v=>v+1);setMessage("تم حفظ بانر الكتالوج.")}}/></>;
+ return <><p className="office-help">بانر صغير داخل الكتالوج. عدّل النصوص والصورة والرابط أو أوقف ظهوره.</p><Message message={message}/><BannerForm key={JSON.stringify(banner)} initial={banner} saved={()=>{setRevision(v=>v+1);setMessage("تم حفظ بانر الكتالوج.")}}/></>;
 }
 function BannerForm({initial,saved}:{initial?:(Content&{published:boolean;sortOrder:number});saved:()=>void}){
  const [image,setImage]=useState(initial?.imageUrl??""),[busy,setBusy]=useState(false),[error,setError]=useState("");

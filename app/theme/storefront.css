@@ -1259,7 +1259,9 @@ textarea {
   color:var(--muted);
   font-size:var(--type-micro);
   font-weight:400;
-  line-height:1.6}
+  line-height:1.6;
+  text-align:center;
+  margin-bottom:var(--space-3)}
 .card-options .sizes button {
   border-radius:var(--radius-surface);
   font-weight:500}
@@ -2351,21 +2353,27 @@ textarea {
   border-color:var(--ink);
   color:var(--color-white)}
 .product-card .sizes button {
-  border:0;
-  border-bottom:1px solid var(--color-line);
-  border-radius:0;
-  background:transparent;
   font-weight:400;
-  font-size:var(--type-label);
-  line-height:1.5;
-  min-height:42px;
   min-width:0;
   padding-inline:0;
-  white-space:nowrap}
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:var(--space-1);
+  border:var(--border-fine);
+  border-radius:var(--radius-control);
+  background:var(--white);
+  font-size:var(--type-caption);
+  min-height:44px;
+  padding:var(--space-2);
+  white-space:normal;
+  flex-direction:column;
+  line-height:1.4}
 .product-card .sizes button[aria-pressed=true] {
-  background:transparent;
-  color:var(--ink);
-  border-bottom:2px solid var(--ink);
+  background:var(--dark);
+  color:var(--white);
+  border-color:var(--dark);
   font-weight:600}
 .product-info .buy-row {
   gap:var(--space-4)}
@@ -2687,11 +2695,10 @@ html[data-header-hidden=true] {
 [data-reveal][data-revealed=true] {
   animation:section-arrive var(--motion-reveal) var(--ease-out) both}
 .product-card .sizes {
+  width:100%;
   display:grid;
-  grid-auto-flow:column;
-  grid-auto-columns:minmax(0,1fr);
-  gap:var(--space-2);
-  width:100%}
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:var(--space-2)}
 .home-rail-caption {
   color:var(--muted);
   font-size:var(--type-label);
@@ -2810,6 +2817,8 @@ html[data-header-hidden=true] {
 .active-filters>a {display:flex;align-items:center;min-height:44px;text-decoration:underline}
 .composition-layers dt svg {color:var(--moss)}
 body:has([role=dialog][data-state=open]) .product-purchase-dock {visibility:hidden}
+.sizes-compact .size-tick {position:absolute;inset-inline-end:var(--space-1);top:var(--space-1)}
+.product-card .sizes button small {max-width:100%;white-space:normal;overflow-wrap:anywhere}
 @media (hover:hover) {
   .product-visual:hover .product-hover {
   opacity:1}.home-edit:hover img,.home-family:hover img {transform:scale(var(--home-photo-hover-scale))}.home-care a:hover {background:var(--stone)}.home-cover .action:hover {background:var(--yellow);border-color:var(--yellow)}
@@ -3188,10 +3197,10 @@ body {
   font-size:var(--type-action)}
 .product-card .sizes button {
   min-width:0;
-  min-height:42px;
   font-size:var(--type-caption);
-  padding-inline:0;
-  white-space:nowrap}
+  min-height:44px;
+  padding-inline:var(--space-2);
+  white-space:normal}
 .consent-panel {
   bottom:max(12px,env(safe-area-inset-bottom))}
 .product-detail-main {

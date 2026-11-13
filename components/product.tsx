@@ -27,7 +27,7 @@ const previewProduct=(product:Product)=>product.variants.length>0&&product.varia
 function Sizes({product,selected,onSelect,compact=false}:{product:Product;selected:Variant;onSelect:(v:Variant)=>void;compact?:boolean}){
   const {ar,tr}=useStore();
   const preview=previewProduct(product);
-  if(compact&&product.variants.length>3)return <select className="size-select" aria-label={tr("Choose a size","اختر الحجم")} value={selected.id}
+  if(compact)return <select className="size-select" aria-label={tr("Choose a size","اختر الحجم")} value={selected.id}
     onChange={event=>{const choice=product.variants.find(variant=>variant.id===event.target.value);if(choice&&(preview||choice.inStock))onSelect(choice)}}>
     {product.variants.map(variant=><option key={variant.id} value={variant.id} disabled={!preview&&!variant.inStock}>{variant.sizeMl} {tr("ml","مل")} · {formats[variant.format][ar?1:0]}</option>)}
   </select>;
@@ -51,7 +51,7 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
   const preview=previewProduct(product);
   const availability=preview?tr("For preview only","للمعاينة فقط"):tr("Sold out","نفد المخزون");
   const liked=saved.includes(product.slug);
-  return <article className="product-card">
+  return <article className="product-card" data-unavailable={!v.inStock}>
     <div className="product-visual">
       <Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)} className="product-photo" aria-label={title}>
         <StoreImage sizes={photoSizes} src={imageUrl(product.images[0])} alt={title} loading="lazy" width={520} height={560}/>
@@ -66,7 +66,6 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
       <div className="product-title"><Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
       <p className="product-card-notes">{(product.topNotes.length?product.topNotes.slice(0,3).map(note=>noteName(note,ar)).join(" · "):(ar?product.descriptionAr:product.descriptionEn))||" "}</p>
       <div className="card-options">
-        <span>{tr("Choose a size","اختر الحجم")}</span>
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)} compact/>
       </div>
       <button className="card-add" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
@@ -94,9 +93,17 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
   const [activeImage,setActiveImage]=useState(0);
   const [quantity,setQuantity]=useState(1);
   const [sticky,setSticky]=useState(true);
+  const [keyboardOpen,setKeyboardOpen]=useState(false);
   const [related,setRelated]=useState<Product[]>([]);
   const buy=useRef<HTMLButtonElement>(null);
   const v=variantFor(product,selection);
+  useEffect(()=>{
+    const viewport=window.visualViewport;
+    const update=()=>setKeyboardOpen(!!viewport&&window.innerHeight-viewport.height>150);
+    viewport?.addEventListener("resize",update);
+    update();
+    return()=>viewport?.removeEventListener("resize",update);
+  },[]);
   useEffect(()=>{
     if(!buy.current)return;
     const observer=new IntersectionObserver(([entry])=>setSticky(entry.intersectionRatio<.98),{threshold:[0,1],rootMargin:"0px 0px -12px 0px"});
@@ -160,7 +167,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
     <ScentSignature key={product.slug+"-signature"} product={product}/>
     <Reviews key={product.slug} product={product.slug}/>
     {related.length>0&&<section className="container section"><div className="section-head"><div><span className="eyebrow">SIYAG PARFUMS</span><h2>{tr("Explore related fragrances","اكتشف عطور ذات طابع مشابه")}</h2></div></div><div className="product-grid">{related.map(p=><ProductCard key={p.id} product={p}/>)}</div></section>}
-    {sticky&&<section className="product-purchase-dock" aria-label={tr("Purchase options","خيارات الشراء")}>
+    {sticky&&!keyboardOpen&&<section className="product-purchase-dock" aria-label={tr("Purchase options","خيارات الشراء")}>
       <div className="dock-selection"><strong>{title}</strong><small>{v.sizeMl} {tr("ml","مل")} · {money(v.priceMinor,lang)}</small></div>
       <button type="button" className="dock-add" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
       {v.inStock&&<button type="button" className="dock-buy" disabled={busy} onClick={express}>{tr("Buy now","اشتري الآن")}<ArrowUpRight size={15}/></button>}

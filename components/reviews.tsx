@@ -132,6 +132,7 @@ export function Reviews({product}:{product?:string}){
     const controller=new AbortController();
     const params=new URLSearchParams({pageNumber:String(page)});
     if(product)params.set("product",product);
+    setFailed(false);
     api<ReviewPage>("store/reviews?"+params,{signal:controller.signal})
       .then(setResult).catch(()=>{if(!controller.signal.aborted)setFailed(true)});
     return()=>controller.abort();
@@ -177,7 +178,7 @@ export function Reviews({product}:{product?:string}){
               <time dateTime={review.createdAt}>{date.format(new Date(review.createdAt))}</time></div>
             <p dir="auto">{review.comment}</p>
             {review.hasPhoto&&<button type="button" className="review-thumbnail" onClick={()=>setPhoto({url,name:review.displayName})} aria-label={tr("Enlarge review photo","كبّر صورة التقييم")}><img src={url} alt="" loading="lazy"/></button>}
-            <div className="review-author"><strong dir="auto">{review.displayName}</strong>{review.verifiedPurchase&&<span><Check size={13}/>{tr("Verified purchase","شراء موثّق")}</span>}</div>
+            <div className="review-author"><strong dir="auto">{review.displayName}</strong>{review.verifiedPurchase?<span><Check size={13}/>{tr("Verified purchase","شراء موثّق")}</span>:<span>{tr("Unverified purchase","شراء غير موثّق")}</span>}</div>
           </article>;
         })}</div>
         {result.totalPages>1&&<div className="review-pages">

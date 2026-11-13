@@ -87,10 +87,12 @@
   --color-paper: #ffffff;
   --color-white: #ffffff;
   --color-stone: #ffffff;
-  --color-ink: #29251f;
-  --color-forest: #384632;
-  --color-muted: #706354;
-  --color-line: #e2d7c7;
+  --color-ink: #1c211b;
+  --color-forest: #46543d;
+  --color-muted: #616859;
+  --color-line: #e6e8e1;
+  --color-secondary: #f7f7f3;
+  --type-card-title: 18px;
   --color-sage: #b2bd7e;
   --color-olive: #8e9162;
   --color-yellow: #d9d28b;
@@ -132,10 +134,10 @@
   --type-input: 16px;
   --type-lead: 18px;
   --type-subtitle: 24px;
-  --type-product: 28px;
-  --type-product-ar: 24px;
-  --type-section: clamp(30px, 3vw, 44px);
-  --type-page: clamp(40px, 4.4vw, 60px);
+  --type-product: 24px;
+  --type-product-ar: 22px;
+  --type-section: clamp(26px, 2.8vw, 36px);
+  --type-page: clamp(30px, 3.4vw, 48px);
   --type-display: clamp(46px, 5vw, 72px);
   --type-display-ar: clamp(38px, 4.2vw, 60px);
   --type-grand: 72px;
@@ -173,7 +175,8 @@
 }
 @media (max-width:767px) {
   :root {
-    --page-gutter: 20px;
+    --page-gutter: 16px;
+    --type-card-title: 16px;
     --home-edit-height: 210px;
     --home-family-height: 220px;
     --type-feature: 32px;
@@ -182,10 +185,10 @@
     --section-space: clamp(48px, 5.5vw, 80px);
     --panel-space: 28px;
     --type-body: 14px;
-    --type-product: 28px;
-    --type-product-ar: 24px;
-    --type-section: clamp(30px, 3vw, 44px);
-    --type-page: clamp(40px, 4.4vw, 60px);
+    --type-product: 24px;
+    --type-product-ar: 22px;
+    --type-section: clamp(26px, 2.8vw, 36px);
+    --type-page: clamp(30px, 3.4vw, 48px);
     --type-display: clamp(46px, 5vw, 72px);
     --type-display-ar: clamp(38px, 4.2vw, 60px);
     --product-gap: 32px 16px;

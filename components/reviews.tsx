@@ -195,8 +195,8 @@ export function Reviews({product}:{product?:string}){
 
 export function StoreReviewsLink(){
   const {tr}=useStore();
-  return <section className="container store-reviews-link"><div><span className="eyebrow">SIYAG PARFUMS</span>
-    <h2>{tr("The SIYAG experience","تجارب عملاء SIYAG")}</h2></div>
-    <Link className="text-link" href="/reviews">{tr("Read store reviews","شوف تقييمات المتجر")}</Link>
-  </section>;
+  return <header className="store-reviews-link"><div><span className="eyebrow">SIYAG PARFUMS</span>
+    <h2 id="home-confidence-title">{tr("The SIYAG experience","تجارب عملاء SIYAG")}</h2><p>{tr("Get to know the experience, from choosing a scent to its arrival.","من اختيار عطرك لحد ما يوصلك… اعرف التجربة من أقرب.")}</p></div>
+    <Link className="action ink" href="/reviews">{tr("Read store reviews","شوف تقييمات المتجر")}</Link>
+  </header>;
 }

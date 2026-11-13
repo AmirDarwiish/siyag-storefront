@@ -12,6 +12,7 @@ import {Activity,useEffect,useLayoutEffect,useRef,useState,type FormEvent} from 
 import {CreditCard,PanelRightClose,PanelRightOpen,ArrowUpRight,Plus,Store,ShieldCheck,LayoutDashboard,Menu,Warehouse,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Star,Truck,Users} from "lucide-react";
 import {office,roleNames,type StaffUser} from "@/lib/admin";
 const Products=dynamic(()=>import("./catalog").then(m=>m.Products),{loading:PageSkeleton});
+const StorefrontContent=dynamic(()=>import("./storefront-content").then(m=>m.StorefrontContent),{loading:PageSkeleton});
 const Collections=dynamic(()=>import("./catalog").then(m=>m.Collections),{loading:PageSkeleton});
 const Orders=dynamic(()=>import("./orders").then(m=>m.Orders),{loading:PageSkeleton});
 const ShippingOptions=dynamic(()=>import("./shipping").then(m=>m.ShippingOptions),{loading:PageSkeleton});
@@ -30,6 +31,7 @@ const panels=[
   {id:"inventory",label:"المخزون",description:"الكميات المتاحة وتنبيهات المخزون المنخفض.",icon:Warehouse,component:Products,roles:["Owner","Catalog"]},
   {id:"products",label:"المنتجات",description:"أدر بيانات العطور والصور والأحجام والأسعار والمخزون.",icon:Boxes,component:Products,roles:["Owner","Catalog"]},
   {id:"shipping",label:"التوصيل",description:"اضبط المحافظات ورسوم التوصيل قبل استقبال الطلبات.",icon:Truck,component:ShippingOptions,roles:["Owner","Fulfillment"]},
+  {id:"storefront",label:"محتوى المتجر",description:"إدارة بانر الكتالوج وصوره وروابطه.",icon:Store,component:StorefrontContent,roles:["Owner","Catalog"]},
   {id:"collections",label:"الأقسام",description:"أدر مجموعات العطور وترتيب ظهورها في المتجر.",icon:FolderOpen,component:Collections,roles:["Owner","Catalog"]},
   {id:"reviews",label:"التقييمات",description:"راجع تعليقات العملاء وصورهم قبل نشرها.",icon:Star,component:ReviewModeration,roles:["Owner","Catalog"]},
   {id:"staff",label:"الموظفون",description:"أضف موظفين وحدد صلاحياتهم وأدر حالة الحساب.",icon:Users,component:Staff,roles:["Owner"]},
@@ -134,10 +136,10 @@ export function AdminDashboard(){
     </section>
   </main>;
 
-  const renderPanel=(id:string)=>id==="overview"?<Overview role={role} navigate={navigate} createProduct={()=>editProduct("")}/>:id==="inventory"?<Inventory editProduct={editProduct}/>:id==="products"?<Products/>:id==="collections"?<Collections/>:id==="orders"?<Orders/>:id==="shipping"?<ShippingOptions/>:id==="staff"?<Staff/>:id==="reviews"?<ReviewModeration/>:id==="integrations"?<IntegrationSettings/>:<JourneyDashboard/>;
+  const renderPanel=(id:string)=>id==="overview"?<Overview role={role} navigate={navigate} createProduct={()=>editProduct("")}/>:id==="inventory"?<Inventory editProduct={editProduct}/>:id==="products"?<Products/>:id==="storefront"?<StorefrontContent/>:id==="collections"?<Collections/>:id==="orders"?<Orders/>:id==="shipping"?<ShippingOptions/>:id==="staff"?<Staff/>:id==="reviews"?<ReviewModeration/>:id==="integrations"?<IntegrationSettings/>:<JourneyDashboard/>;
   function prefetchPanel(id:string){router.prefetch("/admin/"+id);if(id==="products")void loadOffice("catalog/index",loadCatalogIndex).catch(()=>{});else{const query:Record<string,string>={orders:"orders?pageSize=20&pageNumber=1",inventory:"inventory?pageSize=30&pageNumber=1&maximumStock=5",collections:"collections",shipping:"shipping",staff:"staff",overview:role==="Owner"?"reports/summary":role==="Catalog"?"products?pageSize=1":"orders?status=pending&pageSize=5",journey:"reports/journey?days=30"};const path=query[id];if(path)void loadOffice(path,signal=>office(path,{signal})).catch(()=>{})}}
 
-  const groups=[{label:"إدارة المتجر",ids:["overview","orders","products","inventory","collections"]},{label:"العملاء والتسويق",ids:["journey","reviews"]},{label:"الفريق والإعدادات",ids:["shipping","integrations","staff"]}];
+  const groups=[{label:"إدارة المتجر",ids:["overview","orders","products","inventory","collections","storefront"]},{label:"العملاء والتسويق",ids:["journey","reviews"]},{label:"الفريق والإعدادات",ids:["shipping","integrations","staff"]}];
   const initials=(user?.name??"S").trim().split(/\s+/).slice(0,2).map(part=>part[0]).join("");
   const navigation=<><Link href="/admin/overview" className="office-brand-lockup" onClick={()=>setMenu(false)} aria-label="SIYAG الرئيسية"><span className="office-brand-symbol"><Boxes size={21}/></span><div className="office-mark" dir="ltr">SIYAG <span>WORKSPACE</span></div></Link>
     <nav aria-label="أقسام الإدارة">{groups.map(group=>{const items=group.ids.map(id=>available.find(panel=>panel.id===id)).filter(panel=>panel!==undefined);return items.length?<div className="office-nav-group" key={group.label}><h2>{group.label}</h2>{items.map(({id,label,icon:Icon})=><OfficeTip label={label} side="left" disabled={!collapsed} key={id}><Link href={"/admin/"+id} aria-label={label} aria-current={active.id===id?"page":undefined} onMouseEnter={()=>prefetchPanel(id)} onFocus={()=>prefetchPanel(id)} onClick={()=>setMenu(false)}><Icon size={18}/><span>{label}</span></Link></OfficeTip>)}</div>:null})}</nav>

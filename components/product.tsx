@@ -6,7 +6,7 @@ import {imageSizes} from "@/lib/image-sizes";
 import {useRouter} from "next/navigation";
 import {track,itemData} from "@/lib/analytics";
 import {useEffect,useRef,useState} from "react";
-import {ArrowUpRight,Check,Heart,Minus,Plus,ShoppingBag} from "lucide-react";
+import {ArrowUpRight,Heart,Minus,Plus,ShoppingBag} from "lucide-react";
 import {Accordion,AccordionContent,AccordionItem,AccordionTrigger} from "@/components/ui/accordion";
 import {api,concentrations,families,formats,imageUrl,money,name,productUrl,variantFor,type Page,type Product,type Variant} from "@/lib/store";
 import {useStore} from "./store-context";
@@ -30,7 +30,7 @@ function Sizes({product,selected,onSelect,compact=false}:{product:Product;select
   return <div className={compact?"sizes sizes-compact":"sizes"} role="group" aria-label={tr("Choose a size","اختر الحجم")}>
     {product.variants.map(v=><button type="button" aria-pressed={v.id===selected.id}
       disabled={!preview&&!v.inStock} aria-label={tr(`${v.sizeMl} ml · ${formats[v.format][0]} · ${money(v.priceMinor,"en")}`,`${v.sizeMl} مل · ${formats[v.format][1]} · ${money(v.priceMinor,"ar")}`)} title={formats[v.format][ar?1:0]} key={v.id} onClick={()=>{track("select_variant",itemData(product,v));onSelect(v)}}>
-      {compact&&v.id===selected.id&&<Check className="size-tick" size={10} aria-hidden="true"/>}<span>{v.sizeMl} {tr("ml","مل")}</span>{product.variants.some(other=>other.id!==v.id&&other.sizeMl===v.sizeMl)?<small>{formats[v.format][ar?1:0]}</small>:null}
+      <span>{v.sizeMl} {tr("ml","مل")}</span>{product.variants.some(other=>other.id!==v.id&&other.sizeMl===v.sizeMl)?<small>{formats[v.format][ar?1:0]}</small>:null}
     </button>)}
   </div>;
 }

@@ -150,7 +150,7 @@
   --tracking-action: .01em;
   --control-height: 48px;
   --control-padding: 13px 20px;
-  --radius-control: 4px;
+  --radius-control: 8px;
   --radius-surface: 3px;
   --surface-radius: var(--radius-surface);
   --border-fine: 1px solid var(--line);
@@ -158,11 +158,12 @@
   --radius-glass: 18px;
   --glass-surface: color-mix(in srgb, var(--white) 92%, transparent);
   --glass-blur: 14px;
-  --glass-highlight: linear-gradient(160deg, color-mix(in srgb, var(--white) 30%, transparent), transparent 58%);
-  --hero-mobile-gradient: linear-gradient(135deg, #f6f8ee 0%, #dbe5cb 48%, #eee3b5 100%);
+  --glass-highlight: none;
+  --hero-mobile-gradient: linear-gradient(125deg, #182b24 0%, #344438 58%, #536344 100%);
+  --footer-surface: #15271f;
   --radius-card: 12px;
   --glass-edge: color-mix(in srgb, var(--white) 84%, var(--sage));
-  --glass-shadow: 0 4px 18px color-mix(in srgb, var(--dark) 7%, transparent), inset 0 1px 0 var(--white);
+  --glass-shadow: 0 4px 18px color-mix(in srgb, var(--dark) 7%, transparent);
   --footer-glass: color-mix(in srgb, var(--white) 7%, transparent);
   --footer-edge: color-mix(in srgb, var(--white) 18%, transparent);
   --footer-muted: #e3e9db;

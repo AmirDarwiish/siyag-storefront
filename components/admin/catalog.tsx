@@ -208,7 +208,7 @@ export function Collections(){
   const setEditing=(item:AdminCollection|null)=>item?open(item.slug):close();
   if(editor!==null)return editing?<Panel title={editing.slug?"تعديل التصنيف":"إضافة تصنيف"} description="الاسم والصورة وترتيب الظهور في المتجر" onClose={()=>setEditing(null)}>
       <CollectionForm initial={editing} existing={data??[]} saved={()=>{setRevision(value=>value+1);setEditing(null)}}/>
-      {editing.slug&&<CollectionMembers slug={editing.slug}/>}
+      {editing.slug&&(editing.supportsMultipleProducts?<CollectionMembers slug={editing.slug}/>:<p className="office-help">إدارة عطور القسم تتطلب نشر تحديث علاقة الأقسام على السيرفر أولًا.</p>)}
     </Panel>:<Message message={error||(data?"القسم غير موجود.":"جارٍ تحميل القسم…")} error={!!error||!!data}/>;
   return <>
     <div className="office-toolbar"><p>نظّم المنتجات في تصنيفات قابلة للنشر على المتجر.</p><button className="office-button" onClick={()=>setEditing(blankCollection)}><Plus size={17}/> إضافة تصنيف</button></div>

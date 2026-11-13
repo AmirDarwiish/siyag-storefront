@@ -7,7 +7,7 @@ export const roleNames:Record<Role,string>={Owner:"مالك المتجر",Catalo
 export type ProductSummary=Pick<Product,"id"|"slug"|"nameAr"|"nameEn"|"featured">&{published:boolean};
 export type AdminVariant=Omit<Variant,"inStock">&{stock:number;active:boolean};
 export type AdminProduct=Omit<Product,"variants"|"seo">&{published:boolean;variants:AdminVariant[];seo?:Record<string,string|null>};
-export type AdminCollection={slug:string;nameAr:string;nameEn:string;imageUrl?:string|null;published:boolean;sortOrder:number};
+export type AdminCollection={supportsMultipleProducts?:boolean;slug:string;nameAr:string;nameEn:string;imageUrl?:string|null;published:boolean;sortOrder:number};
 export type OrderRow={number:string;status:string;paymentStatus:string;createdAt:string;totalMinor:number};
 export type AdminOrder=OrderRow&{
   customerName:string;phone:string;email?:string;governorate:string;city:string;address:string;deliveryNotes?:string;

@@ -31,7 +31,7 @@ const panels=[
   {id:"inventory",label:"المخزون",description:"الكميات المتاحة وتنبيهات المخزون المنخفض.",icon:Warehouse,component:Products,roles:["Owner","Catalog"]},
   {id:"products",label:"المنتجات",description:"أدر بيانات العطور والصور والأحجام والأسعار والمخزون.",icon:Boxes,component:Products,roles:["Owner","Catalog"]},
   {id:"shipping",label:"التوصيل",description:"اضبط المحافظات ورسوم التوصيل قبل استقبال الطلبات.",icon:Truck,component:ShippingOptions,roles:["Owner","Fulfillment"]},
-  {id:"storefront",label:"محتوى المتجر",description:"إدارة بانر الكتالوج وصوره وروابطه.",icon:Store,component:StorefrontContent,roles:["Owner","Catalog"]},
+  {id:"storefront",label:"محتوى المتجر",description:"إدارة بانرات الرئيسية والكتالوج والصور والروابط.",icon:Store,component:StorefrontContent,roles:["Owner","Catalog"]},
   {id:"collections",label:"الأقسام",description:"أدر مجموعات العطور وترتيب ظهورها في المتجر.",icon:FolderOpen,component:Collections,roles:["Owner","Catalog"]},
   {id:"reviews",label:"التقييمات",description:"راجع تعليقات العملاء وصورهم قبل نشرها.",icon:Star,component:ReviewModeration,roles:["Owner","Catalog"]},
   {id:"staff",label:"الموظفون",description:"أضف موظفين وحدد صلاحياتهم وأدر حالة الحساب.",icon:Users,component:Staff,roles:["Owner"]},

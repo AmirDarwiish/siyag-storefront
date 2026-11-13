@@ -34,6 +34,10 @@ export function demoGet(path:string, query:URLSearchParams) {
   if(path.startsWith("store/products/")) return demoProducts.find(p=>p.slug===path.split("/")[2]);
   if(path==="store/collections") return collections;
   if(path==="store/settings") return {name:"SIYAG Perfumes",acceptOrders:false,paymentMethods:[],supportEmail:null};
+  if(path==="store/content"&&query.get("area")==="home-hero") return [
+    {slug:"preview-house",titleEn:"Explore SIYAG fragrances",titleAr:"اكتشف عطور SIYAG",textEn:"Preview",textAr:"معاينة",imageUrl:"/brand/hero-v2.webp",actionUrl:"/shop"},
+    {slug:"preview-discovery",titleEn:"Explore discovery sizes",titleAr:"اكتشف أحجام التجربة",textEn:"Preview",textAr:"معاينة",imageUrl:"/brand/discovery-vials.webp",actionUrl:"/shop?format=decant"},
+  ];
   if(path==="store/content") return query.get("area")==="campaign" ? [{
     slug:"private-preview",titleEn:"The Black Friday Edit",titleAr:"اختيارات بلاك فرايداي",
     textEn:JSON.stringify({description:"A first look at the SIYAG collection.",tiers:[{value:"10%",label:"Any order"},{value:"15%",label:"From EGP 1,000"},{value:"20%",label:"From EGP 2,000"}],footnote:"Illustrative offers for the design preview."}),

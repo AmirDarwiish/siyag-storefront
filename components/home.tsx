@@ -10,19 +10,7 @@ import {useStore} from "./store-context";
 import {HomeProductRail} from "./home-product-rail";
 import {track} from "@/lib/analytics";
 import {StoreReviewsLink} from "./reviews";
-
-function HouseCampaign() {
-  const {tr, ar}=useStore();
-  return <section className="home-cover" aria-labelledby="house-campaign-title">
-    <StoreImage className="home-cover-image" sizes={imageSizes.campaign} src="/brand/hero-v2.webp" alt="" width={1536} height={1024} fetchPriority="high"/>
-    <div className="home-cover-layout container"><div className="home-cover-copy" dir={ar?"rtl":"ltr"}>
-      <span className="eyebrow">{tr("SIYAG · AN EGYPTIAN FRAGRANCE HOUSE", "SIYAG · دار عطور مصرية")}</span>
-      <h1 id="house-campaign-title">{tr("Some things stay with you.", "بعض الحضور… لا يُنسى")}</h1>
-      <p>{tr("A note. A memory. A scent that becomes your own. Discover your next signature in the world of SIYAG.", "نفحة تستوقفك. ذكرى تعود إليك. وعطر يصبح جزءًا منك. ادخل عالم SIYAG واختر حضورك القادم.")}</p>
-      <div className="home-cover-actions"><Link href="/shop" className="action gold">{tr("Discover the fragrances", "اكتشف العطور")}</Link><Link href="/shop?format=decant" className="home-cover-link">{tr("Start with a discovery size", "ابدأ بحجم التجربة")}</Link></div>
-    </div></div>
-  </section>;
-}
+import {HomeBanners} from "./home-banners";
 
 type FeatureProps={tone:"discovery"|"house"; eyebrow:string; title:string; copy:string; image:string; href:string; action:string; caption:string};
 function EditorialFeature({tone,eyebrow,title,copy,image,href,action,caption}:FeatureProps) {
@@ -75,7 +63,7 @@ export function Home() {
   useEffect(()=>{if(products.length)track("view_item_list",{list_id:"home-selected",items:products.map(p=>({item_id:p.variants[0]?.id??p.id,item_name:p.nameEn,item_category:p.family}))})},[products]);
 
   return <main className="home-experience" ref={homeRef}>
-    <HouseCampaign/>
+    <HomeBanners/>
 
     <div id="collections">{collections.map(collection=><HomeCollection key={collection.slug} collection={collection}/>)}</div>
 

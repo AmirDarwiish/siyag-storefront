@@ -24,6 +24,16 @@
   font-display: swap;
 }
 :root {
+  --select-surface: var(--white);
+  --select-ink: var(--ink);
+  --select-border: var(--line);
+  --select-focus: var(--moss);
+  --select-radius: 8px;
+  --select-height: 44px;
+  --select-padding: 12px;
+  --select-end-padding: 38px;
+  --select-indicator-position: right 12px center;
+  --select-indicator: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='none'%3E%3Cpath d='m5 7 5 5 5-5' stroke='rgb(70,84,61)' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
   --home-night: #160f0b;
   --home-on-dark-muted: #e0ddd0;
   --home-cover-height: clamp(520px, 44vw, 660px);
@@ -182,6 +192,7 @@
   --catalog-banner-height: 112px;
 }
 [dir=rtl] {
+  --select-indicator-position: left 12px center;
   --sans: "Plex Arabic", Manrope, sans-serif;
   --serif: "Plex Arabic", Manrope, sans-serif;
   --type-action: 14px;

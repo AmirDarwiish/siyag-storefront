@@ -208,6 +208,7 @@ export function Collections(){
   const setEditing=(item:AdminCollection|null)=>item?open(item.slug):close();
   if(editor!==null)return editing?<Panel title={editing.slug?"تعديل التصنيف":"إضافة تصنيف"} description="الاسم والصورة وترتيب الظهور في المتجر" onClose={()=>setEditing(null)}>
       <CollectionForm initial={editing} existing={data??[]} saved={()=>{setRevision(value=>value+1);setEditing(null)}}/>
+      {editing.slug&&<CollectionMembers slug={editing.slug}/>}
     </Panel>:<Message message={error||(data?"القسم غير موجود.":"جارٍ تحميل القسم…")} error={!!error||!!data}/>;
   return <>
     <div className="office-toolbar"><p>نظّم المنتجات في تصنيفات قابلة للنشر على المتجر.</p><button className="office-button" onClick={()=>setEditing(blankCollection)}><Plus size={17}/> إضافة تصنيف</button></div>
@@ -240,7 +241,7 @@ function CollectionForm({initial,existing,saved}:{initial:AdminCollection;existi
       <label>الاسم بالعربي<input name="nameAr" defaultValue={initial.nameAr} required maxLength={100}/></label>
       <label>الاسم بالإنجليزي<input name="nameEn" defaultValue={initial.nameEn} required maxLength={100} dir="ltr"/></label>
       <label>المعرّف في الرابط<input name="slug" defaultValue={initial.slug} readOnly={!!initial.slug} required pattern={slugPattern} maxLength={100} dir="ltr"/></label>
-      <label>ترتيب الظهور <small>الأرقام الأصغر تظهر أولًا</small><input name="sortOrder" type="number" min={0} max={10000} defaultValue={initial.sortOrder} required/></label>
+      <label>ترتيب الظهور <small>الأرقام الأصغر تظهر أولًا</small><input name="sortOrder" type="number" min={-10000} max={10000} defaultValue={initial.sortOrder} required/></label>
     </div>
     <label>رابط الصورة<input value={image} onChange={event=>setImage(event.target.value)} dir="ltr" placeholder="https://…"/></label>
     <Upload onUpload={setImage}/>
@@ -253,4 +254,12 @@ function CollectionForm({initial,existing,saved}:{initial:AdminCollection;existi
 function ProductThumb({url,name}:{url?:string;name:string}){
  const [failed,setFailed]=useState(false);
  return <span className="office-product-thumb">{url&&!failed?<img src={imageUrl(url)} alt={name} width={56} height={64} loading="lazy" onError={()=>setFailed(true)}/>:<Boxes size={22}/>}</span>;
+}
+
+function CollectionMembers({slug}:{slug:string}){
+ const {data:index,error}=useOfficeData<ProductSummary[]>("catalog/index",0,60000,loadCatalogIndex);
+ const [selected,setSelected]=useState<string[]>([]),[original,setOriginal]=useState<string[]>([]),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[message,setMessage]=useState("");
+ useEffect(()=>{let cancelled=false;setLoading(true);if(!index)return;loadCatalogDetails(index.map(p=>p.id),new AbortController().signal).then(result=>{if(cancelled)return;if(result.failed)throw new Error("تعذر تحميل بعض المنتجات؛ أعد فتح القسم.");const ids=Object.values(result.products).filter(p=>p.collections.includes(slug)).map(p=>p.id);setSelected(ids);setOriginal(ids);setLoading(false)}).catch(e=>{if(!cancelled)setMessage(e.message)});return()=>{cancelled=true}},[index,slug]);
+ async function save(){if(busy||loading)return;setBusy(true);setMessage("");const done:string[]=[];try{for(const product of index??[]){if(selected.includes(product.id)===original.includes(product.id))continue;const fresh=await office<AdminProduct>("products/"+product.id);const collections=selected.includes(product.id)?[...new Set([...fresh.collections,slug])]:fresh.collections.filter(s=>s!==slug);await office("products/"+product.id,{method:"PUT",data:{...fresh,collections}});done.push(product.id)}setOriginal([...selected]);setMessage("تم حفظ منتجات القسم.")}catch(e){setOriginal(previous=>{const next=new Set(previous);for(const id of done)selected.includes(id)?next.add(id):next.delete(id);return [...next]});setMessage((e as Error).message+" — تم حفظ "+done.length+" تعديل؛ يمكنك إعادة المحاولة.")}finally{setBusy(false)}}
+ return <section className="office-editor-section"><h3>عطور القسم</h3><p className="office-help">حدد المنتجات التي تظهر في هذا القسم، ثم احفظ اختيارك. باقي أقسام كل منتج تظل كما هي.</p><Message message={error||message} error={!!error||loading&&!!message}/>{loading?<p>جارٍ تحميل المنتجات…</p>:<><div className="office-fields">{index?.map(product=><label className="office-check" key={product.id}><input type="checkbox" disabled={busy} checked={selected.includes(product.id)} onChange={e=>setSelected(ids=>e.target.checked?[...ids,product.id]:ids.filter(id=>id!==product.id))}/>{product.nameAr} <small>{product.published?"منشور":"مسودة"}</small></label>)}</div><button className="office-button" type="button" disabled={busy} onClick={save}>{busy?"جارٍ الحفظ…":"حفظ عطور القسم"}</button></>}</section>
 }

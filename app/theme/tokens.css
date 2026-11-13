@@ -58,7 +58,7 @@
   --home-border: 0;
   --home-card-border: 0;
   --home-rail-gap: var(--space-8);
-  --home-rail-mobile-card: calc((100% - var(--home-rail-gap)) / 2);
+  --home-rail-mobile-card: calc((100% - var(--space-5)) / 2);
   --home-card-lift: -3px;
   --motion-header: 260ms;
   --motion-ui: 220ms;

@@ -15,5 +15,8 @@ export async function loadProduct(slug:string):Promise<Product|null> {
   const response=await requestStore("/api/v1/store/products/"+encodeURIComponent(slug));
   if(response.status===404) return null;
   if(!response.ok) throw new Error("Catalog is unavailable");
-  return response.json();
+  const product=await response.json() as Product;
+  const {loadVariantImages}=await import("./server-catalog");
+  const {applyVariantImages}=await import("./catalog-experience");
+  return applyVariantImages(product,await loadVariantImages());
 }

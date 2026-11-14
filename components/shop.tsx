@@ -10,6 +10,7 @@ import {useStore} from "./store-context";
 import {ProductCard} from "./product";
 import {Modal} from "./shell";
 import {StoreImage} from "./store-image";
+import {discoveryProduct} from "@/lib/catalog-experience";
 import {bannerHref} from "@/lib/banners";
 
 type CatalogResult = {page: Page<Product>; catalogEmpty: boolean};
@@ -20,6 +21,7 @@ export function Shop(){
   const query=useSearchParams();
   const router=useRouter();
   const queryString=query.toString();
+  useEffect(()=>{if(queryString==="format=decant")router.replace("/shop?collection=discovery",{scroll:false})},[queryString,router]);
   const savedOnly=query.get("saved")==="1";
   const savedKey=saved.join("|");
   const [result,setResult]=useState<CatalogResult>();
@@ -101,7 +103,7 @@ export function Shop(){
           {!!page?.totalCount&&<p className="results-count">{page.totalCount} {tr(page.totalCount===1?"fragrance":"fragrances","عطر")}</p>}
           {showState?<CatalogNotice status={status} onRetry={()=>setRetry(value=>value+1)}/>:!page?
             <div className="product-grid" aria-busy="true">{[1,2,3].map(x=><div className="skeleton" key={x}/>)}</div>:
-            <div className="product-grid">{page.data.map(p=><ProductCard key={p.id+queryString} product={p} preferred={p.variants.find(v=>(!query.get("format")||v.format===query.get("format"))&&(!query.get("sizeMl")||v.sizeMl===Number(query.get("sizeMl")))&&v.inStock)?.id}/>)}</div>}
+            <div className="product-grid">{page.data.map(item=>{const p=query.get("collection")==="discovery"?discoveryProduct(item):item;return <ProductCard key={p.id+queryString} product={p} preferred={p.variants.find(v=>(!query.get("format")||v.format===query.get("format"))&&(!query.get("sizeMl")||v.sizeMl===Number(query.get("sizeMl")))&&v.inStock)?.id}/>})}</div>}
           {page&&page.totalPages>1&&<div className="pagination"><button type="button" aria-label={tr("Previous page","الصفحة السابقة")} disabled={page.pageNumber<=1} onClick={()=>change("pageNumber",String(page.pageNumber-1))}><ArrowLeft size={17}/></button><span>{page.pageNumber} / {page.totalPages}</span><button type="button" aria-label={tr("Next page","الصفحة التالية")} disabled={page.pageNumber>=page.totalPages} onClick={()=>change("pageNumber",String(page.pageNumber+1))}><ArrowRight size={17}/></button></div>}
         </div>
       </div>

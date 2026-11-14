@@ -1,0 +1,27 @@
+/** Size photography for the current catalog; dashboard mappings override these defaults. */
+export const defaultVariantImages:Record<string,string>={
+ "ab688f7b-0da1-444c-b39f-6f3e08798237": "/brand/variants/santal-10ml.webp",
+ "c9f33f6a-a1a9-4e38-8c15-dd7cf4f860f5": "/brand/santal.webp",
+ "08ba4a71-8905-45e8-b999-0830f468f4cd": "/brand/variants/rose-velvet-10ml.webp",
+ "8b26d680-9651-444e-98cc-354a34be600e": "/brand/rose-velvet.webp",
+ "0c32dd36-b91b-42c4-90e5-da6c5a33cfdd": "/brand/variants/amber-wood-10ml.webp",
+ "2c1bd22d-fbb5-4a72-8151-9dcbe7ffa56c": "/brand/variants/citrus-bloom-10ml.webp",
+ "a5ffd8df-e59a-487b-9146-7c990897a55c": "/brand/variants/musk-10ml.webp",
+ "864953be-5b04-4210-849b-98c1d212e736": "/brand/musk.webp",
+ "7ba5d8a3-e7dc-4b41-ab81-357bd828e968": "/brand/variants/musk-100ml.webp",
+ "c1fe7bbe-a2fb-4565-8d8c-fcea4c8cd45b": "/brand/variants/neroli-10ml.webp",
+ "db872c99-f613-4593-94e4-08c700660365": "/brand/neroli.webp",
+ "b4717d42-77a2-444f-acb9-e7d2000cd167": "/brand/variants/neroli-100ml.webp",
+ "594ebee3-d677-4f91-85c4-7d40f9efe8b3": "/brand/variants/royal-10ml.webp",
+ "bfbc8c33-9cf8-4041-b360-a49be9032f84": "/brand/royal.webp",
+ "65b4dc14-a7ba-41f1-985f-eaeaf14c2b4c": "/brand/variants/royal-100ml.webp",
+ "bbd7116b-270c-4dce-a293-a67344c6cccd": "/brand/variants/eclat-10ml.webp",
+ "9c1a21e4-cb9b-481f-9343-de27834df30a": "/brand/eclat.webp",
+ "9984464e-7f99-476b-95b3-b1052edace3a": "/brand/variants/eclat-100ml.webp",
+ "e4d2f9bf-1914-405f-8f4c-4d9aa214c34b": "/brand/variants/oud-10ml.webp",
+ "0f12ab46-4a44-499e-bd2a-baad0066ca5e": "/brand/oud.webp",
+ "af9a3339-4ace-42e1-aa6e-3bd23b18b2a2": "/brand/variants/oud-100ml.webp",
+ "8d241946-b6f8-4127-ae6a-52ea7312d4e1": "/brand/variants/noir-10ml.webp",
+ "a13b1a3f-acf5-4815-b233-2da7dac658bd": "/brand/noir.webp",
+ "e57cff2a-d17a-466d-a4b8-bb86674d68e6": "/brand/variants/noir-100ml.webp"
+};

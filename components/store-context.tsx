@@ -4,6 +4,7 @@ import {createContext,useCallback,useContext,useEffect,useRef,useState,type Reac
 import {api,ApiError,type Language,type Cart,type Product,type Variant,name,imageUrl,money} from "@/lib/store";
 import Link from "next/link";
 import {ArrowUpRight,Check,X} from "lucide-react";
+import {variantImage} from "@/lib/catalog-experience";
 import {track,itemData,cartData} from "@/lib/analytics";
 import {readLocal,writeLocal} from "@/lib/browser-storage";
 
@@ -97,7 +98,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
         const lines=cartRef.current.lines.filter(l=>l.variantId!==id);
         const previous=cartRef.current.lines.find(l=>l.variantId===id);
         if(quantity>0 && previous) lines.push({...previous,quantity});
-        else if(quantity>0 && product && variant) lines.push({variantId:id,slug:product.slug,nameEn:product.nameEn,nameAr:product.nameAr,image:product.images[0],sizeMl:variant.sizeMl,format:variant.format,quantity,unitPriceMinor:variant.priceMinor,available:variant.inStock});
+        else if(quantity>0 && product && variant) lines.push({variantId:id,slug:product.slug,nameEn:product.nameEn,nameAr:product.nameAr,image:variantImage(product,variant),sizeMl:variant.sizeMl,format:variant.format,quantity,unitPriceMinor:variant.priceMinor,available:variant.inStock});
         set({...EMPTY,lines,subtotalMinor:lines.reduce((sum,line)=>sum+line.quantity*line.unitPriceMinor,0)});
       }else{
         const create=async()=>{
@@ -112,7 +113,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
         }
       }
       if(!product&&previous&&quantity<previous.quantity)track("remove_from_cart",{items:[{item_id:id,item_name:previous.nameEn,item_variant:String(previous.sizeMl),price:previous.unitPriceMinor/100,quantity:previous.quantity-quantity}],value:previous.unitPriceMinor*(previous.quantity-quantity)/100});
-      if(product&&variant){setBagNotice({kind:"success",text:tr("Added to your bag","اتضاف لحقيبتك"),item:{image:product.images[0],title:name(product,lang),sizeMl:variant.sizeMl,quantity:quantity-(previous?.quantity??0),priceMinor:variant.priceMinor}});track("add_to_cart",itemData(product,variant,quantity-(previous?.quantity??0)))}
+      if(product&&variant){setBagNotice({kind:"success",text:tr("Added to your bag","اتضاف لحقيبتك"),item:{image:variantImage(product,variant),title:name(product,lang),sizeMl:variant.sizeMl,quantity:quantity-(previous?.quantity??0),priceMinor:variant.priceMinor}});track("add_to_cart",itemData(product,variant,quantity-(previous?.quantity??0)))}
       return true;
     }catch(error){setBagNotice({kind:"error",text:lang==="ar"?"تعذر تحديث الحقيبة. راجع توافر المقاس وحاول مرة أخرى.":error instanceof Error?error.message:"Could not update your bag."});return false}
     });
@@ -123,7 +124,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
     setBagNotice(null);
     try{
       if(demo){
-        const preview:Cart={currency:"EGP",subtotalMinor:variant.priceMinor*quantity,lines:[{variantId:variant.id,slug:product.slug,nameEn:product.nameEn,nameAr:product.nameAr,image:product.images[0],sizeMl:variant.sizeMl,format:variant.format,quantity,unitPriceMinor:variant.priceMinor,available:true}]};
+        const preview:Cart={currency:"EGP",subtotalMinor:variant.priceMinor*quantity,lines:[{variantId:variant.id,slug:product.slug,nameEn:product.nameEn,nameAr:product.nameAr,image:variantImage(product,variant),sizeMl:variant.sizeMl,format:variant.format,quantity,unitPriceMinor:variant.priceMinor,available:true}]};
         sessionStorage.setItem("siyag-express-token","preview");sessionStorage.setItem("siyag-express-preview",JSON.stringify(preview));return true;
       }
       const created=await api<{token:string;cart:Cart}>("store/carts",{method:"POST"});

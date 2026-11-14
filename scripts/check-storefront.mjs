@@ -41,3 +41,20 @@ assert.equal(primaryRail([{top:50,bottom:1250}],100,900),0,'a tall rail filling 
 assert.equal(primaryRail([{top:0,bottom:0}],0,800),-1);
 assert.equal(primaryRail([{top:0,bottom:400}],900,100),-1);
 console.log('Autoplay checks passed: one dominant visible rail, header occlusion, partial visibility, focus transfer and tall viewports.');
+
+const {availableFirst,available,recommendations,variantImage,parseVariantImages,applyVariantImages,discoveryProduct,DISCOVERY_HREF}=await source('lib/catalog-experience.ts');
+const makeProduct=(id,stock,family='woody',format='fullBottle')=>({id,slug:id,nameEn:id,nameAr:id,descriptionEn:'',descriptionAr:'',brand:'SIYAG',family,concentration:'eauDeParfum',audience:'unisex',images:['/brand/noir.webp'],topNotes:['Cedar'],heartNotes:[],baseNotes:[],collections:['signature','discovery'],featured:false,variants:[{id:'11111111-1111-1111-1111-111111111111',sku:id,sizeMl:50,format,priceMinor:10000,inStock:stock}]});
+const sold=makeProduct('sold',false),stocked=makeProduct('stocked',true),other=makeProduct('other',true,'fresh');
+assert.deepEqual(availableFirst([sold,stocked,other]).map(p=>p.id),['stocked','other','sold'],'partition before pagination keeps available products ahead of unavailable ones');
+assert.deepEqual(availableFirst([other,stocked,sold]).map(p=>p.id),['other','stocked','sold'],'preserve chosen sorting within availability groups');
+const mixed={...sold,variants:[...sold.variants,{...stocked.variants[0],id:'22222222-2222-2222-2222-222222222222',format:'decant',sizeMl:10}]};
+assert.equal(available(mixed,new URLSearchParams('format=fullBottle')),false,'stock in another format must not make the selected format available');
+assert.equal(available(mixed,new URLSearchParams('collection=discovery')),true);
+assert.equal(discoveryProduct(mixed).variants.length,1);assert.equal(discoveryProduct(mixed).variants[0].sizeMl,10);
+assert.deepEqual(recommendations(stocked,[sold,other,stocked,makeProduct('similar',true),other]).map(p=>p.id),['similar','other'],'exclude self, unavailable and duplicate recommendations; rank matching families first');
+const id=stocked.variants[0].id,photo='https://siyag-two.vercel.app/brand/noir-detail.webp';
+const images=parseVariantImages([{textEn:JSON.stringify({[id]:photo,'bad':'javascript:alert(1)'})},{textEn:'invalid'}]);
+assert.deepEqual(images,{[id]:photo});assert.equal(variantImage(applyVariantImages(stocked,images),applyVariantImages(stocked,images).variants[0]),photo);
+assert.equal(variantImage(stocked,stocked.variants[0]),stocked.images[0],'missing size photography must keep the actual product image');
+assert.equal(bannerHref('/shop?format=decant'),DISCOVERY_HREF,'existing backend banner links use the same discovery route');
+console.log('Catalog checks passed: availability groups, size-specific stock, discovery sizes, real alternatives, image mappings and legacy discovery links.');

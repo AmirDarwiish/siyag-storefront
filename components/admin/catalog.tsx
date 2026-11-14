@@ -6,6 +6,7 @@ import {office,type AdminCollection,type AdminProduct,type AdminVariant,type Pro
 import {concentrations,families,formats,imageUrl,money,type Page} from "@/lib/store";
 import {useEditorRoute,RowAction,TableFrame,Message,Pagination,Panel,Upload,useOfficeData} from "./shared";
 
+import {VariantImagesEditor} from "./variant-images";
 import {useOfficePathname} from "./office-route";
 import {loadCatalogIndex,loadCatalogDetails} from "@/lib/admin-queries";
 import {productActions,collectionActions} from "./bulk-actions";
@@ -144,6 +145,7 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
       </tbody></table>{!product.variants.length&&<p className="office-empty">أضف حجمًا قبل نشر العطر.</p>}</TableFrame>
 
     </section>}
+    {!!product.id&&product.variants.length>0&&<VariantImagesEditor product={product}/>}
   </div>;
 }
 

@@ -1,3 +1,4 @@
+import {catalogPage,catalogProduct,cartImages} from "@/lib/server-catalog";
 import { requestStore } from "@/lib/server-store";
 
 const readPaths=/^store\/(products(?:\/[a-z0-9-]+)?|collections(?:\/[a-z0-9-]+)?|content(?:\/[a-z0-9-]+)?|settings|shipping|cart)$/;
@@ -23,6 +24,7 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
     }
   }
   try {
+    if(method==="GET"&&path==="store/products")return await catalogPage(incoming.searchParams);
     const headers=new Headers();
     const token=request.headers.get("x-cart-token");
     if(token) headers.set("X-Cart-Token",token);
@@ -44,6 +46,8 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
       if(json){body=json;headers.set("Content-Type","application/json");}
     }
     const response=await requestStore(media?"/"+path:"/api/v1/"+path,incoming.search,{method,headers,body:body||undefined});
+    if(method==="GET"&&/^store\/products\/[a-z0-9-]+$/.test(path))return await catalogProduct(response);
+    if((method==="GET"&&path==="store/cart")||linePath.test(path))return await cartImages(response);
     return new Response(response.status===204?null:response.body,{status:response.status,headers:{
       "Content-Type":response.headers.get("content-type")||"application/json",
       "Cache-Control":media&&response.ok?"public, max-age=86400":"no-store","X-Content-Type-Options":"nosniff",

@@ -937,6 +937,9 @@ textarea {
   white-space:pre-line;
   font-size:var(--type-body);
   line-height:1.85}
+.unavailable-help {padding:var(--space-6);margin-top:var(--space-6);border:var(--border-fine);border-radius:var(--radius-card);background:var(--color-secondary)}
+.unavailable-help p {font-size:var(--type-label);line-height:var(--leading-body);margin-bottom:var(--space-4);color:var(--muted)}
+#available-alternatives {scroll-margin-top:var(--store-header-offset)}
 .buy-zone {
   padding:var(--space-6) 0 var(--space-7);
   border-top:1px solid var(--line)}

@@ -11,6 +11,7 @@ import {HomeProductRail} from "./home-product-rail";
 import {track} from "@/lib/analytics";
 import {StoreReviewsLink} from "./reviews";
 import {HomeBanners} from "./home-banners";
+import {discoveryProduct} from "@/lib/catalog-experience";
 import {ShopByCategory} from "./shop-by-category";
 
 type FeatureProps={tone:"discovery"|"house"; eyebrow:string; title:string; copy:string; image:string; href:string; action:string};
@@ -30,7 +31,7 @@ function HomeCollection({collection}:{collection:Collection}) {
     const controller=new AbortController();
     setStatus("loading");
     api<Page<Product>>("store/products?collection="+encodeURIComponent(collection.slug)+"&pageSize=8",{signal:controller.signal})
-      .then(page=>{setProducts(page.data);setStatus("ready")})
+      .then(page=>{setProducts(collection.slug==="discovery"?page.data.map(discoveryProduct).filter(p=>p.variants.length):page.data);setStatus("ready")})
       .catch(()=>{if(!controller.signal.aborted)setStatus("error")});
     return()=>controller.abort();
   },[collection.slug,attempt]);
@@ -81,12 +82,12 @@ export function Home() {
 
     <div className="home-stories container">
     <EditorialFeature tone="house" eyebrow={tr("INSIDE THE HOUSE","من عالم SIYAG")} title={tr("Find the notes that feel like you.","عطرك يبدأ من نوتة تحبّها")} copy={tr("Bright citrus, warm woods, soft amber. Discover the notes behind your next signature.","حمضيات منعشة، أخشاب دافئة ولمسات عنبر. اكتشف عالم النوتات، واقترب من العطر اللي يشبهك.")} image="/brand/fragrance-ingredients.webp" href="/about" action={tr("Discover the house","اكتشف دار SIYAG")}/>
-    {products.some(product=>product.variants.some(variant=>variant.format!=="fullBottle")) && <EditorialFeature tone="discovery" eyebrow={tr("THE ART OF DISCOVERY","متعة الاكتشاف")} title={tr("Try a little. Find your favourite.","جرّب على مهلك، واختار عطرك")} copy={tr("Meet your next scent in a smaller size. Wear it, live with it, and choose at your own pace.","ابدأ بحجم صغير، وعيش مع العطر يومك. أحجام التجربة تديك وقتك قبل ما تختار المفضّل.")} image="/brand/discovery-vials.webp" href="/shop?format=decant" action={tr("Explore discovery sizes","اكتشف أحجام التجربة")}/>}
+    {products.some(product=>product.variants.some(variant=>variant.format!=="fullBottle")) && <EditorialFeature tone="discovery" eyebrow={tr("THE ART OF DISCOVERY","متعة الاكتشاف")} title={tr("Try a little. Find your favourite.","جرّب على مهلك، واختار عطرك")} copy={tr("Meet your next scent in a smaller size. Wear it, live with it, and choose at your own pace.","ابدأ بحجم صغير، وعيش مع العطر يومك. أحجام التجربة تديك وقتك قبل ما تختار المفضّل.")} image="/brand/discovery-vials.webp" href="/shop?collection=discovery" action={tr("Explore discovery sizes","اكتشف أحجام التجربة")}/>}
     </div>
     <section className="home-confidence container" aria-labelledby="home-confidence-title">
     <StoreReviewsLink/>
     <nav className="home-care" aria-label={tr("Shopping assistance","مساعدة التسوق")}>
-      <Link href="/shop?format=decant"><span className="home-care-icon"><FlaskConical aria-hidden="true"/></span><span><strong>{tr("Discover at your pace","اكتشف على مهل")}</strong><small>{tr("Explore smaller sizes","تصفّح أحجام التجربة")}</small></span></Link>
+      <Link href="/shop?collection=discovery"><span className="home-care-icon"><FlaskConical aria-hidden="true"/></span><span><strong>{tr("Discover at your pace","اكتشف على مهل")}</strong><small>{tr("Explore smaller sizes","تصفّح أحجام التجربة")}</small></span></Link>
       <Link href="/track"><span className="home-care-icon"><PackageCheck aria-hidden="true"/></span><span><strong>{tr("Stay close to your order","تابع رحلة طلبك")}</strong><small>{tr("Track with your phone number","تتبّع برقم هاتفك")}</small></span></Link>
       <Link href="/contact"><span className="home-care-icon"><Search aria-hidden="true"/></span><span><strong>{tr("A little help choosing","اختيارك يهمّنا")}</strong><small>{tr("Talk to the house","تواصل مع دار SIYAG")}</small></span></Link>
     </nav>

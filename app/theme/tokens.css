@@ -184,7 +184,7 @@
   --product-mobile-stage-overlap: var(--space-8);
   --product-mobile-thumbs-height: 76px;
   --product-mobile-sheet-surface: linear-gradient(180deg, color-mix(in srgb, var(--white) 84%, transparent), color-mix(in srgb, var(--white) 97%, transparent) 280px);
-  --product-mobile-header-surface: color-mix(in srgb, var(--white) 30%, transparent);
+  --product-mobile-header-surface: color-mix(in srgb, var(--white) 60%, transparent);
   --product-mobile-sheet-blur: 8px;
   --product-mobile-fade-end: 60%;
   --inspiration-bottle-width: clamp(80px, 15vw, 104px);

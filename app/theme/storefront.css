@@ -3027,7 +3027,7 @@ body select:disabled {opacity:.55;cursor:not-allowed}
   .product-layout .gallery-main {
     height:calc(100% - var(--product-mobile-thumbs-height));
     aspect-ratio:auto;
-    padding-top:calc(var(--store-header-height,116px) + var(--space-8));
+    padding-top:var(--space-8);
     border:0;
     border-radius:0}
   .product-layout .gallery-main img {
@@ -3166,7 +3166,7 @@ body select:disabled {opacity:.55;cursor:not-allowed}
   grid-row:2}
 .buy-row .quantity {justify-self:start}
 .detail-heart {width:var(--control-height)}
-.product-page {
+.container.product-page {
   position:relative;
   width:100%;
   padding:0}

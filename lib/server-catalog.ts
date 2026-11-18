@@ -2,10 +2,15 @@ import {defaultVariantImages} from './variant-image-defaults';
 import {requestStore} from './server-store';
 import {availableFirst,applyVariantImages,isDiscovery,parseVariantImages,type VariantImages} from './catalog-experience';
 import type {Product,Page,Content,Cart} from './store';
+import {unstable_cache} from 'next/cache';
 
+const cachedVariantImages=unstable_cache(async()=>{
+ const response=await requestStore('/api/v1/store/content','area=variant-media');
+ if(!response.ok)throw new Error('Variant media unavailable');
+ return {...defaultVariantImages,...parseVariantImages(await response.json() as Content[])};
+},['store-variant-media'],{revalidate:60,tags:['store-variant-media']});
 export async function loadVariantImages():Promise<VariantImages>{
- try{const response=await requestStore('/api/v1/store/content','area=variant-media');if(response.ok)return {...defaultVariantImages,...parseVariantImages(await response.json() as Content[])}}catch{}
- return {...defaultVariantImages};
+ try{return await cachedVariantImages()}catch{return {...defaultVariantImages}}
 }
 /** Sort the full matching result before slicing, so stocked products never hide on later pages. */
 export async function catalogPage(query:URLSearchParams){

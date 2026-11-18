@@ -68,10 +68,12 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
     <Modal open={quick} onOpenChange={setQuick} title={title} className="quick-modal">
       <img className="quick-image" src={imageUrl(variantImage(product,v))} alt={title}/>
       <div className="quick-copy"><div className="eyebrow">SIYAG PARFUMS</div><h2>{title}</h2><Price variant={v}/>
-        <p>{ar?product.descriptionAr:product.descriptionEn}</p>
+        <p className="quick-description" tabIndex={0} role="region" aria-label={tr('Fragrance description','وصف العطر')}>{ar?product.descriptionAr:product.descriptionEn}</p>
+        <div className="quick-actions">
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)}/>
         <button className="action ink" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={async()=>{setQuick(false);await add(product,v,1)}}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
         <Link className="text-link" href={productUrl(product,v)} onClick={()=>setQuick(false)}>{tr("View fragrance details","تفاصيل العطر")}<ArrowUpRight size={15}/></Link>
+        </div>
       </div>
     </Modal>
   </article>;

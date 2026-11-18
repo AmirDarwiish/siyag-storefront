@@ -138,9 +138,11 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
           <Price variant={v}/>
           <p>{ar?product.descriptionAr:product.descriptionEn}</p>
           {product.inspiration&&<section className="product-inspiration" aria-labelledby="product-inspiration-title">
-            <span className="eyebrow">{tr('THE INSPIRATION','مصدر الإلهام')}</span>
+            <div className="product-inspiration-copy"><span className="eyebrow">{tr('THE INSPIRATION','مصدر الإلهام')}</span>
             <h2 id="product-inspiration-title">{tr('Inspired by','مستوحى من')}</h2>
             <strong dir="auto">{ar?product.inspiration.nameAr:product.inspiration.nameEn}</strong>
+            </div>
+            {product.inspiration.imageUrl&&<div className="product-inspiration-bottle"><StoreImage src={imageUrl(product.inspiration.imageUrl)} alt={ar?product.inspiration.nameAr:product.inspiration.nameEn} width={160} height={208} sizes="(max-width: 600px) 80px, 104px" loading="lazy"/></div>}
             <p>{ar?product.inspiration.descriptionAr:product.inspiration.descriptionEn}</p>
           </section>}
           <div className="buy-zone">

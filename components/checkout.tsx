@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import {StoreImage} from './store-image';
 import {useRouter} from "next/navigation";
 import {useEffect,useRef,useState,type FormEvent} from "react";
 import {ArrowUpRight,Banknote,CreditCard,MapPin,PackageCheck,ShieldCheck,ShoppingBag} from "lucide-react";
@@ -191,7 +192,7 @@ export function Checkout(){
       </fieldset></form>
       <aside id="checkout-summary" className={`order-summary ${summaryOpen?"summary-expanded":""}`}>
         <h2><PackageCheck size={21}/>{tr("Order summary","ملخص الطلب")}</h2>
-        {cart.lines.map(l=><div className="summary-line" key={l.variantId}><img src={imageUrl(l.image)} alt=""/><div><strong>{name(l,lang)}</strong><small>{l.sizeMl} {tr("ml","مل")} × {l.quantity}</small></div><span>{money(l.unitPriceMinor*l.quantity,lang)}</span></div>)}
+        {cart.lines.map(l=><div className="summary-line" key={l.variantId}><StoreImage src={imageUrl(l.image)} alt="" width={64} height={72} sizes="64px"/><div><strong>{name(l,lang)}</strong><small>{l.sizeMl} {tr("ml","مل")} × {l.quantity}</small></div><span>{money(l.unitPriceMinor*l.quantity,lang)}</span></div>)}
         {!demo&&<form className="promo" onSubmit={e=>{e.preventDefault();setApplied(promotion.trim())}}><input autoComplete="off" value={promotion} onChange={e=>setPromotion(e.target.value)} maxLength={100} placeholder={tr("Promo code","كود الخصم")} aria-label={tr("Promo code","كود الخصم")}/><button type="submit" disabled={!ship||pending}>{tr("Apply","تطبيق")}</button></form>}
         {applied&&<button className="text-link" type="button" onClick={()=>{setApplied("");setPromotion("")}}>{tr("Remove promo code","إزالة كود الخصم")}</button>}
         <Summary quote={activeQuote} subtotal={cart.subtotalMinor}/>

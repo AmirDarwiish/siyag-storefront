@@ -3,14 +3,19 @@ import {requestStore} from './server-store';
 import {availableFirst,applyVariantImages,isDiscovery,parseVariantImages,type VariantImages} from './catalog-experience';
 import type {Product,Page,Content,Cart} from './store';
 import {unstable_cache} from 'next/cache';
+import {productInspirations,type ProductInspiration} from './product-inspiration';
 
-const cachedVariantImages=unstable_cache(async()=>{
- const response=await requestStore('/api/v1/store/content','area=variant-media');
+const cachedCatalogPresentation=unstable_cache(async()=>{
+ const response=await requestStore('/api/v1/store/content');
  if(!response.ok)throw new Error('Variant media unavailable');
- return {...defaultVariantImages,...parseVariantImages(await response.json() as Content[])};
-},['store-variant-media'],{revalidate:60,tags:['store-variant-media']});
+ const rows=await response.json() as Content[];
+ return {images:{...defaultVariantImages,...parseVariantImages(rows.filter(row=>row.slug.startsWith('variant-media-')))},inspirations:productInspirations(rows)};
+},['store-catalog-presentation'],{revalidate:60,tags:['store-variant-media']});
+export async function loadCatalogPresentation():Promise<{images:VariantImages;inspirations:Record<string,ProductInspiration>}>{
+ try{return await cachedCatalogPresentation()}catch{return {images:{...defaultVariantImages},inspirations:{}}}
+}
 export async function loadVariantImages():Promise<VariantImages>{
- try{return await cachedVariantImages()}catch{return {...defaultVariantImages}}
+ return (await loadCatalogPresentation()).images;
 }
 /** Sort the full matching result before slicing, so stocked products never hide on later pages. */
 export async function catalogPage(query:URLSearchParams){

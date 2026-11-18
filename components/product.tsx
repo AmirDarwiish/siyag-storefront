@@ -137,6 +137,12 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
           <div className="product-detail-meta">{concentrations[product.concentration]?.[ar?1:0]} <span>·</span> {families[product.family]?.[ar?1:0]}</div>
           <Price variant={v}/>
           <p>{ar?product.descriptionAr:product.descriptionEn}</p>
+          {product.inspiration&&<section className="product-inspiration" aria-labelledby="product-inspiration-title">
+            <span className="eyebrow">{tr('THE INSPIRATION','مصدر الإلهام')}</span>
+            <h2 id="product-inspiration-title">{tr('Inspired by','مستوحى من')}</h2>
+            <strong dir="auto">{ar?product.inspiration.nameAr:product.inspiration.nameEn}</strong>
+            <p>{ar?product.inspiration.descriptionAr:product.inspiration.descriptionEn}</p>
+          </section>}
           <div className="buy-zone">
             <div className="variant-label">{tr("Select size","اختر الحجم")} <span>{formats[v.format][ar?1:0]}</span></div>
             <Sizes product={product} selected={v} onSelect={choose}/>

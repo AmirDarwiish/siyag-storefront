@@ -12,11 +12,11 @@ export async function requestStore(path:string, query="", init?:RequestInit) {
 }
 
 export async function loadProduct(slug:string):Promise<Product|null> {
-  const {loadVariantImages}=await import("./server-catalog");
-  const [response,images]=await Promise.all([requestStore("/api/v1/store/products/"+encodeURIComponent(slug)),loadVariantImages()]);
+  const {loadCatalogPresentation}=await import("./server-catalog");
+  const [response,presentation]=await Promise.all([requestStore("/api/v1/store/products/"+encodeURIComponent(slug)),loadCatalogPresentation()]);
   if(response.status===404) return null;
   if(!response.ok) throw new Error("Catalog is unavailable");
   const product=await response.json() as Product;
   const {applyVariantImages}=await import("./catalog-experience");
-  return applyVariantImages(product,images);
+  return {...applyVariantImages(product,presentation.images),inspiration:presentation.inspirations[product.id]};
 }

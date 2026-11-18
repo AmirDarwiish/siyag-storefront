@@ -16,7 +16,7 @@ export function ProductInspirationEditor({product}:{product:AdminProduct}){
   const image=(picture??block?.imageUrl??'').trim();
   if(image&&!validImage(image)){setFailed(true);setMessage('استخدم رابط HTTPS أو ارفع صورة للعبوة.');return}
   setBusy(true);setMessage('');setFailed(false);
-  try{await office('content/'+slug,{method:'PUT',data:{area:'product-inspiration',imageUrl:image||null,titleEn:String(form.get('nameEn')).trim(),titleAr:String(form.get('nameAr')).trim(),textEn:String(form.get('descriptionEn')).trim(),textAr:String(form.get('descriptionAr')).trim(),published:form.has('published'),sortOrder:0}});setMessage('تم حفظ مصدر الإلهام.');}
+  try{await office('content/'+slug,{method:'PUT',data:{area:'product-inspiration',imageUrl:image.startsWith('/brand/')?new URL(image,window.location.origin).href:image||null,titleEn:String(form.get('nameEn')).trim(),titleAr:String(form.get('nameAr')).trim(),textEn:String(form.get('descriptionEn')).trim(),textAr:String(form.get('descriptionAr')).trim(),published:form.has('published'),sortOrder:0}});setMessage('تم حفظ مصدر الإلهام.');}
   catch(error){setFailed(true);setMessage((error as Error).message)}finally{setBusy(false)}
  }
  return <section className="office-form-section"><h3>مستوحى من</h3><p className="office-help">اختياري. يظهر في صفحة العطر بعد تفعيله، وباللغة التي يختارها العميل.</p><Message message={error} error/>

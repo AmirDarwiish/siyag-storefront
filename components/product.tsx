@@ -88,6 +88,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
   const initial=variantFor(product,variantId);
   const [selection,setSelection]=useState(initial?.id);
   const [activeImage,setActiveImage]=useState<string>();
+  const [previewIndex,setPreviewIndex]=useState<number|null>(null);
   const [quantity,setQuantity]=useState(1);
   const [sticky,setSticky]=useState(true);
   const [keyboardOpen,setKeyboardOpen]=useState(false);
@@ -129,7 +130,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
       <div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span><Link href="/shop">{tr("Fragrances","العطور")}</Link><span>/</span><span>{title}</span></div>
       <div className="product-layout">
         <div className="gallery">
-          <div className="gallery-main"><StoreImage sizes={imageSizes.half} src={imageUrl(activeImage&&gallery.includes(activeImage)?activeImage:gallery[0])} alt={title} width={800} height={840} fetchPriority="high"/></div>
+          <button type="button" className="gallery-main" aria-label={tr("Enlarge product image","تكبير صورة العطر")} onClick={()=>setPreviewIndex(Math.max(0,gallery.indexOf(activeImage||gallery[0])))}><StoreImage sizes={imageSizes.half} src={imageUrl(activeImage&&gallery.includes(activeImage)?activeImage:gallery[0])} alt={title} width={800} height={840} fetchPriority="high"/></button>
           {gallery.length>1&&<div className="gallery-thumbs">{gallery.map((src,i)=><button type="button" key={src+i} aria-pressed={src===(activeImage||gallery[0])} aria-label={tr(`Show image ${i+1}`,`اعرض صورة ${i+1}`)} onClick={()=>setActiveImage(src)}><StoreImage src={imageUrl(src)} alt="" sizes="64px" width={64} height={70} loading="lazy"/></button>)}</div>}
         </div>
         <div className="product-info">
@@ -165,6 +166,21 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
         </div>
       </div>
     </div>
+    <Modal open={previewIndex!==null} onOpenChange={open=>{if(!open)setPreviewIndex(null)}} title={tr('Product photos','صور العطر')} className="product-photo-modal">
+      {previewIndex!==null&&<div className="product-photo-preview" onKeyDown={event=>{
+        if(event.key==='ArrowRight'||event.key==='ArrowLeft'){
+          event.preventDefault();const step=(event.key==='ArrowRight'?1:-1)*(ar?-1:1);
+          setPreviewIndex(index=>((index??0)+step+gallery.length)%gallery.length);
+        }
+      }}>
+        <p className="eyebrow">{title} · {previewIndex+1} / {gallery.length}</p>
+        <StoreImage className="product-photo-large" src={imageUrl(gallery[previewIndex])} alt={tr(`${title}, image ${previewIndex+1}`,`${title}، صورة ${previewIndex+1}`)} width={1200} height={1260} sizes="(max-width: 1000px) 95vw, 960px"/>
+        <div className="product-photo-controls">
+          <button type="button" className="action" disabled={gallery.length<2} onClick={()=>setPreviewIndex((previewIndex-1+gallery.length)%gallery.length)}>{tr('Previous photo','الصورة السابقة')}</button>
+          <button type="button" className="action" disabled={gallery.length<2} onClick={()=>setPreviewIndex((previewIndex+1)%gallery.length)}>{tr('Next photo','الصورة التالية')}</button>
+        </div>
+      </div>}
+    </Modal>
     <ScentSignature key={product.slug+"-signature"} product={product}/>
     <Reviews key={product.slug} product={product.slug}/>
     {related.length>0&&<section id="available-alternatives" className="container section"><div className="section-head"><div><span className="eyebrow">SIYAG PARFUMS</span><h2>{tr("Available fragrances you may like","عطور متاحة ممكن تعجبك")}</h2></div></div><div className="product-grid">{related.map(p=><ProductCard key={p.id} product={p}/>)}</div></section>}

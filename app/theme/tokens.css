@@ -180,7 +180,10 @@
   --commerce-padding: clamp(var(--space-6), 3vw, var(--space-9));
   --commerce-gap: var(--space-8);
   --commerce-blur: 8px;
-  --product-mobile-stage-height: clamp(380px, 68svh, 580px);
+  --product-mobile-stage-height: clamp(300px, calc(68svh - var(--store-header-height,116px)), 500px);
+  --product-mobile-entry-space: calc(var(--store-header-height,116px) + var(--space-10));
+  --product-photo-preview-width: 1000px;
+  --product-photo-preview-height: min(860px, calc(100dvh - 32px));
   --product-mobile-stage-overlap: var(--space-8);
   --product-mobile-thumbs-height: 76px;
   --product-mobile-sheet-surface: linear-gradient(180deg, color-mix(in srgb, var(--white) 84%, transparent), color-mix(in srgb, var(--white) 97%, transparent) 280px);

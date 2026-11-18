@@ -9,6 +9,7 @@ const sourceId='ea12f2a1-ee32-4454-9fc9-75d863db7f16';
 const inspiration={slug:'inspiration-'+sourceId,titleEn:'Xerjoff Naxos',titleAr:'زيرجوف ناكسوس',textEn:'Honey and tobacco',textAr:'عسل وتبغ'};
 assert.deepEqual(productInspirations([inspiration])[sourceId],{nameEn:inspiration.titleEn,nameAr:inspiration.titleAr,descriptionEn:inspiration.textEn,descriptionAr:inspiration.textAr});
 assert.deepEqual(productInspirations([{...inspiration,slug:'home-hero'},{...inspiration,titleAr:''}]),{},'unrelated content and incomplete translations must not show inspiration sections');
+assert.equal(productInspirations([{...inspiration,imageUrl:'/brand/inspiration/naxos.webp'}])[sourceId].imageUrl,'/brand/inspiration/naxos.webp','inspiration images must follow the saved product content');
 const uploaded='/api/siyag/media/'+ 'a'.repeat(64)+'.png';
 assert.deepEqual(storeImageSource(uploaded),{src:uploaded,optimize:true});
 assert.deepEqual(storeImageSource('https://siyag-two.vercel.app'+uploaded),{src:uploaded,optimize:true});

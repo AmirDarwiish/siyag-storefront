@@ -949,12 +949,26 @@ textarea {
   box-shadow:var(--commerce-shadow);
   backdrop-filter:blur(var(--commerce-blur))}
 .product-inspiration {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:var(--space-5);
   padding:var(--space-6);
   margin-block:var(--commerce-gap);
   background:var(--white);
   border:var(--commerce-border);
   border-inline-start:var(--space-1) solid var(--moss);
   border-radius:var(--radius-card)}
+.product-inspiration-copy {
+  min-width:0}
+.product-inspiration-bottle {
+  width:var(--inspiration-bottle-width)}
+.product-inspiration-bottle img {
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  transform:perspective(var(--inspiration-bottle-perspective)) rotateY(var(--inspiration-bottle-turn)) rotate(var(--inspiration-bottle-tilt));
+  filter:drop-shadow(var(--inspiration-bottle-shadow))}
 .product-inspiration h2 {
   font-size:var(--type-subtitle);
   margin-block:var(--space-3) var(--space-4)}
@@ -964,7 +978,8 @@ textarea {
   color:var(--ink);
   overflow-wrap:anywhere}
 .product-inspiration p {
-  margin-top:var(--space-4);
+  grid-column:1 / -1;
+  margin-top:0;
   font-size:var(--type-label);
   color:var(--muted);
   line-height:var(--leading-body)}

@@ -180,6 +180,11 @@
   --commerce-padding: clamp(var(--space-6), 3vw, var(--space-9));
   --commerce-gap: var(--space-8);
   --commerce-blur: 8px;
+  --inspiration-bottle-width: clamp(80px, 15vw, 104px);
+  --inspiration-bottle-tilt: -8deg;
+  --inspiration-bottle-perspective: 600px;
+  --inspiration-bottle-turn: -12deg;
+  --inspiration-bottle-shadow: 6px 10px 7px color-mix(in srgb, var(--ink) 20%, transparent);
   --hero-mobile-gradient: linear-gradient(125deg, #182b24 0%, #344438 58%, #536344 100%);
   --footer-surface: #15271f;
   --radius-card: 12px;

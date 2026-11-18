@@ -3,7 +3,7 @@
 import Link from "next/link";
 import {StoreImage} from "./store-image";
 import {imageSizes} from "@/lib/image-sizes";
-import {useEffect, useRef, useState} from "react";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {PackageCheck, Search, FlaskConical} from "lucide-react";
 import {api, imageUrl, name, type Collection, type Page, type Product} from "@/lib/store";
 import {useStore} from "./store-context";
@@ -22,24 +22,17 @@ function EditorialFeature({tone,eyebrow,title,copy,image,href,action}:FeaturePro
   </section>;
 }
 
-function HomeCollection({collection}:{collection:Collection}) {
+function HomeCollection({collection,catalog,loading,failed,retry}:{collection:Collection;catalog:Product[];loading:boolean;failed:boolean;retry:()=>void}) {
   const {tr,lang}=useStore();
-  const [products,setProducts]=useState<Product[]>([]);
-  const [status,setStatus]=useState<"loading"|"ready"|"error">("loading");
-  const [attempt,setAttempt]=useState(0);
-  useEffect(()=>{
-    const controller=new AbortController();
-    setStatus("loading");
-    api<Page<Product>>("store/products?collection="+encodeURIComponent(collection.slug)+"&pageSize=8",{signal:controller.signal})
-      .then(page=>{setProducts(collection.slug==="discovery"?page.data.map(discoveryProduct).filter(p=>p.variants.length):page.data);setStatus("ready")})
-      .catch(()=>{if(!controller.signal.aborted)setStatus("error")});
-    return()=>controller.abort();
-  },[collection.slug,attempt]);
+  const products=useMemo(()=>{
+    const members=catalog.filter(product=>product.collections.includes(collection.slug));
+    return (collection.slug==='discovery'?members.map(discoveryProduct).filter(product=>product.variants.length):members).slice(0,8);
+  },[catalog,collection.slug]);
   useEffect(()=>{if(products.length)track("view_item_list",{list_id:"home-"+collection.slug,items:products.map(p=>({item_id:p.variants[0]?.id??p.id,item_name:p.nameEn,item_category:p.family}))})},[products,collection.slug]);
-  if(status==="ready"&&!products.length)return null;
+  if(!loading&&!failed&&!products.length)return null;
   return <section className="catalog-home"><div className="container section">
     <div className="section-head"><div><span className="eyebrow">SIYAG</span><h2>{name(collection,lang)}</h2></div><Link className="text-link" href={"/shop?collection="+encodeURIComponent(collection.slug)}>{tr("View all","عرض الكل")}</Link></div>
-    {status==="loading"?<div className="product-grid home-rail-loading" aria-busy="true" aria-label={tr("Loading fragrances","جاري تحميل العطور")}>{[1,2,3,4].map(i=><div className="skeleton" key={i}/>)}</div>:status==="error"?<p role="status">{tr("Unable to load this collection.","تعذر تحميل القسم.")} <button className="text-link" onClick={()=>setAttempt(value=>value+1)}>{tr("Try again","إعادة المحاولة")}</button></p>:<HomeProductRail products={products}/>}
+    {loading?<div className="product-grid home-rail-loading" aria-busy="true" aria-label={tr("Loading fragrances","جاري تحميل العطور")}>{[1,2,3,4].map(i=><div className="skeleton" key={i}/>)}</div>:failed?<p role="status">{tr("Unable to load this collection.","تعذر تحميل القسم.")} <button className="text-link" onClick={retry}>{tr("Try again","إعادة المحاولة")}</button></p>:<HomeProductRail products={products}/>}
   </div></section>;
 }
 
@@ -50,17 +43,18 @@ export function Home() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading,setLoading]=useState(true);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [failed,setFailed]=useState(false),[attempt,setAttempt]=useState(0);
 
   useEffect(() => {
     const controller = new AbortController();
     const options = {signal: controller.signal};
-    api<Page<Product>>("store/products?featured=true&pageSize=4", options)
-      .then(data => data.data.length ? data : api<Page<Product>>("store/products?pageSize=4", options))
+    setLoading(true);setFailed(false);
+    api<Page<Product>>("store/products?pageSize=100", options)
       .then(data => setProducts(data.data))
-      .catch(() => {}).finally(()=>{if(!controller.signal.aborted)setLoading(false)});
+      .catch(() => {if(!controller.signal.aborted)setFailed(true)}).finally(()=>{if(!controller.signal.aborted)setLoading(false)});
     api<Collection[]>("store/collections", options).then(setCollections).catch(() => {});
     return () => controller.abort();
-  }, []);
+  }, [attempt]);
 
   useEffect(()=>{if(products.length)track("view_item_list",{list_id:"home-selected",items:products.map(p=>({item_id:p.variants[0]?.id??p.id,item_name:p.nameEn,item_category:p.family}))})},[products]);
 
@@ -68,15 +62,15 @@ export function Home() {
     <HomeBanners/>
     <ShopByCategory collections={collections}/>
 
-    <div id="collections">{collections.map(collection=><HomeCollection key={collection.slug} collection={collection}/>)}</div>
+    <div id="collections">{collections.map(collection=><HomeCollection key={collection.slug} collection={collection} catalog={products} loading={loading} failed={failed} retry={()=>setAttempt(value=>value+1)}/>)}</div>
 
-    {collections.length===0 && (loading||products.length>0) && <section className="catalog-home" data-reveal><div className="container section">
+    {collections.length===0 && (loading||failed||products.length>0) && <section className="catalog-home" data-reveal><div className="container section">
       <div className="section-head">
         <div><span className="eyebrow">{tr("FROM THE HOUSE", "من دار SIYAG")}</span><h2>{tr("Meet your signature", "عطر يترك أثرًا")}</h2></div>
         <Link className="text-link" href="/shop">{tr("View the collection", "تصفّح المجموعة")}</Link>
       </div>
       <p className="home-rail-caption">{tr("Explore the notes. Choose your size. Make it yours.","اكتشف النوتات، اختر حجمك، واجعل العطر جزءًا من حكايتك.")}</p>
-      {loading?<div className="product-grid home-rail-loading" aria-busy="true" aria-label={tr("Loading fragrances","جارٍ تحميل العطور")}>{[1,2,3,4].map(i=><div className="skeleton" key={i}/>)}</div>:<HomeProductRail products={products}/>}
+      {loading?<div className="product-grid home-rail-loading" aria-busy="true" aria-label={tr("Loading fragrances","جارٍ تحميل العطور")}>{[1,2,3,4].map(i=><div className="skeleton" key={i}/>)}</div>:failed?<p role="status">{tr('Unable to load fragrances.','تعذّر تحميل العطور.')} <button className="text-link" onClick={()=>setAttempt(value=>value+1)}>{tr('Try again','إعادة المحاولة')}</button></p>:<HomeProductRail products={products.slice(0,4)}/>}
     </div></section>}
 
 

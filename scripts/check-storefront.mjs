@@ -3,6 +3,13 @@ import {readFileSync} from 'node:fs';
 import ts from 'typescript';
 async function source(path){const text=ts.transpileModule(readFileSync(path,'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;return import('data:text/javascript;base64,'+Buffer.from(text).toString('base64'))}
 const {normalizeRail,mobileRailPlan,railStepProgress,cssMilliseconds}=await source('lib/rail-motion.ts');
+const {storeImageSource}=await source('lib/store-images.ts');
+const uploaded='/api/siyag/media/'+ 'a'.repeat(64)+'.png';
+assert.deepEqual(storeImageSource(uploaded),{src:uploaded,optimize:true});
+assert.deepEqual(storeImageSource('https://siyag-two.vercel.app'+uploaded),{src:uploaded,optimize:true});
+assert.deepEqual(storeImageSource('https://external.example/photo.png'),{src:'https://external.example/photo.png',optimize:false});
+assert.equal(storeImageSource('/brand/hero-v2.webp').optimize,true);
+assert.equal(storeImageSource('/brand/fallback.svg').optimize,false);
 const {localizedNotes,noteName}=await source('lib/scent-profile.ts');
 const bilingual=localizedNotes('عسل، أوراق التبغ، حبوب التونكا','Honey, Tobacco Leaf, Tonka Bean');
 assert.deepEqual(bilingual.map(note=>noteName(note,false)),['Honey','Tobacco Leaf','Tonka Bean']);

@@ -1,6 +1,7 @@
 import {NextRequest} from "next/server";
 import {readSession,sameOrigin} from "@/lib/admin-session";
 import {requestStore} from "@/lib/server-store";
+import {revalidateTag} from 'next/cache';
 
 const guid="[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}";
 const slug="[a-z0-9]+(?:-[a-z0-9]+)*";
@@ -52,6 +53,7 @@ async function proxy(request:NextRequest,{params}:{params:Promise<{path:string[]
     const response=await requestStore("/api/v1/admin/"+path,request.nextUrl.search,{method:request.method,headers,body});
     if(response.status===401)return json("انتهت جلسة الإدارة. سجّل الدخول من جديد.",401);
     if(response.status===403)return json("صلاحيتك لا تسمح بهذا الإجراء.",403);
+    if(response.ok&&request.method==='PUT'&&path.startsWith('content/'))revalidateTag('store-variant-media',{expire:0});
     return new Response(response.status===204?null:response.body,{status:response.status,headers:{
       "Content-Type":response.headers.get("Content-Type")||"application/json",
       "Cache-Control":"no-store","X-Content-Type-Options":"nosniff",

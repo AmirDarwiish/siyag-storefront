@@ -66,7 +66,7 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
       <button className="card-add" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
     </div>
     <Modal open={quick} onOpenChange={setQuick} title={title} className="quick-modal">
-      <img className="quick-image" src={imageUrl(variantImage(product,v))} alt={title}/>
+      <StoreImage className="quick-image" sizes="(max-width:767px) 100vw,385px" width={600} height={600} src={imageUrl(variantImage(product,v))} alt={title}/>
       <div className="quick-copy"><div className="eyebrow">SIYAG PARFUMS</div><h2>{title}</h2><Price variant={v}/>
         <p className="quick-description" tabIndex={0} role="region" aria-label={tr('Fragrance description','وصف العطر')}>{ar?product.descriptionAr:product.descriptionEn}</p>
         <div className="quick-actions">
@@ -130,7 +130,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
       <div className="product-layout">
         <div className="gallery">
           <div className="gallery-main"><StoreImage sizes={imageSizes.half} src={imageUrl(activeImage&&gallery.includes(activeImage)?activeImage:gallery[0])} alt={title} width={800} height={840} fetchPriority="high"/></div>
-          {gallery.length>1&&<div className="gallery-thumbs">{gallery.map((src,i)=><button type="button" key={src+i} aria-pressed={src===(activeImage||gallery[0])} aria-label={tr(`Show image ${i+1}`,`اعرض صورة ${i+1}`)} onClick={()=>setActiveImage(src)}><img src={imageUrl(src)} alt="" width={64} height={70}/></button>)}</div>}
+          {gallery.length>1&&<div className="gallery-thumbs">{gallery.map((src,i)=><button type="button" key={src+i} aria-pressed={src===(activeImage||gallery[0])} aria-label={tr(`Show image ${i+1}`,`اعرض صورة ${i+1}`)} onClick={()=>setActiveImage(src)}><StoreImage src={imageUrl(src)} alt="" sizes="64px" width={64} height={70} loading="lazy"/></button>)}</div>}
         </div>
         <div className="product-info">
           <div className="eyebrow">SIYAG PARFUMS</div><h1>{title}</h1>

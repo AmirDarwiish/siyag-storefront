@@ -34,7 +34,7 @@ export function HomeBanners(){
    const selected=index===active,href=bannerHref(banner.actionUrl),alt=(ar?banner.titleAr:banner.titleEn)||tr("SIYAG fragrances","عطور SIYAG");
    const photo=<StoreImage src={imageUrl(banner.imageUrl)} alt={alt} width={1600} height={900} sizes={imageSizes.campaign} loading={index===0||index===(active+1)%banners.length?"eager":"lazy"} fetchPriority={index===0?"high":"auto"}/>;
    return <div className="home-banner-slide" key={banner.slug} data-active={selected} aria-hidden={!selected} inert={!selected}>{href?<Link href={href} tabIndex={selected?0:-1} aria-label={alt}>{photo}</Link>:photo}</div>;
-  }):<div className="home-banner-loading"/>}</div>
+  }):<div className="home-banner-slide" data-active={true}><Link href="/shop"><StoreImage src="/brand/hero-v2.webp" alt={tr('Explore SIYAG fragrances','اكتشف عطور SIYAG')} width={1600} height={900} sizes={imageSizes.campaign} fetchPriority="high"/></Link></div>}</div>
   {banners&&banners.length>1&&<nav className="home-banner-pagination" aria-label={tr("Banner pages","صفحات البانر")}>{banners.map((banner,index)=><button type="button" key={banner.slug} className="home-rail-dot" aria-label={tr(`Show banner ${index+1} of ${banners.length}`,`عرض البانر ${index+1} من ${banners.length}`)} aria-current={active===index?"true":undefined} onClick={()=>choose(index)}><span/></button>)}</nav>}
  </section>;
 }

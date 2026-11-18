@@ -4,6 +4,11 @@ import ts from 'typescript';
 async function source(path){const text=ts.transpileModule(readFileSync(path,'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;return import('data:text/javascript;base64,'+Buffer.from(text).toString('base64'))}
 const {normalizeRail,mobileRailPlan,railStepProgress,cssMilliseconds}=await source('lib/rail-motion.ts');
 const {storeImageSource}=await source('lib/store-images.ts');
+const {productInspirations}=await source('lib/product-inspiration.ts');
+const sourceId='ea12f2a1-ee32-4454-9fc9-75d863db7f16';
+const inspiration={slug:'inspiration-'+sourceId,titleEn:'Xerjoff Naxos',titleAr:'زيرجوف ناكسوس',textEn:'Honey and tobacco',textAr:'عسل وتبغ'};
+assert.deepEqual(productInspirations([inspiration])[sourceId],{nameEn:inspiration.titleEn,nameAr:inspiration.titleAr,descriptionEn:inspiration.textEn,descriptionAr:inspiration.textAr});
+assert.deepEqual(productInspirations([{...inspiration,slug:'home-hero'},{...inspiration,titleAr:''}]),{},'unrelated content and incomplete translations must not show inspiration sections');
 const uploaded='/api/siyag/media/'+ 'a'.repeat(64)+'.png';
 assert.deepEqual(storeImageSource(uploaded),{src:uploaded,optimize:true});
 assert.deepEqual(storeImageSource('https://siyag-two.vercel.app'+uploaded),{src:uploaded,optimize:true});

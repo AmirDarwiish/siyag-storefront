@@ -11,6 +11,7 @@ import {useOfficePathname} from "./office-route";
 import {loadCatalogIndex,loadCatalogDetails} from "@/lib/admin-queries";
 import {productActions,collectionActions} from "./bulk-actions";
 import {localizedNotes,noteName} from "@/lib/scent-profile";
+import {ProductInspirationEditor} from './product-inspiration';
 
 const blankProduct:AdminProduct={
   id:"",slug:"",nameEn:"",nameAr:"",descriptionEn:"",descriptionAr:"",brand:"SIYAG Perfumes",
@@ -146,6 +147,7 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
       </tbody></table>{!product.variants.length&&<p className="office-empty">أضف حجمًا قبل نشر العطر.</p>}</TableFrame>
 
     </section>}
+    {!!product.id&&<ProductInspirationEditor product={product}/>}
     {!!product.id&&product.variants.length>0&&<VariantImagesEditor product={product}/>}
   </div>;
 }

@@ -914,11 +914,14 @@ textarea {
   padding-block:var(--space-9) var(--space-11)}
 .product-layout {
   display:grid;
+  align-items:start;
   grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);
   gap:clamp(var(--space-8),6vw,var(--space-14))}
 .gallery-main {
   aspect-ratio:1/1.05;
-  background:var(--stone);
+  background:var(--white);
+  border:var(--commerce-border);
+  border-radius:var(--commerce-radius);
   overflow:hidden}
 .gallery-main img {
   height:100%;
@@ -932,11 +935,39 @@ textarea {
   width:65px;
   border:1px solid transparent;
   padding:var(--space-1);
-  background:none}
+  background:var(--white);
+  border-radius:var(--radius-control);
+  overflow:hidden}
 .gallery-thumbs button[aria-pressed=true] {
   border-color:var(--moss)}
 .product-info {
-  padding-top:var(--space-6)}
+  min-width:0;
+  padding:var(--commerce-padding);
+  background:var(--commerce-glass-surface);
+  border:var(--commerce-border);
+  border-radius:var(--commerce-radius);
+  box-shadow:var(--commerce-shadow);
+  backdrop-filter:blur(var(--commerce-blur))}
+.product-inspiration {
+  padding:var(--space-6);
+  margin-block:var(--commerce-gap);
+  background:var(--white);
+  border:var(--commerce-border);
+  border-inline-start:var(--space-1) solid var(--moss);
+  border-radius:var(--radius-card)}
+.product-inspiration h2 {
+  font-size:var(--type-subtitle);
+  margin-block:var(--space-3) var(--space-4)}
+.product-inspiration strong {
+  display:block;
+  font-size:var(--type-lead);
+  color:var(--ink);
+  overflow-wrap:anywhere}
+.product-inspiration p {
+  margin-top:var(--space-4);
+  font-size:var(--type-label);
+  color:var(--muted);
+  line-height:var(--leading-body)}
 .product-info h1 {
   margin:var(--space-3) 0 var(--space-2);
   margin-block:var(--space-5) var(--space-5);
@@ -961,8 +992,10 @@ textarea {
 .unavailable-help p {font-size:var(--type-label);line-height:var(--leading-body);margin-bottom:var(--space-4);color:var(--muted)}
 #available-alternatives {scroll-margin-top:var(--store-header-offset)}
 .buy-zone {
-  padding:var(--space-6) 0 var(--space-7);
-  border-top:1px solid var(--line)}
+  padding:var(--space-6);
+  background:var(--commerce-summary-surface);
+  border:var(--commerce-border);
+  border-radius:var(--radius-card)}
 .variant-label {
   display:flex;
   justify-content:space-between;
@@ -1454,8 +1487,10 @@ textarea {
   border:1px solid var(--line);
   border-radius:var(--surface-radius)}
 .checkout-page :is(.checkout-form,.order-summary) {
-  background:var(--white);
-  border-radius:var(--surface-radius)}
+  background:var(--commerce-glass-surface);
+  border-radius:var(--commerce-radius);
+  border:var(--commerce-border);
+  box-shadow:var(--commerce-shadow)}
 .checkout-page .checkout-form legend {
   display:flex;
   align-items:center;
@@ -1474,13 +1509,17 @@ textarea {
   border-radius:var(--radius-surface)}
 .checkout-page .order-summary {
   position:sticky;
-  top:18px;
-  padding:var(--space-8);
-  background:var(--color-stone);
-  border:0;
-  border-radius:var(--radius-surface)}
+  top:calc(var(--store-header-offset) + var(--space-5));
+  padding:var(--commerce-padding);
+  background:var(--commerce-summary-surface);
+  border:var(--commerce-border);
+  border-radius:var(--commerce-radius)}
 .checkout-page .summary-line {
-  padding-block:var(--space-5)}
+  padding:var(--space-4);
+  margin-block:var(--space-4);
+  background:var(--white);
+  border:var(--commerce-border);
+  border-radius:var(--radius-card)}
 .checkout-page .summary-line img {
   border-radius:var(--radius-surface)}
 .checkout-page .order-totals {
@@ -1915,12 +1954,14 @@ textarea {
   background:var(--ink);
   border-color:var(--ink)}
 .checkout-page .checkout-grid {
-  gap:var(--space-11)}
+  gap:var(--commerce-gap)}
 .checkout-page .checkout-form {
-  padding:0;
-  border:0;
-  border-radius:0;
-  background:transparent}
+  padding:var(--commerce-padding);
+  border:var(--commerce-border);
+  border-radius:var(--commerce-radius);
+  background:var(--commerce-glass-surface);
+  box-shadow:var(--commerce-shadow);
+  backdrop-filter:blur(var(--commerce-blur))}
 .checkout-page .checkout-form fieldset {
   gap:var(--space-8)}
 .checkout-page .field-grid {
@@ -1934,8 +1975,8 @@ textarea {
   border-radius:var(--radius-surface);
   font-size:var(--type-input);
   padding:var(--space-5);
-  background:var(--color-white);
-  border-color:var(--color-line)}
+  background:var(--commerce-field-surface);
+  border-color:var(--commerce-edge)}
 .checkout-page .checkout-form :is(input,select,textarea):focus-visible {
   outline:2px solid var(--color-muted);
   outline-offset:var(--space-1)}
@@ -1945,7 +1986,12 @@ textarea {
   padding:var(--space-6);
   background:var(--color-white);
   min-height:60px;
-  border-radius:var(--radius-surface)}
+  border-radius:var(--radius-control)}
+.checkout-page .payment-options {
+  padding:var(--space-6);
+  background:var(--commerce-section-surface);
+  border:var(--commerce-border);
+  border-radius:var(--radius-card)}
 .checkout-page .payment-choice[data-selected=true] {
   border-color:var(--color-muted);
   box-shadow:var(--shadow-float)}
@@ -2064,6 +2110,10 @@ textarea {
 .product-purchase-dock button:disabled {
   opacity:.5}
 .scent-signature {
+  padding:var(--commerce-padding);
+  background:var(--commerce-section-surface);
+  border:var(--commerce-border);
+  border-radius:var(--commerce-radius);
   margin-block:var(--space-11) var(--space-11);
   scroll-margin-top:calc(var(--store-header-offset) + 24px)}
 .signature-heading {
@@ -2116,10 +2166,9 @@ textarea {
   padding:var(--space-7) var(--space-6);
   border-bottom:0;
   border-radius:var(--radius-surface);
-  background:var(--glass-surface);
-  border:1px solid var(--glass-edge);
-  box-shadow:var(--glass-shadow);
-  backdrop-filter:blur(var(--glass-blur))}
+  background:var(--white);
+  border:var(--commerce-border);
+  box-shadow:none}
 .composition-layers dt {
   align-items:center;
   display:flex;
@@ -3049,7 +3098,15 @@ body select:disabled {opacity:.55;cursor:not-allowed}
   grid-template-columns:1fr;
   gap:var(--space-6)}
 .product-info {
-  padding-top:0}
+  padding:var(--commerce-padding)}
+.buy-row {
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto}
+.buy-row>.action {
+  grid-column:1/-1;
+  grid-row:2}
+.buy-row .quantity {justify-self:start}
+.detail-heart {width:var(--control-height)}
 .product-page {
   padding-top:var(--space-6)}
 .store-modal.quick-modal {

@@ -10,6 +10,7 @@ import {VariantImagesEditor} from "./variant-images";
 import {useOfficePathname} from "./office-route";
 import {loadCatalogIndex,loadCatalogDetails} from "@/lib/admin-queries";
 import {productActions,collectionActions} from "./bulk-actions";
+import {localizedNotes,noteName} from "@/lib/scent-profile";
 
 const blankProduct:AdminProduct={
   id:"",slug:"",nameEn:"",nameAr:"",descriptionEn:"",descriptionAr:"",brand:"SIYAG Perfumes",
@@ -19,7 +20,6 @@ const blankProduct:AdminProduct={
 const blankCollection:AdminCollection={slug:"",nameAr:"",nameEn:"",published:false,sortOrder:0};
 const blankVariant:AdminVariant={id:"",sku:"",sizeMl:50,format:"fullBottle",priceMinor:0,stock:0,active:true};
 const slugPattern="[a-z0-9]+(?:-[a-z0-9]+)*";
-const notes=(value:FormDataEntryValue|null)=>String(value??"").split(/[،,\n]+/).map(note=>note.trim()).filter(Boolean);
 const variantOrder=(variants:AdminVariant[])=>[...variants].sort((a,b)=>a.sizeMl-b.sizeMl);
 
 export function Products(){
@@ -91,13 +91,16 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
     if(busy||!collections)return;
     const form=new FormData(event.currentTarget);
     const published=form.has("published");
+    let fragranceNotes:Pick<AdminProduct,"topNotes"|"heartNotes"|"baseNotes">;
+    try{fragranceNotes=Object.fromEntries((["topNotes","heartNotes","baseNotes"] as const).map(stage=>[stage,localizedNotes(String(form.get(stage+"Ar")??""),String(form.get(stage+"En")??""))])) as typeof fragranceNotes;}
+    catch(error){setFailed(true);setFeedback((error as Error).message);return;}
     if(published&&!(product.id?product.variants:drafts).some(v=>v.active)){setFailed(true);setFeedback("فعّل مقاسًا واحدًا على الأقل قبل نشر العطر.");return}
     setBusy(true);setFeedback("");setFailed(false);
     const values={
       slug:String(form.get("slug")),nameAr:String(form.get("nameAr")),nameEn:String(form.get("nameEn")),
       descriptionAr:String(form.get("descriptionAr")),descriptionEn:String(form.get("descriptionEn")),
       family:String(form.get("family")),concentration:String(form.get("concentration")),audience:String(form.get("audience")),
-      brand:product.brand,seo:product.seo,topNotes:notes(form.get("topNotes")),heartNotes:notes(form.get("heartNotes")),baseNotes:notes(form.get("baseNotes")),
+      brand:product.brand,seo:product.seo,...fragranceNotes,
       published,featured:form.has("featured"),images,collections:form.getAll("collections").map(String),
       ...(!product.id?{variants:drafts.map(item=>({sku:item.sku.trim()||`${slug}-${item.sizeMl}-${item.format}`.toUpperCase(),sizeMl:item.sizeMl,format:item.format,priceMinor:Math.round(Number(item.price)*100),compareAtMinor:item.compareAt?Math.round(Number(item.compareAt)*100):null,stock:item.stock,active:item.active}))}:{}),
     };
@@ -123,9 +126,7 @@ function ProductForm({initial,collections,changed}:{initial:AdminProduct;collect
         <label>الفئة<select name="audience" defaultValue={product.audience}><option value="unisex">للجميع</option><option value="men">رجالي</option><option value="women">نسائي</option></select></label>
         <label>الوصف بالعربي<textarea name="descriptionAr" defaultValue={product.descriptionAr} required maxLength={12000}/></label>
         <label>الوصف بالإنجليزي<textarea name="descriptionEn" defaultValue={product.descriptionEn} required maxLength={12000} dir="ltr"/></label>
-        <label>النوتات الافتتاحية<input name="topNotes" defaultValue={product.topNotes.join("، ")} placeholder="افصل بين النوتات بفاصلة"/></label>
-        <label>نوتات القلب<input name="heartNotes" defaultValue={product.heartNotes.join("، ")}/></label>
-        <label>نوتات القاعدة<input name="baseNotes" defaultValue={product.baseNotes.join("، ")}/></label>
+        {([['topNotes','النوتات الافتتاحية'],['heartNotes','نوتات القلب'],['baseNotes','نوتات القاعدة']] as const).map(([stage,label])=><fieldset className="office-wide office-note-fields" key={stage}><legend>{label}</legend><p className="office-help">افصل بفاصلة، واكتب النوتات بنفس الترتيب في اللغتين.</p><div className="office-fields"><label>{label} بالعربي<input name={stage+'Ar'} defaultValue={product[stage].map(note=>noteName(note,true)).join('، ')} dir="rtl"/></label><label>{label} بالإنجليزي<input name={stage+'En'} defaultValue={product[stage].map(note=>noteName(note,false)).join(', ')} dir="ltr"/></label></div></fieldset>)}
         <fieldset className="office-collection-picker office-wide"><legend>أقسام المنتج</legend><p className="office-help">اختر الأقسام التي ينتمي إليها العطر.</p><div className="office-tools">{collections?.length?collections.map(collection=><label className="office-check" key={collection.slug}><input type="checkbox" name="collections" value={collection.slug} defaultChecked={product.collections.includes(collection.slug)}/>{collection.nameAr}{!collection.published&&<small>مسودة</small>}</label>):<p className="office-help">{collections?"أنشئ أقسام المتجر من صفحة الأقسام، ثم اربط المنتج بها.":"جارٍ تحميل الأقسام…"}</p>}</div></fieldset>
       </div>
       </section><section className="office-editor-section"><h3>صور العطر</h3><p>الصورة الأولى هي الصورة الرئيسية، والثانية تظهر عند المرور على الكارت.</p>

@@ -3,6 +3,16 @@ import {readFileSync} from 'node:fs';
 import ts from 'typescript';
 async function source(path){const text=ts.transpileModule(readFileSync(path,'utf8'),{compilerOptions:{module:ts.ModuleKind.ESNext,target:ts.ScriptTarget.ES2022}}).outputText;return import('data:text/javascript;base64,'+Buffer.from(text).toString('base64'))}
 const {normalizeRail,mobileRailPlan,railStepProgress,cssMilliseconds}=await source('lib/rail-motion.ts');
+const {localizedNotes,noteName}=await source('lib/scent-profile.ts');
+const bilingual=localizedNotes('عسل، أوراق التبغ، حبوب التونكا','Honey, Tobacco Leaf, Tonka Bean');
+assert.deepEqual(bilingual.map(note=>noteName(note,false)),['Honey','Tobacco Leaf','Tonka Bean']);
+assert.deepEqual(bilingual.map(note=>noteName(note,true)),['عسل','أوراق التبغ','حبوب التونكا']);
+assert.deepEqual(localizedNotes(bilingual.map(note=>noteName(note,true)).join(','),bilingual.map(note=>noteName(note,false)).join(',')),bilingual,'editing must retain translated note pairs');
+assert.equal(noteName('برغموت',false),'Bergamot');
+assert.equal(noteName('Lavender',true),'اللافندر');
+assert.equal(noteName('مكوّن خاص',false),'مكوّن خاص','unknown legacy notes must remain intact');
+assert.throws(()=>localizedNotes('عسل، قرفة','Honey'),/بنفس الترتيب/);
+assert.deepEqual(localizedNotes('',''),[]);
 for(const [offset,step,crossed,remainder] of [[280.75,280,1,.75],[914.5,280,3,74.5],[-.25,280,-1,279.75],[-560.5,280,-3,279.5],[279.8,280,0,279.8]]){
  const result=normalizeRail(offset,step);assert.equal(result.crossed,crossed);assert(Math.abs(result.offset-remainder)<.001);assert(Math.abs(result.crossed*step+result.offset-offset)<.001,'recycling must preserve the visible content position');
 }

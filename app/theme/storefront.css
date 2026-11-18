@@ -634,16 +634,36 @@ textarea {
   width:100%}
 .store-modal.quick-modal {
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  height:min(620px,calc(100dvh - 36px));
+  overflow:hidden;
   max-width:770px;
   padding:0;
   gap:0}
 .quick-image {
+  width:100%;
   height:100%;
-  object-fit:cover;
-  min-height:340px}
+  min-height:0;
+  object-fit:contain;
+  background:var(--white)}
 .quick-copy {
+  display:flex;
+  flex-direction:column;
+  min-height:0;
+  min-width:0;
+  overflow:hidden;
   padding:var(--space-10) var(--space-8) var(--space-9)}
+.quick-copy>* {flex-shrink:0}
+.quick-copy .quick-description {
+  flex:1 1 auto;
+  min-height:0;
+  overflow-y:auto;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+  white-space:pre-line;
+  overflow-wrap:anywhere;
+  padding-inline-end:var(--space-3)}
+.quick-actions {flex:none}
 .quick-copy p {
   margin:var(--space-5) 0;
   color:var(--muted)}
@@ -2102,13 +2122,13 @@ textarea {
   backdrop-filter:blur(var(--glass-blur))}
 .composition-layers dt {
   align-items:center;
-  display:grid;
-  grid-template-columns:1fr auto;
+  display:flex;
   gap:var(--space-4);
   font-size:var(--type-label);
   font-weight:600;
   color:var(--ink)}
 .composition-layers dt>span {
+  margin-inline-start:auto;
   font-size:var(--type-micro);
   letter-spacing:.08em;
   color:var(--color-olive)}
@@ -3033,14 +3053,22 @@ body select:disabled {opacity:.55;cursor:not-allowed}
 .product-page {
   padding-top:var(--space-6)}
 .store-modal.quick-modal {
-  grid-template-columns:1fr}
+  grid-template-columns:minmax(0,1fr);
+  grid-template-rows:minmax(0,min(25dvh,210px)) minmax(0,1fr);
+  height:min(760px,calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+  max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
 .quick-image {
   min-height:0;
-  max-height:35dvh;
+  max-height:100%;
   object-fit:contain;
   background:var(--stone)}
 .quick-copy {
-  padding:var(--space-6)}
+  padding:var(--space-5) var(--space-6)}
+.quick-copy .quick-description {
+  font-size:var(--type-label);
+  line-height:1.75;
+  margin-block:var(--space-4)}
+.quick-copy .action {margin-block:var(--space-4) var(--space-3)}
 .quick-copy h2 {
   font-size:var(--type-section);
   margin:var(--space-1) 0 var(--space-2)}
@@ -3298,7 +3326,8 @@ body {
 .product-purchase-dock button {
   gap:var(--space-2)}
 .signature-heading {
-  gap:var(--space-5);
+  flex-direction:column;
+  gap:var(--space-4);
   margin-bottom:var(--space-8)}
 .signature-heading h2 {
   font-size:var(--type-section);
@@ -3307,7 +3336,8 @@ body {
   font-size:var(--type-label)}
 .signature-family {
   font-size:var(--type-micro);
-  margin-top:var(--space-9)}
+  margin-top:0;
+  align-self:flex-start}
 .scent-signature {
   margin-block:var(--space-10) var(--space-9)}
 .signature-overview {
@@ -3321,11 +3351,13 @@ body {
 .community-overview>h3 {
   font-size:var(--type-product)}
 .composition-layers {
+  grid-template-columns:minmax(0,1fr);
   margin-top:var(--space-6);gap:var(--space-4)}
 .composition-layers>div {
-    padding-block:var(--space-6)}
+  padding:var(--space-5) var(--space-6)}
 .composition-layers dd {
-  font-size:var(--type-body)}
+  margin-top:var(--space-4);
+  font-size:var(--type-label)}
 .community-overview {
   padding:var(--space-8) var(--space-7)}
 .community-score {

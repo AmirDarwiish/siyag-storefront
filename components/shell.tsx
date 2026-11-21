@@ -107,7 +107,7 @@ export function Header(){
     <div className="nav-wrap">
       <button type="button" className="icon mobile-menu" aria-label={tr("Menu","القائمة")} onClick={()=>setMenu(true)}><Menu size={22}/></button>
       <Link href="/" className="nav-brand" aria-label="SIYAG"><Wordmark/></Link>
-      <nav aria-label={tr("Store navigation","تصفح المتجر")}><Link href="/shop">{tr("All fragrances","كل العطور")}</Link>{navigationCollections.map(collection=><Link key={collection.slug} href={"/shop?collection="+encodeURIComponent(collection.slug)}>{name(collection,ar?"ar":"en")}</Link>)}<Link href="/shop?collection=discovery">{tr("Discovery sizes","أحجام التجربة")}</Link>
+      <nav aria-label={tr("Store navigation","تصفح المتجر")}><Link href="/shop">{tr("All fragrances","كل العطور")}</Link>{navigationCollections.map(collection=><Link key={collection.slug} href={"/shop?collection="+encodeURIComponent(collection.slug)}>{name(collection,ar?"ar":"en")}</Link>)}
       </nav>
       <div className="nav-tools">
         <button type="button" className="language-switch" onClick={toggleLanguage} aria-label={tr("Switch to Arabic","التبديل للإنجليزية")}>{ar?"EN":"العربية"}</button>
@@ -182,7 +182,7 @@ export function Footer(){
   const {tr}=useStore();
   return <footer className="site-footer"><div className="footer-inner">
     <div className="footer-brand"><Link href="/" aria-label="SIYAG"><Wordmark/></Link><p>{tr("An Egyptian fragrance house.","دار عطور مصرية.")}</p></div>
-    <FooterGroup id="footer-explore" title={tr("Explore","استكشف")}><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/shop?collection=discovery">{tr("Discovery sizes","أحجام التجربة")}</Link><Link href="/about">{tr("The house of SIYAG","دار SIYAG")}</Link><Link href="/cart">{tr("Your bag","حقيبتك")}</Link></FooterGroup>
+    <FooterGroup id="footer-explore" title={tr("Explore","استكشف")}><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/about">{tr("The house of SIYAG","دار SIYAG")}</Link><Link href="/cart">{tr("Your bag","حقيبتك")}</Link></FooterGroup>
     <FooterGroup id="footer-care" title={tr("Client care","خدمة العملاء")}><Link href="/track">{tr("Track your order","تتبّع طلبك")}</Link><Link href="/reviews">{tr("Store reviews","تقييمات المتجر")}</Link><Link href="/shop?saved=1">{tr("Your wishlist","مفضلتك")}</Link><Link href="/contact">{tr("Contact us","تواصل معنا")}</Link><Link href="/faq">{tr("FAQ","الأسئلة الشائعة")}</Link></FooterGroup>
     <FooterGroup id="footer-information" title={tr("The details","المعلومات")}><Link href="/policies/shipping">{tr("Shipping & delivery","الشحن والتوصيل")}</Link><Link href="/policies/returns">{tr("Returns & refunds","الاسترجاع")}</Link><Link href="/policies/privacy">{tr("Privacy","الخصوصية")}</Link><Link href="/policies/terms">{tr("Terms","شروط التسوق")}</Link></FooterGroup>
   </div><div className="footer-end"><span>© {new Date().getFullYear()} SIYAG PARFUMS</span><span>{tr("EGYPT · EGP","مصر · جنيه مصري")}</span><button className="footer-privacy" type="button" onClick={()=>window.dispatchEvent(new Event("siyag-open-privacy"))}>{tr("Privacy preferences","إعدادات الخصوصية")}</button><button type="button" className="back-to-top" aria-label={tr("Back to top","العودة لأعلى")} onClick={()=>window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})}><ArrowDownLeft size={17}/></button></div></footer>;

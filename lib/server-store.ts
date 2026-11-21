@@ -17,6 +17,8 @@ export async function loadProduct(slug:string):Promise<Product|null> {
   if(response.status===404) return null;
   if(!response.ok) throw new Error("Catalog is unavailable");
   const product=await response.json() as Product;
-  const {applyVariantImages}=await import("./catalog-experience");
-  return {...applyVariantImages(product,presentation.images),inspiration:presentation.inspirations[product.id]};
+  const {applyVariantImages,storefrontProduct}=await import("./catalog-experience");
+  const visible=storefrontProduct(product);
+  if(!visible.variants.length)return null;
+  return {...applyVariantImages(visible,presentation.images),inspiration:presentation.inspirations[product.id]};
 }

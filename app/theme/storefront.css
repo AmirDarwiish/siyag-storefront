@@ -635,8 +635,8 @@ textarea {
 .store-modal.quick-modal {
   display:grid;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr);
-  height:min(620px,calc(100dvh - 36px));
-  overflow:hidden;
+  height:auto;
+  overflow-y:auto;
   max-width:770px;
   padding:0;
   gap:0}
@@ -651,11 +651,11 @@ textarea {
   flex-direction:column;
   min-height:0;
   min-width:0;
-  overflow:hidden;
+  overflow:visible;
   padding:var(--space-10) var(--space-8) var(--space-9)}
 .quick-copy>* {flex-shrink:0}
 .quick-copy .quick-description {
-  flex:1 1 auto;
+  flex:0 0 auto;
   min-height:0;
   overflow-y:auto;
   overscroll-behavior:contain;
@@ -3206,8 +3206,8 @@ body select:disabled {opacity:.55;cursor:not-allowed}
   padding:var(--product-mobile-entry-space) 0 0}
 .store-modal.quick-modal {
   grid-template-columns:minmax(0,1fr);
-  grid-template-rows:minmax(0,min(25dvh,210px)) minmax(0,1fr);
-  height:min(760px,calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom)));
+  grid-template-rows:min(25dvh,210px) auto;
+  height:auto;
   max-height:calc(100dvh - 32px - env(safe-area-inset-top) - env(safe-area-inset-bottom))}
 .quick-image {
   min-height:0;

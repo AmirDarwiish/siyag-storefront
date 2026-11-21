@@ -43,7 +43,7 @@ function Campaign(){
       <span className="campaign-track" aria-hidden="true">{[0,1].map(group=><span className="campaign-track-group" key={group}>{[0,1,2,3].map(item=><span className="campaign-item" dir="auto" key={item}><span>{title}</span><bdi>{offerCode}</bdi></span>)}</span>)}</span>
     </button>
     <Modal open={open} onOpenChange={changeOpen} title={title} className="campaign-modal">
-      <Wordmark/><div className="eyebrow">{tr("THE SIYAG COLLECTION","مجموعة SIYAG")}</div>
+      <Wordmark/>
       <h2>{title}</h2>
       <button type="button" className="campaign-code" onClick={()=>void copyCode()} aria-label={tr("Copy code SIYAG4","نسخ كود SIYAG4")}><bdi>{offerCode}</bdi><span className="campaign-copy" aria-live="polite">{copied?tr("Copied","تم النسخ"):tr("Copy code","انسخ الكود")}</span></button>
       <small className="campaign-note">{tr("30 & 50 ml · Applied automatically.","٣٠ و٥٠ مل · الخصم تلقائي.")}</small>

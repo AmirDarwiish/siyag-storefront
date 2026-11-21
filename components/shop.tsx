@@ -4,7 +4,7 @@ import {commerce} from "@/lib/commerce";
 import Link from "next/link";
 import {track} from "@/lib/analytics";
 import {useRouter,useSearchParams} from "next/navigation";
-import {useEffect,useState} from "react";
+import {useEffect,useRef,useState} from "react";
 import {ArrowLeft,ArrowRight,ArrowUpRight,Heart,Search,SlidersHorizontal} from "lucide-react";
 import {api,imageUrl,concentrations,families,formats,name,money,type Collection,type Page,type Product,type Content} from "@/lib/store";
 import {useStore} from "./store-context";
@@ -13,6 +13,7 @@ import {Modal} from "./shell";
 import {StoreImage} from "./store-image";
 import {discoveryProduct} from "@/lib/catalog-experience";
 import {bannerHref} from "@/lib/banners";
+import {scentMoods} from "@/lib/scent-moods";
 
 type CatalogResult = {page: Page<Product>; catalogEmpty: boolean};
 const filters=["q","collection","family","concentration","format","sizeMl","inStock","sort","pageNumber"] as const;
@@ -22,6 +23,13 @@ export function Shop(){
   const query=useSearchParams();
   const router=useRouter();
   const queryString=query.toString();
+  const moodLinks=useRef<HTMLElement>(null);
+  useEffect(()=>{
+    const nav=moodLinks.current,active=nav?.querySelector<HTMLElement>('[aria-current="page"]');
+    if(!nav||!active)return;
+    const bounds=nav.getBoundingClientRect(),item=active.getBoundingClientRect();
+    if(item.left<bounds.left||item.right>bounds.right)nav.scrollBy({left:item.left-bounds.left-(bounds.width-item.width)/2,behavior:"instant"});
+  },[queryString]);
   useEffect(()=>{if(queryString==="format=decant")router.replace("/shop?collection=discovery",{scroll:false})},[queryString,router]);
   const savedOnly=query.get("saved")==="1";
   const savedKey=saved.join("|");
@@ -65,10 +73,12 @@ export function Shop(){
   useEffect(()=>{if(result?.page.data.length)track("view_item_list",{list_id:savedOnly?"wishlist":"collection",items:result.page.data.map(p=>({item_id:p.variants[0]?.id??p.id,item_name:p.nameEn,item_category:p.family}))})},[result,savedOnly]);
   const collection=collections.find(c=>c.slug===query.get("collection"));
   const term=query.get("q")?.trim();
+  const mood=scentMoods.find(item=>item.family===query.get("family"));
+  const moodNavigation=!savedOnly&&!term;
   const title=query.get("sort")==="newest"?tr("New arrivals","وصل حديثًا"):savedOnly?tr("Your favourites","عطورك المفضّلة"):collection?name(collection,lang):term?tr("Search results","نتائج البحث"):tr("The fragrance collection","مجموعة SIYAG");
-  const activeFilters=filters.filter(key=>!["sort","pageNumber"].includes(key)&&!(key==="collection"&&!term)&&query.has(key)).map(key=>{
+  const activeFilters=filters.filter(key=>!["sort","pageNumber"].includes(key)&&!(key==="collection"&&!term)&&!(key==="family"&&mood&&moodNavigation)&&query.has(key)).map(key=>{
     const value=query.get(key)!;
-    const label=key==="collection"?name(collections.find(c=>c.slug===value)??{nameEn:value,nameAr:value},lang):key==="family"?(families[value]?.[ar?1:0]??value):key==="concentration"?(concentrations[value]?.[ar?1:0]??value):key==="format"?(formats[value as keyof typeof formats]?.[ar?1:0]??value):key==="sizeMl"?`${value} ${tr("ml","مل")}`:key==="inStock"?tr("In stock","متوفر"):value;
+    const label=key==="collection"?name(collections.find(c=>c.slug===value)??{nameEn:value,nameAr:value},lang):key==="family"?(mood?name(mood,lang):(families[value]?.[ar?1:0]??value)):key==="concentration"?(concentrations[value]?.[ar?1:0]??value):key==="format"?(formats[value as keyof typeof formats]?.[ar?1:0]??value):key==="sizeMl"?`${value} ${tr("ml","مل")}`:key==="inStock"?tr("In stock","متوفر"):value;
     return {key,label};
   });
   const hasTools=!savedOnly&&catalogAvailable&&!error;
@@ -85,7 +95,7 @@ export function Shop(){
   }
   function filterControls(){return <><div className="filter-title"><strong>{tr("Filters","التصفية")}</strong><Link href="/shop">{tr("Reset","إعادة ضبط")}</Link></div>
           {select("collection",tr("Collection","التشكيلة"),collections.map(c=>[c.slug,name(c,lang)]))}
-          {select("family",tr("Fragrance family","العائلة العطرية"),Object.entries(families).map(([k,v])=>[k,v[ar?1:0]]))}
+          {select("family",tr("Feeling","الإحساس"),scentMoods.map(item=>[item.family,name(item,lang)]))}
           {select("concentration",tr("Concentration","التركيز"),Object.entries(concentrations).map(([k,v])=>[k,v[ar?1:0]]))}
           {select("format",tr("Format","نوع العبوة"),Object.entries(formats).filter(([k])=>k==="fullBottle").map(([k,v])=>[k,v[ar?1:0]]))}
           <form key={query.get("sizeMl")??"size"} onSubmit={e=>{e.preventDefault();change("sizeMl",String(new FormData(e.currentTarget).get("size")||""))}}><label className="filter-control">{tr("Size in ml","الحجم بالمل")}<input type="number" name="size" min={1} defaultValue={query.get("sizeMl")??""} placeholder={tr("Any size","أي حجم")}/></label><button type="submit" className="text-link">{tr("Apply","تطبيق")}</button></form>
@@ -93,7 +103,7 @@ export function Shop(){
   return <main className="shop-page">
     {savedOnly||term?<div className="shop-intro"><div className="container"><div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span>{tr("The collection","التشكيلة")}</div><span className="eyebrow">SIYAG PARFUMS</span><h1>{title}</h1><p>{term?tr(`Search for “${term}”`,`البحث عن «${term}»`):savedOnly?tr("A place for the fragrances you’d like to revisit.","مساحة للعطور التي تودّ العودة إليها."):tr("Explore by scent family, concentration and size.","تصفّح العطور بحسب العائلة العطرية والتركيز والحجم.")}</p></div></div>:<h1 className="sr-only">{title}</h1>}
     <div className="container shop-content">
- {!savedOnly&&!term&&<>{banner?.imageUrl&&<section className="catalog-banner" aria-label={tr("SIYAG highlights","مختارات SIYAG")}>{bannerHref(banner.actionUrl)?<Link href={bannerHref(banner.actionUrl)!} aria-label={(ar?banner.titleAr:banner.titleEn)||tr("Explore SIYAG","اكتشف SIYAG")}><StoreImage src={imageUrl(banner.imageUrl)} alt={(ar?banner.titleAr:banner.titleEn)||"SIYAG"} width={1600} height={540} sizes="(max-width:767px) 100vw,90vw" fetchPriority="high"/></Link>:<StoreImage src={imageUrl(banner.imageUrl)} alt={(ar?banner.titleAr:banner.titleEn)||"SIYAG"} width={1600} height={540} sizes="(max-width:767px) 100vw,90vw" fetchPriority="high"/>}</section>}<nav className="catalog-links" aria-label={tr("Shop edits","أقسام المتجر")}><Link href="/shop" aria-current={!query.has("collection")?"page":undefined}>{tr("All fragrances","كل العطور")}</Link>{collections.map(collection=><Link key={collection.slug} aria-current={query.get("collection")===collection.slug?"page":undefined} href={"/shop?collection="+encodeURIComponent(collection.slug)}>{name(collection,lang)}</Link>)}</nav></>}
+ {!savedOnly&&!term&&<>{banner?.imageUrl&&<section className="catalog-banner" aria-label={tr("SIYAG highlights","مختارات SIYAG")}>{bannerHref(banner.actionUrl)?<Link href={bannerHref(banner.actionUrl)!} aria-label={(ar?banner.titleAr:banner.titleEn)||tr("Explore SIYAG","اكتشف SIYAG")}><StoreImage src={imageUrl(banner.imageUrl)} alt={(ar?banner.titleAr:banner.titleEn)||"SIYAG"} width={1600} height={540} sizes="(max-width:767px) 100vw,90vw" fetchPriority="high"/></Link>:<StoreImage src={imageUrl(banner.imageUrl)} alt={(ar?banner.titleAr:banner.titleEn)||"SIYAG"} width={1600} height={540} sizes="(max-width:767px) 100vw,90vw" fetchPriority="high"/>}</section>}<nav className="catalog-links" ref={moodLinks} aria-label={tr("Shop by feeling","تسوّق حسب الإحساس")}><Link href="/shop" aria-current={!query.has("family")?"page":undefined}>{tr("All fragrances","كل العطور")}</Link>{scentMoods.map(item=><Link key={item.family} aria-current={query.get("family")===item.family?"page":undefined} href={"/shop?family="+item.family}>{name(item,lang)}</Link>)}</nav></>}
         {hasTools&&<div className="shop-tools">
         <div><button type="button" className="filter-toggle" onClick={()=>setMobileFilters(!mobileFilters)} aria-expanded={mobileFilters}><SlidersHorizontal size={17}/>{tr("Filters","التصفية")}</button><select className="sort-control" aria-label={tr("Sort","الترتيب")} value={query.get("sort")??""} onChange={e=>change("sort",e.target.value)}><option value="">{tr("Number, low to high","الرقم تصاعديًا")}</option>{commerce.showPrices&&<><option value="price-asc">{tr("Price, low to high","السعر من الأقل")}</option><option value="price-desc">{tr("Price, high to low","السعر من الأعلى")}</option></>}</select></div>
       </div>}

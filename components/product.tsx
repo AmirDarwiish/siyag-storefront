@@ -1,5 +1,6 @@
 "use client";
 
+import {commerce} from "@/lib/commerce";
 import Link from "next/link";
 import {StoreImage} from "./store-image";
 import {imageSizes} from "@/lib/image-sizes";
@@ -18,6 +19,7 @@ import {ScentSignature} from "./scent-signature";
 
 function Price({variant}:{variant:Variant}){
   const {lang}=useStore();
+  if(!commerce.showPrices)return null;
   return <span className="price"><strong>{money(variant.priceMinor,lang)}</strong>
     {variant.compareAtMinor&&variant.compareAtMinor>variant.priceMinor?<del>{money(variant.compareAtMinor,lang)}</del>:null}
   </span>;
@@ -28,7 +30,7 @@ function Sizes({product,selected,onSelect,compact=false}:{product:Product;select
   const {ar,tr}=useStore();
   return <div className={compact?"sizes sizes-compact":"sizes"} role="group" aria-label={tr("Choose a size","اختر الحجم")}>
     {product.variants.map(v=><button type="button" aria-pressed={v.id===selected.id}
-      disabled={!v.inStock} aria-label={tr(`${v.sizeMl} ml · ${formats[v.format][0]} · ${money(v.priceMinor,"en")}`,`${v.sizeMl} مل · ${formats[v.format][1]} · ${money(v.priceMinor,"ar")}`)} title={formats[v.format][ar?1:0]} key={v.id} onClick={()=>{track("select_variant",itemData(product,v));onSelect(v)}}>
+      disabled={!v.inStock} aria-label={tr(`${v.sizeMl} ml · ${formats[v.format][0]}${commerce.showPrices?" · "+money(v.priceMinor,"en"):""}`,`${v.sizeMl} مل · ${formats[v.format][1]}${commerce.showPrices?" · "+money(v.priceMinor,"ar"):""}`)} title={formats[v.format][ar?1:0]} key={v.id} onClick={()=>{track("select_variant",itemData(product,v));onSelect(v)}}>
       <span>{v.sizeMl} {tr("ml","مل")}</span>{product.variants.some(other=>other.id!==v.id&&other.sizeMl===v.sizeMl)?<small>{formats[v.format][ar?1:0]}</small>:null}
     </button>)}
   </div>;
@@ -51,19 +53,19 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
         <StoreImage sizes={photoSizes} src={imageUrl(variantImage(product,v))} alt={title} loading="lazy" width={520} height={560}/>
         {!v.imageUrl&&product.images[1]&&<StoreImage sizes={photoSizes} className="product-hover" src={imageUrl(product.images[1])} alt="" loading="lazy" width={520} height={560}/>}
       </Link>
-      <div className="product-labels">{!v.inStock?<span className="product-badge" data-state="unavailable">{availability}</span>:(v.compareAtMinor??0)>v.priceMinor?<span className="product-badge" data-state="sale"><strong>{tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`)}</strong></span>:product.featured?<span className="product-badge" data-state="featured">{tr('SIYAG edit','مختاراتنا')}</span>:null}</div>
+      <div className="product-labels">{!v.inStock?<span className="product-badge" data-state="unavailable">{availability}</span>:commerce.showPrices&&(v.compareAtMinor??0)>v.priceMinor?<span className="product-badge" data-state="sale"><strong>{tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`)}</strong></span>:product.featured?<span className="product-badge" data-state="featured">{tr('SIYAG edit','مختاراتنا')}</span>:null}</div>
       <button type="button" className="icon favorite" aria-pressed={liked} aria-label={liked?tr("Remove from wishlist","إزالة من المفضلة"):tr("Save to wishlist","حفظ في المفضلة")} onClick={()=>toggleSaved(product.slug)}><Heart size={17} fill={liked?"currentColor":"none"}/></button>
       {v.inStock&&<button type="button" className="photo-quick" onClick={()=>setQuick(true)}>{tr("Quick view","عرض سريع")}</button>}
     </div>
     <div className="product-card-body">
-      <div className="product-meta"><span className="family-tag" data-family={product.family}>{families[product.family]?.[ar?1:0]??product.family}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
+      <div className="product-meta"><span className="family-tag" data-family={product.family}>{product.family!=="other"&&(families[product.family]?.[ar?1:0]??product.family)}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
       <div className="product-title"><Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
       <p className="product-card-notes">{(product.topNotes.length?product.topNotes.slice(0,3).map(note=>noteName(note,ar)).join(" · "):(ar?product.descriptionAr:product.descriptionEn))||" "}</p>
       <div className="card-options">
         <span>{tr("Choose your size","اختر الحجم")}</span>
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)} compact/>
       </div>
-      <button className="card-add" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
+      <button className="card-add" type="button" aria-busy={busy} disabled={!commerce.purchasingEnabled||busy||!v.inStock} onClick={()=>add(product,v,1)}><ShoppingBag size={15}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
     </div>
     <Modal open={quick} onOpenChange={setQuick} title={title} className="quick-modal">
       <StoreImage className="quick-image" sizes="(max-width:767px) 100vw,385px" width={600} height={600} src={imageUrl(variantImage(product,v))} alt={title}/>
@@ -71,7 +73,7 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
         <p className="quick-description" tabIndex={0} role="region" aria-label={tr('Fragrance description','وصف العطر')}>{ar?product.descriptionAr:product.descriptionEn}</p>
         <div className="quick-actions">
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)}/>
-        <button className="action ink" type="button" aria-busy={busy} disabled={busy||!v.inStock} onClick={async()=>{setQuick(false);await add(product,v,1)}}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
+        <button className="action ink" type="button" aria-busy={busy} disabled={!commerce.purchasingEnabled||busy||!v.inStock} onClick={async()=>{setQuick(false);await add(product,v,1)}}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
         <Link className="text-link" href={productUrl(product,v)} onClick={()=>setQuick(false)}>{tr("View fragrance details","تفاصيل العطر")}<ArrowUpRight size={15}/></Link>
         </div>
       </div>
@@ -135,7 +137,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
         </div>
         <div className="product-info">
           <div className="eyebrow">SIYAG PARFUMS</div><h1>{title}</h1>
-          <div className="product-detail-meta">{concentrations[product.concentration]?.[ar?1:0]} <span>·</span> {families[product.family]?.[ar?1:0]}</div>
+          <div className="product-detail-meta">{concentrations[product.concentration]?.[ar?1:0]} {product.family!=="other"&&<><span>·</span> {families[product.family]?.[ar?1:0]}</>}</div>
           <Price variant={v}/>
           <p>{ar?product.descriptionAr:product.descriptionEn}</p>
           {product.inspiration&&<section className="product-inspiration" aria-labelledby="product-inspiration-title">
@@ -151,13 +153,13 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
             <Sizes product={product} selected={v} onSelect={choose}/>
             {v.format!=="fullBottle"&&<p className="muted">{tr("A smaller format for discovering the fragrance.","حجم أصغر لتجربة العطر.")}</p>}
             <div className="buy-row">
-              <div className="quantity"><button type="button" aria-label={tr("Decrease quantity","تقليل الكمية")} disabled={quantity===1} onClick={()=>setQuantity(quantity-1)}><Minus size={16}/></button><span>{quantity}</span><button type="button" aria-label={tr("Increase quantity","زيادة الكمية")} disabled={quantity===20} onClick={()=>setQuantity(quantity+1)}><Plus size={16}/></button></div>
-              <button ref={buy} type="button" className="action ink" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={17}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
+              {commerce.purchasingEnabled&&<div className="quantity"><button type="button" aria-label={tr("Decrease quantity","تقليل الكمية")} disabled={quantity===1} onClick={()=>setQuantity(quantity-1)}><Minus size={16}/></button><span>{quantity}</span><button type="button" aria-label={tr("Increase quantity","زيادة الكمية")} disabled={quantity===20} onClick={()=>setQuantity(quantity+1)}><Plus size={16}/></button></div>}
+              <button ref={buy} type="button" className="action ink" aria-busy={busy} disabled={!commerce.purchasingEnabled||busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={17}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف إلى الحقيبة"):availability}</button>
               <button type="button" className="icon detail-heart" aria-label={tr("Toggle wishlist","تغيير حالة المفضلة")} aria-pressed={saved.includes(product.slug)} onClick={()=>toggleSaved(product.slug)}><Heart size={20} fill={saved.includes(product.slug)?"currentColor":"none"}/></button>
             </div>
-            <button type="button" className="action buy-now" aria-busy={busy} disabled={busy||!v.inStock} onClick={express}>{busy?tr("Please wait…","لحظة…"):tr("Buy now","اشتري الآن")}<ArrowUpRight size={17}/></button>
+            <button type="button" className="action buy-now" aria-busy={busy} disabled={!commerce.purchasingEnabled||busy||!v.inStock} onClick={express}>{busy?tr("Please wait…","لحظة…"):tr("Buy now","اشتري الآن")}<ArrowUpRight size={17}/></button>
             {!v.inStock&&<div className="unavailable-help"><p>{tr("This size is currently unavailable. Choose another available size or explore these alternatives.","الحجم ده غير متاح حاليًا. اختار حجم متوفر أو شوف البدائل المتاحة.")}</p><Link className="text-link" href={related.length?"#available-alternatives":"/shop?inStock=true"}>{tr("Shop available alternatives","شوف البدائل المتاحة")}</Link></div>}
-            <p className="purchase-note">{tr("Guest checkout · delivery calculated before you order","اطلب بدون حساب · تكلفة التوصيل بتظهر قبل التأكيد")}</p>
+            {commerce.purchasingEnabled&&<p className="purchase-note">{tr("Guest checkout · delivery calculated before you order","اطلب بدون حساب · تكلفة التوصيل بتظهر قبل التأكيد")}</p>}
           </div>
           <Accordion type="multiple" className="product-accordion">
             <AccordionItem value="shipping"><AccordionTrigger>{tr("Shipping & delivery","الشحن والتوصيل")}</AccordionTrigger><AccordionContent>{tr("Available delivery options and charges are shown at checkout for your governorate.","خيارات التوصيل وتكلفته بتظهر عند إتمام الطلب حسب محافظتك.")}</AccordionContent></AccordionItem>
@@ -181,13 +183,13 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
         </div>
       </div>}
     </Modal>
-    <ScentSignature key={product.slug+"-signature"} product={product}/>
-    <Reviews key={product.slug} product={product.slug}/>
+    {product.slug==="siyag-7"&&<ScentSignature key={product.slug+"-signature"} product={product}/>}
+    {product.slug==="siyag-7"&&<Reviews key={product.slug} product={product.slug}/>}
     {related.length>0&&<section id="available-alternatives" className="container section"><div className="section-head"><div><span className="eyebrow">SIYAG PARFUMS</span><h2>{tr("Available fragrances you may like","عطور متاحة ممكن تعجبك")}</h2></div></div><div className="product-grid">{related.map(p=><ProductCard key={p.id} product={p}/>)}</div></section>}
-    {sticky&&!keyboardOpen&&<section className="product-purchase-dock" aria-label={tr("Purchase options","خيارات الشراء")}>
+    {commerce.purchasingEnabled&&sticky&&!keyboardOpen&&<section className="product-purchase-dock" aria-label={tr("Purchase options","خيارات الشراء")}>
       <div className="dock-selection"><strong>{title}</strong><small>{v.sizeMl} {tr("ml","مل")} · {money(v.priceMinor,lang)}</small></div>
-      <button type="button" className="dock-add" aria-busy={busy} disabled={busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
-      {v.inStock?<button type="button" className="dock-buy" disabled={busy} onClick={express}>{tr("Buy now","اشتري الآن")}<ArrowUpRight size={15}/></button>:<Link className="dock-buy" href={related.length?"#available-alternatives":"/shop?inStock=true"}>{tr("Alternatives","البدائل")}</Link>}
+      <button type="button" className="dock-add" aria-busy={busy} disabled={!commerce.purchasingEnabled||busy||!v.inStock} onClick={()=>add(product,v,quantity)}><ShoppingBag size={16}/>{busy?tr("Adding…","جاري الإضافة…"):v.inStock?tr("Add to bag","أضف للحقيبة"):availability}</button>
+      {v.inStock?<button type="button" className="dock-buy" disabled={!commerce.purchasingEnabled||busy} onClick={express}>{tr("Buy now","اشتري الآن")}<ArrowUpRight size={15}/></button>:<Link className="dock-buy" href={related.length?"#available-alternatives":"/shop?inStock=true"}>{tr("Alternatives","البدائل")}</Link>}
     </section>}
   </main>;
 }

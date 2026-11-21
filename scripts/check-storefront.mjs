@@ -88,3 +88,20 @@ assert(!visibleProduct.collections.includes('discovery'));
 assert.equal(mixed.variants.length,2,'hiding sizes must preserve the source catalog');
 assert.equal(storefrontProduct(makeProduct('sample-only',true,'woody','sample')).variants.length,0);
 console.log('Public catalog visibility checks passed: discovery sizes hidden without mutating inventory.');
+
+const {publishedProducts,publishedProduct,publishedPage,publishedCollections}=await source('lib/published-catalog.ts');
+assert.deepEqual(publishedProducts.map(p=>p.slug),['siyag-7','siyag-6','siyag-1','siyag-3']);
+for(const p of publishedProducts){assert.deepEqual(p.variants.map(v=>v.sizeMl),[30,50]);assert(p.variants.every(v=>v.format==='fullBottle'&&v.compareAtMinor==null));assert(p.images.every(src=>!src.includes('preview')))}
+for(const slug of ['noir','musk','oud','siyag-9','amber-wood-preview'])assert.equal(publishedProduct(slug),null);
+assert.equal(publishedPage(new URLSearchParams('q=ناكسوس')).data[0].slug,'siyag-7');
+assert.equal(publishedPage(new URLSearchParams('q=ديسيشن')).data[0].slug,'siyag-6');
+assert.equal(publishedPage(new URLSearchParams('sizeMl=100')).totalCount,0);
+assert.equal(publishedPage(new URLSearchParams('sizeMl=30')).totalCount,4);
+assert.equal(publishedPage(new URLSearchParams('pageSize=2&pageNumber=2')).data.length,2);
+assert.equal(publishedPage(new URLSearchParams('collection=discovery')).totalCount,0);
+assert(publishedCollections.every(c=>c.slug!=='discovery'&&c.slug!=='oud'));
+const {commerce,isPurchasePath}=await source('lib/commerce.ts');
+assert.equal(commerce.showPrices,false);assert.equal(commerce.purchasingEnabled,false);
+for(const path of ['store/carts','store/cart','store/cart/lines/abc','store/cart/quote','store/orders','store/orders/payment/paymob'])assert(isPurchasePath(path),path);
+for(const path of ['store/orders/track','store/events','store/reviews','store/products/siyag-7','store/collections'])assert(!isPurchasePath(path),path);
+console.log('Approved catalog checks passed: four numbered fragrances, 30/50 ml only, preview exclusion, pagination, search and purchase route guards.');

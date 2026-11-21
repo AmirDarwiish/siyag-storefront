@@ -1,6 +1,7 @@
 import type { Product } from "./store";
+import {publishedProduct} from "./published-catalog";
 
-// Storefront previews and production both use the actual store API.
+// Published numbered fragrances are shared by product pages and the public catalog.
 export const DEMO = false;
 const origin = process.env.SIYAG_API_ORIGIN || "https://siyag.runasp.net";
 
@@ -12,13 +13,5 @@ export async function requestStore(path:string, query="", init?:RequestInit) {
 }
 
 export async function loadProduct(slug:string):Promise<Product|null> {
-  const {loadCatalogPresentation}=await import("./server-catalog");
-  const [response,presentation]=await Promise.all([requestStore("/api/v1/store/products/"+encodeURIComponent(slug)),loadCatalogPresentation()]);
-  if(response.status===404) return null;
-  if(!response.ok) throw new Error("Catalog is unavailable");
-  const product=await response.json() as Product;
-  const {applyVariantImages,storefrontProduct}=await import("./catalog-experience");
-  const visible=storefrontProduct(product);
-  if(!visible.variants.length)return null;
-  return {...applyVariantImages(visible,presentation.images),inspiration:presentation.inspirations[product.id]};
+  return publishedProduct(slug);
 }

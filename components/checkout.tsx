@@ -1,5 +1,6 @@
 "use client";
 
+import {commerce} from "@/lib/commerce";
 import Link from "next/link";
 import {StoreImage} from './store-image';
 import {useRouter} from "next/navigation";
@@ -15,6 +16,7 @@ import {emptyCheckoutDetails,readCheckoutDetails,storeCheckoutDetails,type Check
 
 function Summary({quote,subtotal}:{quote?:Quote;subtotal:number}){
   const {lang,tr}=useStore();
+  if(!commerce.showPrices)return null;
   return <dl className="order-totals">
     <div><dt>{tr("Subtotal","المجموع الفرعي")}</dt><dd>{money(quote?.subtotalMinor??subtotal,lang)}</dd></div>
     {quote&&<><div><dt>{tr("Delivery","الشحن")}</dt><dd>{money(quote.shippingMinor,lang)}</dd></div>
@@ -236,6 +238,7 @@ export function Track({returning=false}:{returning?:boolean}){
     if(fragment.has("token"))window.history.replaceState(window.history.state,"",location.pathname+location.search);
   },[]);
   async function pay(){
+    if(!commerce.purchasingEnabled)return;
     setBusy(true);setError("");
     try{
       const result=await api<{checkoutUrl:string}>("store/orders/payment/paymob",{method:"POST",data:{number,token:proof?.token}});
@@ -253,14 +256,14 @@ export function Track({returning=false}:{returning?:boolean}){
     </form>
     {error&&<p role="alert" className="form-error">{error}</p>}
     {order&&<section className="order-summary"><h2><ShieldCheck size={21}/> {order.number}</h2>
-      <div className="order-status-panel"><h2>{returning?status(order.paymentStatus):status(order.status)}</h2><p>{tr("Order","الطلب")} · {status(order.status)}<br/>{tr("Payment","الدفع")} · {status(order.paymentStatus)}</p>{order.paymentMethod==="paymob"&&order.paymentStatus==="unpaid"&&<p>{tr("Payment has not been confirmed. You can retry through the secure receipt link. Your order status is verified with the store.","الدفع لم يتأكد بعد. تقدر تعيد المحاولة من رابط الإيصال الآمن. الحالة المعروضة متحققة من المتجر.")}</p>}</div>
+      <div className="order-status-panel"><h2>{returning?status(order.paymentStatus):status(order.status)}</h2><p>{tr("Order","الطلب")} · {status(order.status)}<br/>{tr("Payment","الدفع")} · {status(order.paymentStatus)}</p>{commerce.purchasingEnabled&&order.paymentMethod==="paymob"&&order.paymentStatus==="unpaid"&&<p>{tr("Payment has not been confirmed. You can retry through the secure receipt link. Your order status is verified with the store.","الدفع لم يتأكد بعد. تقدر تعيد المحاولة من رابط الإيصال الآمن. الحالة المعروضة متحققة من المتجر.")}</p>}</div>
       {order.events?.length>0&&<ol className="order-timeline" aria-label={tr("Order updates","تحديثات الطلب")}>{order.events.map((event,index)=><li key={event.at+index}><strong>{status(event.status)}</strong><time dateTime={event.at}>{new Date(event.at).toLocaleString(lang==="ar"?"ar-EG":"en-EG",{dateStyle:"medium",timeStyle:"short",timeZone:"Africa/Cairo"})}</time></li>)}</ol>}
       <button type="button" className="text-link" disabled={busy} onClick={()=>{if(proof)void find(proof)}}>{tr("Refresh order status","تحديث حالة الطلب")}</button>
       <Summary quote={order.total} subtotal={order.total.subtotalMinor}/>
       {(order.status==="delivered"||order.status==="returned")&&<ReviewButton proof={proof}/>}
       {order.status==="delivered"&&proof?.token&&<details className="return-request"><summary>{tr("Request a return review","طلب مراجعة استرجاع")}</summary>{returnSent?<p role="status">{tr("Your request was received for review.","وصل طلبك للمراجعة.")}</p>:<form onSubmit={requestReturn}><label>{tr("Tell us the reason","وضّح سبب الاسترجاع")}<textarea name="reason" required minLength={3} maxLength={500}/></label><p className="muted">{tr("Eligibility is checked by the store. Submission does not approve a refund.","المتجر هيراجع استحقاق الطلب. الإرسال مش موافقة تلقائية على استرداد المبلغ.")}</p><button className="action ink" type="submit" disabled={busy}>{busy?tr("Sending…","جاري الإرسال…"):tr("Send request","إرسال الطلب")}</button></form>}</details>}
       {order.carrierTrackingUrl?.startsWith("https://")&&<a className="text-link" href={order.carrierTrackingUrl} rel="noreferrer" target="_blank">{tr("Track shipment","تتبّع الشحنة")}<ArrowUpRight size={15}/></a>}
-      {proof?.token&&order.paymentMethod==="paymob"&&order.paymentStatus==="unpaid"&&order.status==="pending"&&<button type="button" className="action gold" disabled={busy} onClick={pay}>{tr("Continue to Paymob","كمّل الدفع مع Paymob")}<ArrowUpRight size={15}/></button>}
+      {commerce.purchasingEnabled&&proof?.token&&order.paymentMethod==="paymob"&&order.paymentStatus==="unpaid"&&order.status==="pending"&&<button type="button" className="action gold" disabled={busy} onClick={pay}>{tr("Continue to Paymob","كمّل الدفع مع Paymob")}<ArrowUpRight size={15}/></button>}
     </section>}
   </main>;
 }

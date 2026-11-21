@@ -195,6 +195,7 @@ textarea {
   font-weight:700}
 .campaign-strip {
   display:block;
+  direction:ltr;
   width:100%;
   min-width:0;
   overflow:hidden;

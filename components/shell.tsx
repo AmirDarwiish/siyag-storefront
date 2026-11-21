@@ -21,40 +21,33 @@ export function Modal({open,onOpenChange,title,description,className,placement,c
   </DialogContent></Dialog>;
 }
 
-function campaignMessage(value:string){
-  try {
-    const parsed=JSON.parse(value) as {description?:string;tiers?:{value:string;label:string}[];footnote?:string};
-    if(parsed && typeof parsed.description==="string" && Array.isArray(parsed.tiers))
-      return {description:parsed.description,tiers:parsed.tiers.slice(0,3).filter(t=>t && typeof t.value==="string" && typeof t.label==="string"),footnote:typeof parsed.footnote==="string"?parsed.footnote:""};
-  } catch {}
-  return {description:value,tiers:[],footnote:""};
-}
-
+const offerCode="SIYAG4";
 function Campaign(){
-  const {tr,ar,demo}=useStore();
-  const [offer,setOffer]=useState<Content>();
+  const {tr}=useStore();
   const [open,setOpen]=useState(false);
+  const [copied,setCopied]=useState(false);
   useEffect(()=>{
-    const controller=new AbortController();
-    let timer:ReturnType<typeof setTimeout>|undefined;
-    api<Content[]>("store/content?area=campaign",{signal:controller.signal}).then(([item])=>{
-      if(!item)return;
-      setOffer(item);
-
-    }).catch(()=>{});
-    return()=>{controller.abort();clearTimeout(timer)};
+    try{if(sessionStorage.getItem("siyag4-seen"))return}catch{}
+    setOpen(true);
   },[]);
-  if(!offer)return null;
-  const action=offer.actionUrl?.startsWith("/")&&!offer.actionUrl.startsWith("//")?offer.actionUrl:"/shop";
-  const message=campaignMessage(ar?offer.textAr:offer.textEn);
+  function changeOpen(value:boolean){
+    setOpen(value);
+    if(!value){try{sessionStorage.setItem("siyag4-seen","1")}catch{}}
+  }
+  async function copyCode(){
+    try{await navigator.clipboard.writeText(offerCode);setCopied(true)}catch{setCopied(false)}
+  }
+  const title=tr("Choose 4 perfumes. Pay for just 3.","اختار ٤ عطور وهتدفع تمن ٣ بس");
   return <>
-    <Link className="campaign-strip" href={action}>{ar?offer.titleAr:offer.titleEn}<ArrowUpRight size={12}/></Link>
-    <Modal open={open} onOpenChange={setOpen} title={ar?offer.titleAr:offer.titleEn} className="campaign-modal">
-      <Wordmark/><div className="campaign-rule"/><div className="eyebrow">{demo?tr("CAMPAIGN PREVIEW","معاينة الحملة"):tr("THE SIYAG EDIT","مختارات سياج")}</div>
-      <h2>{ar?offer.titleAr:offer.titleEn}</h2><p>{message.description}</p>
-      {message.tiers.length>0&&<div className="campaign-tiers">{message.tiers.map(t=><div key={t.value+t.label}><strong>{t.value}</strong><small>{t.label}</small></div>)}</div>}
-      {message.footnote&&<small className="campaign-note">{message.footnote}</small>}
-      <Link href={action} className="action gold" onClick={()=>setOpen(false)}>{(ar?offer.actionAr:offer.actionEn)||tr("Explore the collection","استكشف التشكيلة")}<ArrowUpRight size={16}/></Link>
+    <button type="button" className="campaign-strip" onClick={()=>changeOpen(true)} aria-haspopup="dialog">
+      <span>{tr("Choose 4 perfumes. Pay for just 3.","اختار ٤ عطور وهتدفع تمن ٣ بس")}</span><bdi>{offerCode}</bdi>
+    </button>
+    <Modal open={open} onOpenChange={changeOpen} title={title} className="campaign-modal">
+      <Wordmark/><div className="campaign-rule"/><div className="eyebrow">{tr("THE SIYAG COLLECTION","مجموعة SIYAG")}</div>
+      <h2>{title}</h2><p>{tr("Make your own selection. Add any four full bottles and pay for just three.","كوّن مجموعتك على ذوقك. اختار أي ٤ زجاجات، وهتدفع تمن ٣ بس.")}</p>
+      <button type="button" className="campaign-code" onClick={()=>void copyCode()} aria-label={tr("Copy code SIYAG4","نسخ كود SIYAG4")}><bdi>{offerCode}</bdi><span aria-live="polite">{copied?tr("Copied","تم النسخ"):tr("Copy code","انسخ الكود")}</span></button>
+      <small className="campaign-note">{tr("30 ml & 50 ml · Mix fragrances and sizes · Applied automatically · Cannot be combined with other offers.","٣٠ و٥٠ مل · اختار عطور وأحجام مختلفة · الخصم تلقائي · لا يُجمع مع عروض أخرى.")}</small>
+      <Link href="/shop?collection=signature" className="action gold" onClick={()=>changeOpen(false)}>{tr("Explore the collection","اكتشف المجموعة")}</Link>
     </Modal>
   </>;
 }

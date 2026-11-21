@@ -90,7 +90,7 @@ assert.equal(storefrontProduct(makeProduct('sample-only',true,'woody','sample'))
 console.log('Public catalog visibility checks passed: discovery sizes hidden without mutating inventory.');
 
 const {publishedProducts,publishedProduct,publishedPage,publishedCollections}=await source('lib/published-catalog.ts');
-assert.deepEqual(publishedProducts.map(p=>p.slug),['siyag-7','siyag-6','siyag-1','siyag-3']);
+assert.deepEqual(publishedProducts.map(p=>p.slug),['siyag-1','siyag-3','siyag-6','siyag-7']);
 for(const p of publishedProducts){assert.deepEqual(p.variants.map(v=>v.sizeMl),[30,50]);assert(p.variants.every(v=>v.format==='fullBottle'&&v.compareAtMinor==null));assert(p.images.every(src=>!src.includes('preview')))}
 for(const slug of ['noir','musk','oud','siyag-9','amber-wood-preview'])assert.equal(publishedProduct(slug),null);
 assert.equal(publishedPage(new URLSearchParams('q=ناكسوس')).data[0].slug,'siyag-7');
@@ -108,12 +108,17 @@ console.log('Approved catalog checks passed: four numbered fragrances, 30/50 ml 
 
 for(const n of [1,3,6]){
  const p=publishedProduct('siyag-'+n);
- assert(p.images[0].endsWith('-photo.webp'));
- assert(p.notesImageUrl.endsWith('-notes.webp'));
+ assert(p.images[0].endsWith('-notes-gold.webp'));
+ assert.equal(p.notesImageUrl,p.images[0]);
  assert(p.inspiration.imageUrl.endsWith('-3d.webp'));
  assert(p.topNotes.length&&p.heartNotes.length&&p.baseNotes.length);
- assert(p.variants.every(v=>v.imageUrl===p.images[0]));
+ assert(p.variants.every(v=>!v.imageUrl));
 }
 assert.equal(publishedProduct('siyag-3').inspiration.nameEn,'Nishane Ani');
 assert.equal(publishedProduct('siyag-6').inspiration.nameEn,'Amouage Decision');
 console.log('Fragrance media checks passed: photographic galleries, notes, confirmed inspirations and unchanged 30/50 ml options.');
+
+assert.deepEqual(publishedCollections.map(c=>c.slug),['signature']);
+assert(publishedProducts.every(p=>p.collections.length===1&&p.collections[0]==='signature'&&p.images.length===2));
+assert(publishedProduct('siyag-7').images[0].includes('4b6562b4'));
+assert(publishedProduct('siyag-7').images[1].includes('517524ce'));

@@ -60,7 +60,7 @@ export function Home() {
 
   return <main className="home-experience" ref={homeRef}>
     <HomeBanners/>
-    <ShopByCategory collections={collections}/>
+    <ShopByCategory/>
 
     <div id="collections">{collections.map(collection=><HomeCollection key={collection.slug} collection={collection} catalog={products} loading={loading} failed={failed} retry={()=>setAttempt(value=>value+1)}/>)}</div>
 

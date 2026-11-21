@@ -63,6 +63,8 @@
   --motion-rail-speed: 18;
   --motion-rail-resume: 8000ms;
   --motion-hero-drift: 9000ms;
+  --motion-campaign-scroll: 40s;
+  --campaign-modal-width: 380px;
   --home-icon-stroke: 1.4;
   --home-icon-surface: var(--white);
   --home-border: 0;

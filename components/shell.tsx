@@ -39,14 +39,14 @@ function Campaign(){
   }
   const title=tr("Choose 4 perfumes. Pay for just 3.","اختار ٤ عطور وهتدفع تمن ٣ بس");
   return <>
-    <button type="button" className="campaign-strip" onClick={()=>changeOpen(true)} aria-haspopup="dialog">
-      <span>{tr("Choose 4 perfumes. Pay for just 3.","اختار ٤ عطور وهتدفع تمن ٣ بس")}</span><bdi>{offerCode}</bdi>
+    <button type="button" className="campaign-strip" onClick={()=>changeOpen(true)} aria-haspopup="dialog" aria-label={`${title} · ${offerCode}`}>
+      <span className="campaign-track" aria-hidden="true">{[0,1].map(group=><span className="campaign-track-group" key={group}>{[0,1,2,3].map(item=><span className="campaign-item" dir="auto" key={item}><span>{title}</span><bdi>{offerCode}</bdi></span>)}</span>)}</span>
     </button>
     <Modal open={open} onOpenChange={changeOpen} title={title} className="campaign-modal">
-      <Wordmark/><div className="campaign-rule"/><div className="eyebrow">{tr("THE SIYAG COLLECTION","مجموعة SIYAG")}</div>
-      <h2>{title}</h2><p>{tr("Make your own selection. Add any four full bottles and pay for just three.","كوّن مجموعتك على ذوقك. اختار أي ٤ زجاجات، وهتدفع تمن ٣ بس.")}</p>
-      <button type="button" className="campaign-code" onClick={()=>void copyCode()} aria-label={tr("Copy code SIYAG4","نسخ كود SIYAG4")}><bdi>{offerCode}</bdi><span aria-live="polite">{copied?tr("Copied","تم النسخ"):tr("Copy code","انسخ الكود")}</span></button>
-      <small className="campaign-note">{tr("30 ml & 50 ml · Mix fragrances and sizes · Applied automatically · Cannot be combined with other offers.","٣٠ و٥٠ مل · اختار عطور وأحجام مختلفة · الخصم تلقائي · لا يُجمع مع عروض أخرى.")}</small>
+      <Wordmark/><div className="eyebrow">{tr("THE SIYAG COLLECTION","مجموعة SIYAG")}</div>
+      <h2>{title}</h2>
+      <button type="button" className="campaign-code" onClick={()=>void copyCode()} aria-label={tr("Copy code SIYAG4","نسخ كود SIYAG4")}><bdi>{offerCode}</bdi><span className="campaign-copy" aria-live="polite">{copied?tr("Copied","تم النسخ"):tr("Copy code","انسخ الكود")}</span></button>
+      <small className="campaign-note">{tr("30 & 50 ml · Applied automatically.","٣٠ و٥٠ مل · الخصم تلقائي.")}</small>
       <Link href="/shop?collection=signature" className="action gold" onClick={()=>changeOpen(false)}>{tr("Explore the collection","اكتشف المجموعة")}</Link>
     </Modal>
   </>;

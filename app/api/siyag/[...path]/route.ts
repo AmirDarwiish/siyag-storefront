@@ -46,6 +46,10 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
       if(json){body=json;headers.set("Content-Type","application/json");}
     }
     const response=await requestStore(media?"/"+path:"/api/v1/"+path,incoming.search,{method,headers,body:body||undefined});
+    if(method==="GET"&&path==="store/collections"&&response.ok){
+      const rows=await response.json() as {slug:string}[];
+      return Response.json(rows.filter(row=>row.slug!=="discovery"),{headers:{"Cache-Control":"no-store"}});
+    }
     if(method==="GET"&&/^store\/products\/[a-z0-9-]+$/.test(path))return await catalogProduct(response);
     if((method==="GET"&&path==="store/cart")||linePath.test(path))return await cartImages(response);
     return new Response(response.status===204?null:response.body,{status:response.status,headers:{

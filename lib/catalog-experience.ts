@@ -1,4 +1,6 @@
 import type {Product,Variant,Content} from './store';
+// Discovery variants remain in the back office and are hidden from the public catalog.
+export function storefrontProduct(product:Product):Product {return {...product,variants:product.variants.filter(v=>v.format==='fullBottle'),collections:product.collections.filter(slug=>slug!=='discovery')}}
 export const DISCOVERY_HREF='/shop?collection=discovery';
 export const collectionHref=(slug:string)=>slug==='discovery'?DISCOVERY_HREF:'/shop?collection='+encodeURIComponent(slug);
 export const isDiscovery=(variant:Variant)=>variant.format!=='fullBottle';

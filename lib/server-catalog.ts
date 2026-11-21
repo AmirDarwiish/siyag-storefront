@@ -1,6 +1,6 @@
 import {defaultVariantImages} from './variant-image-defaults';
 import {requestStore} from './server-store';
-import {availableFirst,applyVariantImages,isDiscovery,parseVariantImages,type VariantImages} from './catalog-experience';
+import {availableFirst,storefrontProduct,applyVariantImages,isDiscovery,parseVariantImages,type VariantImages} from './catalog-experience';
 import type {Product,Page,Content,Cart} from './store';
 import {unstable_cache} from 'next/cache';
 import {productInspirations,type ProductInspiration} from './product-inspiration';
@@ -34,14 +34,16 @@ export async function catalogPage(query:URLSearchParams){
    return (await next.json() as Page<Product>).data;
   }));products.push(...pages.flat());
  }
- const unique=[...new Map(products.map(p=>[p.id,p])).values()];
+ const unique=[...new Map(products.map(p=>[p.id,p])).values()].map(storefrontProduct).filter(p=>p.variants.length);
  const matching=query.get('collection')==='discovery'?unique.filter(p=>p.variants.some(isDiscovery)):unique;
  const ordered=availableFirst(matching,query);
  return Response.json({data:ordered.slice((pageNumber-1)*pageSize,pageNumber*pageSize).map(p=>applyVariantImages(p,images)),totalCount:ordered.length,totalPages:Math.ceil(ordered.length/pageSize),pageSize,pageNumber} satisfies Page<Product>,{headers:{'Cache-Control':'no-store'}});
 }
 export async function catalogProduct(response:Response){
  if(!response.ok)return response;
- const [product,images]=await Promise.all([response.json() as Promise<Product>,loadVariantImages()]);
+ const [raw,images]=await Promise.all([response.json() as Promise<Product>,loadVariantImages()]);
+ const product=storefrontProduct(raw);
+ if(!product.variants.length)return Response.json({detail:"Product not found."},{status:404});
  return Response.json(applyVariantImages(product,images),{headers:{'Cache-Control':'no-store'}});
 }
 export async function cartImages(response:Response){

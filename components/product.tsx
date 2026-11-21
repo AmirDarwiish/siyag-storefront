@@ -15,6 +15,7 @@ import {Modal} from "./shell";
 import {Reviews} from "./reviews";
 import {noteName} from "@/lib/scent-profile";
 import {variantImage,recommendations} from "@/lib/catalog-experience";
+import {FragranceNotes} from "./fragrance-notes";
 import {ScentSignature} from "./scent-signature";
 
 function Price({variant}:{variant:Variant}){
@@ -183,7 +184,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
         </div>
       </div>}
     </Modal>
-    {product.slug==="siyag-7"&&<ScentSignature key={product.slug+"-signature"} product={product}/>}
+    {product.slug==="siyag-7"?<ScentSignature key={product.slug+"-signature"} product={product}/>:<FragranceNotes product={product}/>}
     {product.slug==="siyag-7"&&<Reviews key={product.slug} product={product.slug}/>}
     {related.length>0&&<section id="available-alternatives" className="container section"><div className="section-head"><div><span className="eyebrow">SIYAG PARFUMS</span><h2>{tr("Available fragrances you may like","عطور متاحة ممكن تعجبك")}</h2></div></div><div className="product-grid">{related.map(p=><ProductCard key={p.id} product={p}/>)}</div></section>}
     {commerce.purchasingEnabled&&sticky&&!keyboardOpen&&<section className="product-purchase-dock" aria-label={tr("Purchase options","خيارات الشراء")}>

@@ -76,18 +76,30 @@ export const publishedProducts:Product[]=[
     "slug": "siyag-6",
     "nameEn": "SIYAG 6",
     "nameAr": "SIYAG 6",
-    "descriptionEn": "SIYAG 6 — inspired by Decision. Available in 30 ml and 50 ml.",
-    "descriptionAr": "SIYAG 6 — مستوحى من ديسيشن. متوفر بحجمَي ٣٠ مل و٥٠ مل.",
+    "descriptionEn": "Inspired by Amouage Decision: pink pepper, bergamot and cardamom meet frankincense, juniper and myrrh, settling into cedarwood, patchouli and vanilla.",
+    "descriptionAr": "مستوحى من أمواج ديسيشن؛ فلفل وردي وبرغموت وهيل، يتبعهم لبان وعرعر ومُرّ، وتستقر النوتات على خشب الأرز والباتشولي والفانيليا.",
     "brand": "SIYAG",
-    "family": "other",
+    "family": "woody",
     "concentration": "parfum",
     "audience": "unisex",
-    "topNotes": [],
-    "heartNotes": [],
-    "baseNotes": [],
+    "topNotes": [
+      "Pink Pepper | فلفل وردي",
+      "Bergamot | برغموت",
+      "Cardamom | هيل"
+    ],
+    "heartNotes": [
+      "Frankincense | لبان",
+      "Juniper | عرعر",
+      "Myrrh | مُرّ"
+    ],
+    "baseNotes": [
+      "Patchouli | باتشولي",
+      "Cedarwood | خشب الأرز",
+      "Vanilla | فانيليا"
+    ],
     "images": [
-      "/brand/numbered/siyag-6-50.svg",
-      "/brand/numbered/siyag-6-30.svg"
+      "/brand/numbered/siyag-6-photo.webp",
+      "/brand/numbered/siyag-6-notes.webp"
     ],
     "featured": false,
     "collections": [
@@ -95,10 +107,11 @@ export const publishedProducts:Product[]=[
       "new-arrivals"
     ],
     "inspiration": {
-      "nameEn": "Decision",
-      "nameAr": "ديسيشن",
-      "descriptionEn": "",
-      "descriptionAr": ""
+      "nameEn": "Amouage Decision",
+      "nameAr": "أمواج ديسيشن",
+      "descriptionEn": "Inspired by Amouage Decision.",
+      "descriptionAr": "مستوحى من أمواج ديسيشن.",
+      "imageUrl": "/brand/inspiration/decision-3d.webp"
     },
     "variants": [
       {
@@ -109,7 +122,7 @@ export const publishedProducts:Product[]=[
         "priceMinor": 0,
         "compareAtMinor": null,
         "inStock": true,
-        "imageUrl": "/brand/numbered/siyag-6-30.svg"
+        "imageUrl": "/brand/numbered/siyag-6-photo.webp"
       },
       {
         "id": "8aee8ff0-44ba-5635-b086-8af7bc778775",
@@ -119,27 +132,42 @@ export const publishedProducts:Product[]=[
         "priceMinor": 0,
         "compareAtMinor": null,
         "inStock": true,
-        "imageUrl": "/brand/numbered/siyag-6-50.svg"
+        "imageUrl": "/brand/numbered/siyag-6-photo.webp"
       }
-    ]
+    ],
+    "notesImageUrl": "/brand/numbered/siyag-6-notes.webp",
+    "seo": {
+      "titleEn": "SIYAG 6",
+      "descriptionEn": "Inspired by Amouage Decision: pink pepper, bergamot and cardamom meet frankincense, juniper and myrrh, settling into cedarwood, patchouli and vanilla."
+    }
   },
   {
     "id": "f0f4eec4-4e7c-5edb-8423-c59686f2a7d8",
     "slug": "siyag-1",
     "nameEn": "SIYAG 1",
     "nameAr": "SIYAG 1",
-    "descriptionEn": "SIYAG 1 — inspired by Stronger With You Intensely. Available in 30 ml and 50 ml.",
-    "descriptionAr": "SIYAG 1 — مستوحى من سترونجر ويذ يو إنتنسلي. متوفر بحجمَي ٣٠ مل و٥٠ مل.",
+    "descriptionEn": "A warm, ambery profile inspired by Stronger With You Intensely: pink pepper, aromatic lavender and sage, with chestnut, cinnamon and a soft vanilla-wood finish.",
+    "descriptionAr": "طابع عنبري دافئ مستوحى من سترونجر ويذ يو إنتنسلي؛ فلفل وردي مع لافندر ومريمية، ولمسات كستناء وقرفة تستقر على فانيليا وأخشاب عنبرية.",
     "brand": "SIYAG",
-    "family": "other",
+    "family": "amber",
     "concentration": "parfum",
     "audience": "unisex",
-    "topNotes": [],
-    "heartNotes": [],
-    "baseNotes": [],
+    "topNotes": [
+      "Pink Pepper | فلفل وردي"
+    ],
+    "heartNotes": [
+      "Lavender | لافندر",
+      "Sage | مريمية",
+      "Chestnut | كستناء",
+      "Cinnamon | قرفة"
+    ],
+    "baseNotes": [
+      "Vanilla | فانيليا",
+      "Amber Woods | أخشاب عنبرية"
+    ],
     "images": [
-      "/brand/numbered/siyag-1-50.svg",
-      "/brand/numbered/siyag-1-30.svg"
+      "/brand/numbered/siyag-1-photo.webp",
+      "/brand/numbered/siyag-1-notes.webp"
     ],
     "featured": false,
     "collections": [
@@ -147,10 +175,11 @@ export const publishedProducts:Product[]=[
       "new-arrivals"
     ],
     "inspiration": {
-      "nameEn": "Stronger With You Intensely",
-      "nameAr": "سترونجر ويذ يو إنتنسلي",
-      "descriptionEn": "",
-      "descriptionAr": ""
+      "nameEn": "Emporio Armani Stronger With You Intensely",
+      "nameAr": "إمبوريو أرماني سترونجر ويذ يو إنتنسلي",
+      "descriptionEn": "Inspired by Emporio Armani Stronger With You Intensely.",
+      "descriptionAr": "مستوحى من إمبوريو أرماني سترونجر ويذ يو إنتنسلي.",
+      "imageUrl": "/brand/inspiration/intensely-3d.webp"
     },
     "variants": [
       {
@@ -161,7 +190,7 @@ export const publishedProducts:Product[]=[
         "priceMinor": 0,
         "compareAtMinor": null,
         "inStock": true,
-        "imageUrl": "/brand/numbered/siyag-1-30.svg"
+        "imageUrl": "/brand/numbered/siyag-1-photo.webp"
       },
       {
         "id": "d04eb4bf-38c7-5cae-b690-d2bd8165a564",
@@ -171,27 +200,49 @@ export const publishedProducts:Product[]=[
         "priceMinor": 0,
         "compareAtMinor": null,
         "inStock": true,
-        "imageUrl": "/brand/numbered/siyag-1-50.svg"
+        "imageUrl": "/brand/numbered/siyag-1-photo.webp"
       }
-    ]
+    ],
+    "notesImageUrl": "/brand/numbered/siyag-1-notes.webp",
+    "seo": {
+      "titleEn": "SIYAG 1",
+      "descriptionEn": "A warm, ambery profile inspired by Stronger With You Intensely: pink pepper, aromatic lavender and sage, with chestnut, cinnamon and a soft vanilla-wood finish."
+    }
   },
   {
     "id": "d3cf7f87-319d-5d65-816c-903fa51b295c",
     "slug": "siyag-3",
     "nameEn": "SIYAG 3",
     "nameAr": "SIYAG 3",
-    "descriptionEn": "SIYAG 3 — inspired by Nishane. Available in 30 ml and 50 ml.",
-    "descriptionAr": "SIYAG 3 — مستوحى من نيشاني. متوفر بحجمَي ٣٠ مل و٥٠ مل.",
+    "descriptionEn": "Inspired by Nishane Ani: a bright bergamot and ginger opening, a heart of blackcurrant, rose and cardamom, and a warm vanilla base layered with woods and resins.",
+    "descriptionAr": "مستوحى من نيشاني آني؛ افتتاحية برغموت وزنجبيل، وقلب من الكشمش الأسود والورد التركي والهيل، فوق قاعدة فانيليا دافئة مع الأخشاب والراتنجات.",
     "brand": "SIYAG",
-    "family": "other",
+    "family": "gourmand",
     "concentration": "parfum",
     "audience": "unisex",
-    "topNotes": [],
-    "heartNotes": [],
-    "baseNotes": [],
+    "topNotes": [
+      "Bergamot | برغموت",
+      "Green Notes | نوتات خضراء",
+      "Blue Ginger | زنجبيل أزرق",
+      "Pink Pepper | فلفل وردي"
+    ],
+    "heartNotes": [
+      "Blackcurrant | كشمش أسود",
+      "Turkish Rose | ورد تركي",
+      "Cardamom | هيل"
+    ],
+    "baseNotes": [
+      "Patchouli | باتشولي",
+      "Cedarwood | خشب الأرز",
+      "Vanilla | فانيليا",
+      "Benzoin | بنزوين",
+      "Ambergris | عنبر رمادي",
+      "Musk | مسك",
+      "Sandalwood | خشب الصندل"
+    ],
     "images": [
-      "/brand/numbered/siyag-3-50.svg",
-      "/brand/numbered/siyag-3-30.svg"
+      "/brand/numbered/siyag-3-photo.webp",
+      "/brand/numbered/siyag-3-notes.webp"
     ],
     "featured": false,
     "collections": [
@@ -199,10 +250,11 @@ export const publishedProducts:Product[]=[
       "new-arrivals"
     ],
     "inspiration": {
-      "nameEn": "Nishane",
-      "nameAr": "نيشاني",
-      "descriptionEn": "",
-      "descriptionAr": ""
+      "nameEn": "Nishane Ani",
+      "nameAr": "نيشاني آني",
+      "descriptionEn": "Inspired by Nishane Ani.",
+      "descriptionAr": "مستوحى من نيشاني آني.",
+      "imageUrl": "/brand/inspiration/ani-3d.webp"
     },
     "variants": [
       {
@@ -213,7 +265,7 @@ export const publishedProducts:Product[]=[
         "priceMinor": 0,
         "compareAtMinor": null,
         "inStock": true,
-        "imageUrl": "/brand/numbered/siyag-3-30.svg"
+        "imageUrl": "/brand/numbered/siyag-3-photo.webp"
       },
       {
         "id": "95322814-abdb-5281-8ace-e0eb86fe029d",
@@ -223,9 +275,14 @@ export const publishedProducts:Product[]=[
         "priceMinor": 0,
         "compareAtMinor": null,
         "inStock": true,
-        "imageUrl": "/brand/numbered/siyag-3-50.svg"
+        "imageUrl": "/brand/numbered/siyag-3-photo.webp"
       }
-    ]
+    ],
+    "notesImageUrl": "/brand/numbered/siyag-3-notes.webp",
+    "seo": {
+      "titleEn": "SIYAG 3",
+      "descriptionEn": "Inspired by Nishane Ani: a bright bergamot and ginger opening, a heart of blackcurrant, rose and cardamom, and a warm vanilla base layered with woods and resins."
+    }
   }
 ];
 export const publishedCollections:Collection[]=[

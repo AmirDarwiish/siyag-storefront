@@ -1,4 +1,5 @@
 "use client";
+import {commerce} from "@/lib/commerce";
 
 import Link from "next/link";
 import {track} from "@/lib/analytics";
@@ -112,11 +113,11 @@ export function Header(){
       <div className="nav-tools">
         <button type="button" className="language-switch" onClick={toggleLanguage} aria-label={tr("Switch to Arabic","التبديل للإنجليزية")}>{ar?"EN":"العربية"}</button>
         <Link className="icon desktop-heart" href="/shop?saved=1" aria-label={tr("Wishlist","المفضلة")}><Heart size={19}/></Link>
-        <button type="button" className="icon bag-icon" aria-label={tr(`Bag, ${quantity} items`,`الحقيبة، ${quantity} منتجات`)} onClick={()=>setCartOpen(true)}><ShoppingBag size={20}/>{quantity>0&&<span>{quantity}</span>}</button>
+        <button type="button" className="icon bag-icon" disabled={!commerce.purchasingEnabled} aria-label={tr(`Bag, ${quantity} items`,`الحقيبة، ${quantity} منتجات`)} onClick={()=>setCartOpen(true)}><ShoppingBag size={20}/>{quantity>0&&<span>{quantity}</span>}</button>
       </div>
     </div>
     <Modal open={menu} onOpenChange={setMenu} title={tr("Menu","القائمة")} className="nav-modal" placement="side">
-      <Wordmark/>{navigationCollections.map(collection=><Link key={collection.slug} href={"/shop?collection="+encodeURIComponent(collection.slug)} onClick={()=>setMenu(false)}>{name(collection,ar?"ar":"en")}</Link>)}<Link href="/shop" onClick={()=>setMenu(false)}>{tr("Fragrances","العطور")}</Link><Link href="/shop?collection=discovery" onClick={()=>setMenu(false)}>{tr("Discovery sizes","أحجام التجربة")}</Link><Link href="/about" onClick={()=>setMenu(false)}>{tr("The house","دار SIYAG")}</Link><Link href="/shop?saved=1" onClick={()=>setMenu(false)}>{tr("Wishlist","المفضلة")}</Link><Link href="/track" onClick={()=>setMenu(false)}>{tr("Track your order","تتبّع طلبك")}</Link><Link href="/contact" onClick={()=>setMenu(false)}>{tr("Client care","خدمة العملاء")}</Link>
+      <Wordmark/>{navigationCollections.map(collection=><Link key={collection.slug} href={"/shop?collection="+encodeURIComponent(collection.slug)} onClick={()=>setMenu(false)}>{name(collection,ar?"ar":"en")}</Link>)}<Link href="/shop" onClick={()=>setMenu(false)}>{tr("Fragrances","العطور")}</Link><Link href="/about" onClick={()=>setMenu(false)}>{tr("The house","دار SIYAG")}</Link><Link href="/shop?saved=1" onClick={()=>setMenu(false)}>{tr("Wishlist","المفضلة")}</Link><Link href="/track" onClick={()=>setMenu(false)}>{tr("Track your order","تتبّع طلبك")}</Link><Link href="/contact" onClick={()=>setMenu(false)}>{tr("Client care","خدمة العملاء")}</Link>
     </Modal>
     <div className="container header-search" onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))setSearch(false)}}
       onKeyDown={event=>{if(event.key==="Escape")setSearch(false)}}>
@@ -140,7 +141,7 @@ export function Header(){
             const variant=variantFor(product);
             return <Link key={product.id} href={productUrl(product,variant)} onClick={()=>setSearch(false)}>
               <img src={imageUrl(product.images[0])} alt=""/><span>{name(product,ar?"ar":"en")}</span>
-              {variant&&<small>{money(variant.priceMinor,ar?"ar":"en")}</small>}
+              {commerce.showPrices&&variant&&<small>{money(variant.priceMinor,ar?"ar":"en")}</small>}
             </Link>;
           })}
         </div>
@@ -152,6 +153,7 @@ export function Header(){
 
 export function BagContents({page=false}:{page?:boolean}){
   const {cart,setCartOpen,busy,setQuantity,tr,lang,demo,bagNotice}=useStore();
+  if(!commerce.purchasingEnabled)return null;
   return <div className={page?"cart-content":"bag-content"}>
     <div className="bag-heading"><div className="eyebrow">SIYAG</div>{page?<h1>{tr("Your bag","حقيبتك")}</h1>:<h2>{tr("Your bag","حقيبتك")}</h2>}<div role="status">{bagNotice&&<p className="bag-notice" data-kind={bagNotice.kind}>{bagNotice.text}</p>}</div></div>
     {!cart.lines.length?<div className="bag-empty"><ShoppingBag size={28}/><p>{tr("Your chosen fragrances will appear here.","ستظهر هنا العطور التي تضيفها إلى حقيبتك.")}</p><Link href="/shop" className="action ink" onClick={()=>setCartOpen(false)}>{tr("Explore the collection","استكشف التشكيلة")}</Link></div>:<>
@@ -182,8 +184,8 @@ export function Footer(){
   const {tr}=useStore();
   return <footer className="site-footer"><div className="footer-inner">
     <div className="footer-brand"><Link href="/" aria-label="SIYAG"><Wordmark/></Link><p>{tr("An Egyptian fragrance house.","دار عطور مصرية.")}</p></div>
-    <FooterGroup id="footer-explore" title={tr("Explore","استكشف")}><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/about">{tr("The house of SIYAG","دار SIYAG")}</Link><Link href="/cart">{tr("Your bag","حقيبتك")}</Link></FooterGroup>
+    <FooterGroup id="footer-explore" title={tr("Explore","استكشف")}><Link href="/shop">{tr("The collection","التشكيلة")}</Link><Link href="/about">{tr("The house of SIYAG","دار SIYAG")}</Link>{commerce.purchasingEnabled&&<Link href="/cart">{tr("Your bag","حقيبتك")}</Link>}</FooterGroup>
     <FooterGroup id="footer-care" title={tr("Client care","خدمة العملاء")}><Link href="/track">{tr("Track your order","تتبّع طلبك")}</Link><Link href="/reviews">{tr("Store reviews","تقييمات المتجر")}</Link><Link href="/shop?saved=1">{tr("Your wishlist","مفضلتك")}</Link><Link href="/contact">{tr("Contact us","تواصل معنا")}</Link><Link href="/faq">{tr("FAQ","الأسئلة الشائعة")}</Link></FooterGroup>
     <FooterGroup id="footer-information" title={tr("The details","المعلومات")}><Link href="/policies/shipping">{tr("Shipping & delivery","الشحن والتوصيل")}</Link><Link href="/policies/returns">{tr("Returns & refunds","الاسترجاع")}</Link><Link href="/policies/privacy">{tr("Privacy","الخصوصية")}</Link><Link href="/policies/terms">{tr("Terms","شروط التسوق")}</Link></FooterGroup>
-  </div><div className="footer-end"><span>© {new Date().getFullYear()} SIYAG PARFUMS</span><span>{tr("EGYPT · EGP","مصر · جنيه مصري")}</span><button className="footer-privacy" type="button" onClick={()=>window.dispatchEvent(new Event("siyag-open-privacy"))}>{tr("Privacy preferences","إعدادات الخصوصية")}</button><button type="button" className="back-to-top" aria-label={tr("Back to top","العودة لأعلى")} onClick={()=>window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})}><ArrowDownLeft size={17}/></button></div></footer>;
+  </div><div className="footer-end"><span>© {new Date().getFullYear()} SIYAG PARFUMS</span><span>{tr("EGYPT","مصر")}</span><button className="footer-privacy" type="button" onClick={()=>window.dispatchEvent(new Event("siyag-open-privacy"))}>{tr("Privacy preferences","إعدادات الخصوصية")}</button><button type="button" className="back-to-top" aria-label={tr("Back to top","العودة لأعلى")} onClick={()=>window.scrollTo({top:0,behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"instant":"smooth"})}><ArrowDownLeft size={17}/></button></div></footer>;
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import {commerce} from "@/lib/commerce";
 import Link from "next/link";
 import {track} from "@/lib/analytics";
 import {useRouter,useSearchParams} from "next/navigation";
@@ -14,7 +15,7 @@ import {discoveryProduct} from "@/lib/catalog-experience";
 import {bannerHref} from "@/lib/banners";
 
 type CatalogResult = {page: Page<Product>; catalogEmpty: boolean};
-const filters=["q","collection","family","concentration","format","sizeMl","maxPriceMinor","inStock","sort","pageNumber"] as const;
+const filters=["q","collection","family","concentration","format","sizeMl","inStock","sort","pageNumber"] as const;
 
 export function Shop(){
   const {tr,ar,lang,saved}=useStore();
@@ -41,6 +42,7 @@ export function Shop(){
   useEffect(()=>{
     const controller=new AbortController();
     const current=new URLSearchParams(queryString);
+    if(!commerce.showPrices)current.delete("maxPriceMinor");
     const data=new URLSearchParams({pageSize:"12"});
     for(const key of filters){const value=current.get(key);if(value)data.set(key,value)}
     setResult(undefined);setError(false);
@@ -66,7 +68,7 @@ export function Shop(){
   const title=query.get("sort")==="newest"?tr("New arrivals","وصل حديثًا"):savedOnly?tr("Your favourites","عطورك المفضّلة"):collection?name(collection,lang):term?tr("Search results","نتائج البحث"):tr("The fragrance collection","مجموعة SIYAG");
   const activeFilters=filters.filter(key=>!["sort","pageNumber"].includes(key)&&!(key==="collection"&&!term)&&query.has(key)).map(key=>{
     const value=query.get(key)!;
-    const label=key==="collection"?name(collections.find(c=>c.slug===value)??{nameEn:value,nameAr:value},lang):key==="family"?(families[value]?.[ar?1:0]??value):key==="concentration"?(concentrations[value]?.[ar?1:0]??value):key==="format"?(formats[value as keyof typeof formats]?.[ar?1:0]??value):key==="sizeMl"?`${value} ${tr("ml","مل")}`:key==="maxPriceMinor"?tr(`Up to ${money(Number(value),lang)}`,`حتى ${money(Number(value),lang)}`):key==="inStock"?tr("In stock","متوفر"):value;
+    const label=key==="collection"?name(collections.find(c=>c.slug===value)??{nameEn:value,nameAr:value},lang):key==="family"?(families[value]?.[ar?1:0]??value):key==="concentration"?(concentrations[value]?.[ar?1:0]??value):key==="format"?(formats[value as keyof typeof formats]?.[ar?1:0]??value):key==="sizeMl"?`${value} ${tr("ml","مل")}`:key==="inStock"?tr("In stock","متوفر"):value;
     return {key,label};
   });
   const hasTools=!savedOnly&&catalogAvailable&&!error;
@@ -87,14 +89,13 @@ export function Shop(){
           {select("concentration",tr("Concentration","التركيز"),Object.entries(concentrations).map(([k,v])=>[k,v[ar?1:0]]))}
           {select("format",tr("Format","نوع العبوة"),Object.entries(formats).filter(([k])=>k==="fullBottle").map(([k,v])=>[k,v[ar?1:0]]))}
           <form key={query.get("sizeMl")??"size"} onSubmit={e=>{e.preventDefault();change("sizeMl",String(new FormData(e.currentTarget).get("size")||""))}}><label className="filter-control">{tr("Size in ml","الحجم بالمل")}<input type="number" name="size" min={1} defaultValue={query.get("sizeMl")??""} placeholder={tr("Any size","أي حجم")}/></label><button type="submit" className="text-link">{tr("Apply","تطبيق")}</button></form>
-          <form key={query.get("maxPriceMinor")??"price"} onSubmit={e=>{e.preventDefault();const value=String(new FormData(e.currentTarget).get("price")||"");change("maxPriceMinor",value?String(Math.round(Number(value)*100)):"")}}><label className="filter-control">{tr("Maximum price · EGP","أقصى سعر · جنيه")}<input type="number" name="price" min={0} step="0.01" defaultValue={query.has("maxPriceMinor")?Number(query.get("maxPriceMinor"))/100:""} placeholder={tr("Any price","أي سعر")}/></label><button type="submit" className="text-link">{tr("Apply","تطبيق")}</button></form>
           <label className="stock-filter"><input type="checkbox" checked={query.get("inStock")==="true"} onChange={e=>change("inStock",e.target.checked?"true":"")}/>{tr("In stock only","المتوفر فقط")}</label></>}
   return <main className="shop-page">
     {savedOnly||term?<div className="shop-intro"><div className="container"><div className="crumb"><Link href="/">{tr("Home","الرئيسية")}</Link><span>/</span>{tr("The collection","التشكيلة")}</div><span className="eyebrow">SIYAG PARFUMS</span><h1>{title}</h1><p>{term?tr(`Search for “${term}”`,`البحث عن «${term}»`):savedOnly?tr("A place for the fragrances you’d like to revisit.","مساحة للعطور التي تودّ العودة إليها."):tr("Explore by scent family, concentration and size.","تصفّح العطور بحسب العائلة العطرية والتركيز والحجم.")}</p></div></div>:<h1 className="sr-only">{title}</h1>}
     <div className="container shop-content">
  {!savedOnly&&!term&&<>{banner?.imageUrl&&<section className="catalog-banner" aria-label={tr("SIYAG highlights","مختارات SIYAG")}>{bannerHref(banner.actionUrl)?<Link href={bannerHref(banner.actionUrl)!} aria-label={(ar?banner.titleAr:banner.titleEn)||tr("Explore SIYAG","اكتشف SIYAG")}><StoreImage src={imageUrl(banner.imageUrl)} alt={(ar?banner.titleAr:banner.titleEn)||"SIYAG"} width={1600} height={540} sizes="(max-width:767px) 100vw,90vw" fetchPriority="high"/></Link>:<StoreImage src={imageUrl(banner.imageUrl)} alt={(ar?banner.titleAr:banner.titleEn)||"SIYAG"} width={1600} height={540} sizes="(max-width:767px) 100vw,90vw" fetchPriority="high"/>}</section>}<nav className="catalog-links" aria-label={tr("Shop edits","أقسام المتجر")}><Link href="/shop" aria-current={!query.has("collection")?"page":undefined}>{tr("All fragrances","كل العطور")}</Link>{collections.map(collection=><Link key={collection.slug} aria-current={query.get("collection")===collection.slug?"page":undefined} href={"/shop?collection="+encodeURIComponent(collection.slug)}>{name(collection,lang)}</Link>)}</nav></>}
         {hasTools&&<div className="shop-tools">
-        <div><button type="button" className="filter-toggle" onClick={()=>setMobileFilters(!mobileFilters)} aria-expanded={mobileFilters}><SlidersHorizontal size={17}/>{tr("Filters","التصفية")}</button><select className="sort-control" aria-label={tr("Sort","الترتيب")} value={query.get("sort")??""} onChange={e=>change("sort",e.target.value)}><option value="">{tr("Newest","الأحدث")}</option><option value="price-asc">{tr("Price, low to high","السعر من الأقل")}</option><option value="price-desc">{tr("Price, high to low","السعر من الأعلى")}</option></select></div>
+        <div><button type="button" className="filter-toggle" onClick={()=>setMobileFilters(!mobileFilters)} aria-expanded={mobileFilters}><SlidersHorizontal size={17}/>{tr("Filters","التصفية")}</button><select className="sort-control" aria-label={tr("Sort","الترتيب")} value={query.get("sort")??""} onChange={e=>change("sort",e.target.value)}><option value="">{tr("Newest","الأحدث")}</option>{commerce.showPrices&&<><option value="price-asc">{tr("Price, low to high","السعر من الأقل")}</option><option value="price-desc">{tr("Price, high to low","السعر من الأعلى")}</option></>}</select></div>
       </div>}
       {!savedOnly&&activeFilters.length>0&&<nav className="active-filters" aria-label={tr("Active filters","التصفية الحالية")}>{activeFilters.map(({key,label})=><button type="button" key={key} aria-label={tr(`Remove filter: ${label}`,`إزالة التصفية: ${label}`)} onClick={()=>change(key,"")}><span>{label}</span><span aria-hidden="true">×</span></button>)}<Link href="/shop">{tr("Clear all","مسح الكل")}</Link></nav>}
       <div className={`shop-layout ${hasTools?"":"saved-layout"}`}>

@@ -1,5 +1,6 @@
 "use client";
 
+import {commerce} from "@/lib/commerce";
 import {createContext,useCallback,useContext,useEffect,useRef,useState,type ReactNode} from "react";
 import {api,ApiError,type Language,type Cart,type Product,type Variant,name,imageUrl,money} from "@/lib/store";
 import Link from "next/link";
@@ -69,6 +70,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
     }
     window.addEventListener("storage",syncSaved);
     const cleanup=()=>window.removeEventListener("storage",syncSaved);
+    if(!commerce.purchasingEnabled)return cleanup;
     if(demo){
       try {
         const preview=JSON.parse(sessionStorage.getItem("siyag-demo-cart")||"null") as Cart|null;
@@ -87,8 +89,9 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
   },[demo,set]);
   useEffect(()=>{document.documentElement.lang=lang;document.documentElement.dir=lang==="ar"?"rtl":"ltr"},[lang]);
   useEffect(()=>{if(!bagNotice)return;const timeout=setTimeout(()=>setBagNotice(null),8000);return()=>clearTimeout(timeout)},[bagNotice]);
-  function openBag(open:boolean){setBagNotice(null);if(open)track("view_cart",cartData(cartRef.current));setCartOpen(open)}
+  function openBag(open:boolean){if(!commerce.purchasingEnabled)return;setBagNotice(null);if(open)track("view_cart",cartData(cartRef.current));setCartOpen(open)}
   async function update(id:string,quantity:number,product?:Product,variant?:Variant,increment=false){
+    if(!commerce.purchasingEnabled)return false;
     return run(id,async()=>{
     if(increment)quantity+=(cartRef.current.lines.find(l=>l.variantId===id)?.quantity??0);
     if(quantity>20){setBagNotice({kind:"error",text:tr("Maximum 20 per size.","الحد الأقصى ٢٠ قطعة للمقاس.")});return false}
@@ -119,6 +122,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
     });
   }
   async function buyNow(product:Product,variant:Variant,quantity:number){
+    if(!commerce.purchasingEnabled)return false;
     if(!variant.inStock||quantity<1||quantity>20)return false;
     return run(variant.id,async()=>{
     setBagNotice(null);

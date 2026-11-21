@@ -1,3 +1,5 @@
+import {commerce,isPurchasePath} from "@/lib/commerce";
+import {publishedProduct,publishedCollections} from "@/lib/published-catalog";
 import {catalogPage,catalogProduct,cartImages} from "@/lib/server-catalog";
 import { requestStore } from "@/lib/server-store";
 
@@ -23,6 +25,16 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
       return Response.json({detail:"Origin not allowed."},{status:403});
     }
   }
+  if(!commerce.purchasingEnabled&&isPurchasePath(path))return Response.json({detail:"Not found."},{status:404});
+  if(method==="GET"&&path==="store/collections")return Response.json(publishedCollections,{headers:{"Cache-Control":"no-store"}});
+  if(method==="GET"&&path.startsWith("store/collections/")){
+    const collection=publishedCollections.find(c=>c.slug===path.split("/").at(-1));
+    return collection?Response.json(collection):Response.json({detail:"Not found."},{status:404});
+  }
+  if(method==="GET"&&/^store\/products\/[a-z0-9-]+$/.test(path)){
+    const product=publishedProduct(path.split("/").at(-1)!);
+    return product?Response.json(product,{headers:{"Cache-Control":"no-store"}}):Response.json({detail:"Not found."},{status:404});
+  }
   try {
     if(method==="GET"&&path==="store/products")return await catalogPage(incoming.searchParams);
     const headers=new Headers();
@@ -46,9 +58,12 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
       if(json){body=json;headers.set("Content-Type","application/json");}
     }
     const response=await requestStore(media?"/"+path:"/api/v1/"+path,incoming.search,{method,headers,body:body||undefined});
-    if(method==="GET"&&path==="store/collections"&&response.ok){
-      const rows=await response.json() as {slug:string}[];
-      return Response.json(rows.filter(row=>row.slug!=="discovery"),{headers:{"Cache-Control":"no-store"}});
+    if(method==="GET"&&path==="store/content"&&response.ok){
+      const rows=await response.json() as {slug:string;imageUrl?:string;actionUrl?:string}[];
+      return Response.json(rows.filter(row=>!row.imageUrl?.includes('discovery')&&!row.actionUrl?.includes('decant')&&!row.actionUrl?.includes('discovery')&&(!row.actionUrl?.startsWith('/products/')||!!publishedProduct(row.actionUrl.split('/').at(-1)!))),{headers:{"Cache-Control":"no-store"}});
+    }
+    if(method==="GET"&&path==="store/settings"&&response.ok){
+      return Response.json({...await response.json(),acceptOrders:commerce.purchasingEnabled},{headers:{"Cache-Control":"no-store"}});
     }
     if(method==="GET"&&/^store\/products\/[a-z0-9-]+$/.test(path))return await catalogProduct(response);
     if((method==="GET"&&path==="store/cart")||linePath.test(path))return await cartImages(response);

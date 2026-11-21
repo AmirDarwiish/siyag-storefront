@@ -194,6 +194,11 @@ textarea {
   letter-spacing:.17em;
   font-weight:700}
 .campaign-strip {
+  width:100%;
+  border:0;
+  padding:var(--space-2) var(--space-4);
+  cursor:pointer;
+  flex-wrap:wrap;
   display:flex;
   align-items:center;
   justify-content:center;
@@ -203,8 +208,9 @@ textarea {
   color:var(--yellow);
   text-align:center;
   font-size:var(--type-micro);
-  letter-spacing:.12em;
+  letter-spacing:.04em;
   text-transform:uppercase}
+.campaign-strip bdi {font-weight:700;letter-spacing:.12em}
 .nav-wrap {
   display:grid;
   grid-template-columns:1fr auto 1fr;
@@ -618,6 +624,9 @@ textarea {
   color:var(--yellow)}
 .campaign-modal .wordmark {
   color:var(--yellow)}
+.campaign-code {display:flex;align-items:center;justify-content:space-between;gap:var(--space-5);width:100%;padding:var(--space-5) var(--space-6);margin-bottom:var(--space-6);border:1px dashed var(--olive);border-radius:var(--radius-control);color:var(--yellow);background:color-mix(in srgb,var(--olive) 12%,transparent);cursor:pointer}
+.campaign-code bdi {font-size:var(--type-lead);letter-spacing:.16em;font-weight:600}
+.campaign-code span {font-size:var(--type-label)}
 .campaign-rule {
   width:48px;
   height:1px;

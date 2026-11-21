@@ -105,3 +105,15 @@ assert.equal(commerce.showPrices,false);assert.equal(commerce.purchasingEnabled,
 for(const path of ['store/carts','store/cart','store/cart/lines/abc','store/cart/quote','store/orders','store/orders/payment/paymob'])assert(isPurchasePath(path),path);
 for(const path of ['store/orders/track','store/events','store/reviews','store/products/siyag-7','store/collections'])assert(!isPurchasePath(path),path);
 console.log('Approved catalog checks passed: four numbered fragrances, 30/50 ml only, preview exclusion, pagination, search and purchase route guards.');
+
+for(const n of [1,3,6]){
+ const p=publishedProduct('siyag-'+n);
+ assert(p.images[0].endsWith('-photo.webp'));
+ assert(p.notesImageUrl.endsWith('-notes.webp'));
+ assert(p.inspiration.imageUrl.endsWith('-3d.webp'));
+ assert(p.topNotes.length&&p.heartNotes.length&&p.baseNotes.length);
+ assert(p.variants.every(v=>v.imageUrl===p.images[0]));
+}
+assert.equal(publishedProduct('siyag-3').inspiration.nameEn,'Nishane Ani');
+assert.equal(publishedProduct('siyag-6').inspiration.nameEn,'Amouage Decision');
+console.log('Fragrance media checks passed: photographic galleries, notes, confirmed inspirations and unchanged 30/50 ml options.');

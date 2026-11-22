@@ -45,6 +45,12 @@ img {
   display:block;
   width:100%;
   height:auto}
+img[data-store-image=loading],img[data-store-image=fallback] {
+  background-color:var(--image-placeholder-surface);
+  background-image:var(--image-placeholder-art);
+  background-position:center;
+  background-size:var(--image-placeholder-size) auto;
+  background-repeat:no-repeat}
 h1 {
   margin:0;
   font-family:var(--serif);

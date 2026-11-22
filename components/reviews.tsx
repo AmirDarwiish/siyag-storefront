@@ -1,4 +1,5 @@
 "use client";
+import {StorePhoto} from "@/components/store-image";
 
 import Link from "next/link";
 import {useEffect,useRef,useState,type FormEvent} from "react";
@@ -177,7 +178,7 @@ export function Reviews({product}:{product?:string}){
             <div className="review-card-meta"><Stars rating={review.rating}/><span className="sr-only">{tr(`${review.rating} out of 5`,`${review.rating} من 5`)}</span>
               <time dateTime={review.createdAt}>{date.format(new Date(review.createdAt))}</time></div>
             <p dir="auto">{review.comment}</p>
-            {review.hasPhoto&&<button type="button" className="review-thumbnail" onClick={()=>setPhoto({url,name:review.displayName})} aria-label={tr("Enlarge review photo","كبّر صورة التقييم")}><img src={url} alt="" loading="lazy"/></button>}
+            {review.hasPhoto&&<button type="button" className="review-thumbnail" onClick={()=>setPhoto({url,name:review.displayName})} aria-label={tr("Enlarge review photo","كبّر صورة التقييم")}><StorePhoto src={url} alt="" loading="lazy"/></button>}
             <div className="review-author"><strong dir="auto">{review.displayName}</strong>{review.verifiedPurchase?<span><Check size={13}/>{tr("Verified purchase","شراء موثّق")}</span>:<span>{tr("Unverified purchase","شراء غير موثّق")}</span>}</div>
           </article>;
         })}</div>
@@ -188,7 +189,7 @@ export function Reviews({product}:{product?:string}){
         </div>}
       </>}
     <Modal open={!!photo} onOpenChange={open=>{if(!open)setPhoto(undefined)}} title={tr("Review photo","صورة التقييم")} className="review-photo-modal">
-      {photo&&<img src={photo.url} alt={tr(`Photo by ${photo.name}`,`صورة من ${photo.name}`)}/>}
+      {photo&&<StorePhoto src={photo.url} alt={tr(`Photo by ${photo.name}`,`صورة من ${photo.name}`)}/>}
     </Modal>
   </section>;
 }

@@ -1,4 +1,5 @@
 "use client";
+import {StorePhoto} from "@/components/store-image";
 import {commerce} from "@/lib/commerce";
 
 import Link from "next/link";
@@ -133,7 +134,7 @@ export function Header(){
           {results.map(product=>{
             const variant=variantFor(product);
             return <Link key={product.id} href={productUrl(product,variant)} onClick={()=>setSearch(false)}>
-              <img src={imageUrl(product.images[0])} alt=""/><span>{name(product,ar?"ar":"en")}</span>
+              <StorePhoto src={imageUrl(product.images[0])} alt=""/><span>{name(product,ar?"ar":"en")}</span>
               {commerce.showPrices&&variant&&<small>{money(variant.priceMinor,ar?"ar":"en")}</small>}
             </Link>;
           })}
@@ -151,7 +152,7 @@ export function BagContents({page=false}:{page?:boolean}){
     <div className="bag-heading"><div className="eyebrow">SIYAG</div>{page?<h1>{tr("Your bag","حقيبتك")}</h1>:<h2>{tr("Your bag","حقيبتك")}</h2>}<div role="status">{bagNotice&&<p className="bag-notice" data-kind={bagNotice.kind}>{bagNotice.text}</p>}</div></div>
     {!cart.lines.length?<div className="bag-empty"><ShoppingBag size={28}/><p>{tr("Your chosen fragrances will appear here.","ستظهر هنا العطور التي تضيفها إلى حقيبتك.")}</p><Link href="/shop" className="action ink" onClick={()=>setCartOpen(false)}>{tr("Explore the collection","استكشف التشكيلة")}</Link></div>:<>
       <div className="bag-lines" aria-busy={busy}>{cart.lines.map(line=><div className="bag-line" key={line.variantId}>
-        <Link href={"/products/"+line.slug+"?variant="+line.variantId} onClick={()=>setCartOpen(false)}><img src={imageUrl(line.image)} alt=""/></Link>
+        <Link href={"/products/"+line.slug+"?variant="+line.variantId} onClick={()=>setCartOpen(false)}><StorePhoto src={imageUrl(line.image)} alt=""/></Link>
         <div><strong>{name(line,lang)}</strong><small>{line.sizeMl} {tr("ml","مل")}</small>{!line.available&&<small className="form-error">{tr("Currently unavailable. Remove this item to continue.","غير متاح حاليًا. احذف المنتج عشان تكمل الطلب.")}</small>}
           <div className="quantity"><button type="button" disabled={busy} onClick={()=>setQuantity(line.variantId,line.quantity-1)} aria-label={tr("Decrease quantity","تقليل الكمية")}><Minus size={15}/></button><span>{line.quantity}</span><button type="button" disabled={busy||line.quantity>=20||!line.available} onClick={()=>setQuantity(line.variantId,line.quantity+1)} aria-label={tr("Increase quantity","زيادة الكمية")}><Plus size={15}/></button></div>
         </div>

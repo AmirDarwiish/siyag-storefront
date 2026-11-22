@@ -1,4 +1,5 @@
 "use client";
+import {StorePhoto} from "@/components/store-image";
 
 import {commerce} from "@/lib/commerce";
 import Link from "next/link";
@@ -130,7 +131,7 @@ export function Shop(){
 function CatalogNotice({status,onRetry}:{status:"launch"|"wishlist"|"filtered"|"error";onRetry:()=>void}){
   const {tr}=useStore();
   if(status==="launch")return <article className="catalog-launch">
-    <img src="/brand/olive-hero.webp" alt="" width={1280} height={960}/>
+    <StorePhoto src="/brand/olive-hero.webp" alt="" width={1280} height={960}/>
     <div>
       <span className="eyebrow">{tr("A NEW CHAPTER","فصل جديد")}</span>
       <h2>{tr("The collection is in preparation","مجموعة SIYAG قيد التحضير")}</h2>

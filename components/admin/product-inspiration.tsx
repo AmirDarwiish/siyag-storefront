@@ -1,4 +1,5 @@
 "use client";
+import {StorePhoto} from "@/components/store-image";
 import {useState,type FormEvent} from 'react';
 import {office,type AdminProduct} from '@/lib/admin';
 import {imageUrl,type Content} from '@/lib/store';
@@ -25,6 +26,6 @@ export function ProductInspirationEditor({product}:{product:AdminProduct}){
   <label>العطر المستوحى منه بالإنجليزي<input name="nameEn" defaultValue={block?.titleEn??''} maxLength={150} required dir="ltr" placeholder="Xerjoff Naxos"/></label>
   <label>وصف الإلهام بالعربي<textarea name="descriptionAr" defaultValue={block?.textAr??'اختيار من SIYAG مستوحى من الطابع العطري لهذا العطر.'} maxLength={1000} required/></label>
   <label>وصف الإلهام بالإنجليزي<textarea name="descriptionEn" defaultValue={block?.textEn??'A SIYAG fragrance inspired by the character of this scent.'} maxLength={1000} required dir="ltr"/></label>
- </div><label>صورة العطر الأصلي (اختياري)<input aria-label="صورة العطر الأصلي" dir="ltr" value={picture??block?.imageUrl??''} placeholder="https://…" onChange={event=>setPicture(event.target.value)}/></label><p className="office-help">يفضل صورة عبوة بخلفية شفافة. تظهر صغيرة بجوار اسم العطر مع ظل وميل خفيف.</p><Upload onUpload={setPicture}/>{validImage(picture??block?.imageUrl)&&<div className="office-images"><div><img src={imageUrl(picture??block?.imageUrl??'')} alt="معاينة صورة العطر الأصلي"/></div></div>}<label className="office-check"><input type="checkbox" name="published" defaultChecked={block?.published??false}/> إظهار قسم مستوحى من</label><Message message={message} error={failed}/><button className="office-button" disabled={busy}>حفظ مصدر الإلهام</button></fieldset></form>}
+ </div><label>صورة العطر الأصلي (اختياري)<input aria-label="صورة العطر الأصلي" dir="ltr" value={picture??block?.imageUrl??''} placeholder="https://…" onChange={event=>setPicture(event.target.value)}/></label><p className="office-help">يفضل صورة عبوة بخلفية شفافة. تظهر صغيرة بجوار اسم العطر مع ظل وميل خفيف.</p><Upload onUpload={setPicture}/>{validImage(picture??block?.imageUrl)&&<div className="office-images"><div><StorePhoto src={imageUrl(picture??block?.imageUrl??'')} alt="معاينة صورة العطر الأصلي"/></div></div>}<label className="office-check"><input type="checkbox" name="published" defaultChecked={block?.published??false}/> إظهار قسم مستوحى من</label><Message message={message} error={failed}/><button className="office-button" disabled={busy}>حفظ مصدر الإلهام</button></fieldset></form>}
  </section>;
 }

@@ -1,4 +1,5 @@
 "use client";
+import {StorePhoto} from "@/components/store-image";
 
 import {commerce} from "@/lib/commerce";
 import {createContext,useCallback,useContext,useEffect,useRef,useState,type ReactNode} from "react";
@@ -150,7 +151,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
   return <Context.Provider value={value}>{children}<div className="toast-live" aria-live="polite">{!cartOpen&&bagNotice&&<section className="bag-confirmation refined-confirmation" data-kind={bagNotice.kind} aria-label={tr("Bag update","تحديث الحقيبة")}>
     <button type="button" className="confirmation-close" aria-label={tr("Dismiss notification","إغلاق التنبيه")} onClick={dismissNotice}><X size={18}/></button>
     <div className="confirmation-heading"><span className="confirmation-check"><Check size={14}/></span><span>{bagNotice.text}</span></div>
-    {bagNotice.item&&<div className="confirmation-product"><img src={imageUrl(bagNotice.item.image)} alt=""/><div><strong>{bagNotice.item.title}</strong><small>{bagNotice.item.sizeMl} {tr("ml","مل")}<span> · </span>{tr("Quantity","الكمية")} {bagNotice.item.quantity}</small></div><span>{money(bagNotice.item.priceMinor*bagNotice.item.quantity,lang)}</span></div>}
+    {bagNotice.item&&<div className="confirmation-product"><StorePhoto src={imageUrl(bagNotice.item.image)} alt=""/><div><strong>{bagNotice.item.title}</strong><small>{bagNotice.item.sizeMl} {tr("ml","مل")}<span> · </span>{tr("Quantity","الكمية")} {bagNotice.item.quantity}</small></div><span>{money(bagNotice.item.priceMinor*bagNotice.item.quantity,lang)}</span></div>}
     {bagNotice.kind==="success"?<><div className="confirmation-actions"><button type="button" onClick={()=>openBag(true)}>{tr("View bag","عرض الحقيبة")}<ArrowUpRight size={15}/></button><Link href="/checkout" onClick={dismissNotice}>{tr("Checkout","إتمام الطلب")}<ArrowUpRight size={15}/></Link></div><button type="button" className="confirmation-continue" onClick={dismissNotice}>{tr("Continue shopping","متابعة التسوق")}</button></>:null}
 
   </section>}</div></Context.Provider>;

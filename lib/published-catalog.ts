@@ -233,8 +233,8 @@ export const publishedProducts:Product[]=[
       "Tonka Bean | حبوب التونكا"
     ],
     "images": [
-      "/media/4b6562b46aa90174fb7cbeef21fe3c9467ccc3e20ff91f445defcd209feebfe1.webp",
-      "/media/517524cece8f488357a363934d1d5317896ec5edd9a1bc0eda7db158b4a1e613.webp"
+      "/brand/numbered/siyag-7-notes.webp",
+      "/brand/numbered/siyag-7-photo.webp"
     ],
     "featured": false,
     "variants": [
@@ -271,7 +271,7 @@ export const publishedProducts:Product[]=[
       "descriptionAr": "مستوحى من زيرجوف ناكسوس.",
       "imageUrl": "/brand/inspiration/naxos.webp"
     },
-    "notesImageUrl": "/media/4b6562b46aa90174fb7cbeef21fe3c9467ccc3e20ff91f445defcd209feebfe1.webp"
+    "notesImageUrl": "/brand/numbered/siyag-7-notes.webp"
   }
 ];
 export const publishedCollections:Collection[]=[

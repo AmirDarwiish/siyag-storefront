@@ -120,5 +120,22 @@ console.log('Fragrance media checks passed: photographic galleries, notes, confi
 
 assert.deepEqual(publishedCollections.map(c=>c.slug),['signature']);
 assert(publishedProducts.every(p=>p.collections.length===1&&p.collections[0]==='signature'&&p.images.length===2));
-assert(publishedProduct('siyag-7').images[0].includes('4b6562b4'));
-assert(publishedProduct('siyag-7').images[1].includes('517524ce'));
+assert.equal(publishedProduct('siyag-7').images[0],'/brand/numbered/siyag-7-notes.webp');
+assert.equal(publishedProduct('siyag-7').images[1],'/brand/numbered/siyag-7-photo.webp');
+
+const {nextImageAttempt,imagePlaceholderSource}=await source('lib/store-images.ts');
+assert.deepEqual(storeImageSource('/media/'+'a'.repeat(64)+'.webp'),{src:'/api/siyag/media/'+'a'.repeat(64)+'.webp',optimize:true});
+assert.equal(nextImageAttempt('optimized'),'original');
+assert.equal(nextImageAttempt('original'),'fallback');
+assert.equal(nextImageAttempt('fallback'),'fallback','a failed fallback must never trigger a retry loop');
+assert(imagePlaceholderSource.startsWith('data:image/'),'fallback must not need a network request');
+for(const p of publishedProducts){
+ for(const src of [...p.images,p.notesImageUrl]){
+  assert(src.startsWith('/brand/'),'approved product photography must not depend on API media availability');
+  readFileSync('public'+src);
+ }
+}
+const {createHash}=await import('node:crypto');
+for(const [file,hash] of [['siyag-7-photo.webp','517524cece8f488357a363934d1d5317896ec5edd9a1bc0eda7db158b4a1e613'],['siyag-7-notes.webp','4b6562b46aa90174fb7cbeef21fe3c9467ccc3e20ff91f445defcd209feebfe1']])
+ assert.equal(createHash('sha256').update(readFileSync('public/brand/numbered/'+file)).digest('hex'),hash,'SIYAG 7 artwork must remain byte-for-byte unchanged');
+console.log('Image resilience checks passed: legacy URLs, bounded retry, network-free fallback and unchanged bundled Naxos photography.');

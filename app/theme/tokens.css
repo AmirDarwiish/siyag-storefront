@@ -262,8 +262,15 @@
   --type-feature:clamp(30px,2.8vw,40px);
   --home-feature-height:clamp(360px,31vw,440px);
   --desktop-header-height:88px;
-  --desktop-search-panel:360px;
-  --desktop-search-width:clamp(180px,17vw,240px);
+  --desktop-header-gutter:max(var(--page-gutter),calc((100% - var(--content-width))/2));
+  --desktop-header-gap:var(--space-8);
+  --desktop-campaign-height:36px;
+  --desktop-search-panel:420px;
+  --desktop-search-width:clamp(260px,26vw,380px);
+  --desktop-search-gap:var(--space-4);
+  --desktop-search-thumb:48px;
+  --desktop-search-surface:var(--white);
+  --desktop-search-max-height:min(520px,calc(100dvh - var(--store-header-height,124px) - var(--space-8)));
   --type-desktop-wordmark:38px;
   --type-desktop-title:clamp(30px,2.6vw,38px);
   --type-desktop-secondary:clamp(28px,2.3vw,34px);

@@ -24,15 +24,26 @@
   font-display: swap;
 }
 :root {
+  --audience-men: #285568;
+  --audience-women: #85475d;
+  --audience-unisex: #52633e;
+  --audience-tone: var(--audience-unisex);
+  --audience-surface-mix: 9%;
+  --audience-edge-mix: 28%;
+  --audience-icon-size: 16px;
+  --journey-banner-art-width: 66%;
+  --journey-banner-surface: #f3e8d5;
+  --journey-banner-mask: linear-gradient(to right,transparent,var(--ink) 18%);
+
   --journey-width: 1080px;
   --journey-quiz-width: 760px;
   --journey-banner-copy-width: 45%;
-  --journey-banner-mobile-width: 48%;
+  --journey-banner-mobile-width: 44%;
   --type-journey-banner: clamp(26px,3.4vw,48px);
   --type-journey-banner-mobile: clamp(21px,5.8vw,32px);
   --journey-banner-padding: clamp(20px,4vw,56px);
   --journey-banner-copy-measure: 22ch;
-  --journey-banner-mobile-position: 46% center;
+  --journey-banner-art-position: 78% center;
   --journey-option-height: 116px;
   --journey-art-height: 280px;
   --image-placeholder-surface: var(--color-secondary);

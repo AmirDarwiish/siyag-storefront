@@ -7,7 +7,7 @@ import {imageSizes} from "@/lib/image-sizes";
 import {useRouter} from "next/navigation";
 import {track,itemData} from "@/lib/analytics";
 import {useEffect,useRef,useState} from "react";
-import {ArrowUpRight,Heart,Minus,Plus,ShoppingBag} from "lucide-react";
+import {ArrowUpRight,Heart,Minus,Plus,ShoppingBag,Mars,Venus,Users} from "lucide-react";
 import {Accordion,AccordionContent,AccordionItem,AccordionTrigger} from "@/components/ui/accordion";
 import {api,concentrations,families,formats,imageUrl,money,name,productUrl,variantFor,type Page,type Product,type Variant} from "@/lib/store";
 import {useStore} from "./store-context";
@@ -20,7 +20,8 @@ import {ScentSignature} from "./scent-signature";
 
 function AudienceLabel({product}:{product:Product}){
   const {tr}=useStore();
-  return <div className="product-audience">{product.audience==="men"?tr("For men","للرجال"):product.audience==="women"?tr("For women","للنساء"):tr("Unisex","للجميع")}</div>;
+  const Icon=product.audience==="men"?Mars:product.audience==="women"?Venus:Users;
+  return <div className="product-audience" data-audience={product.audience}><Icon aria-hidden="true"/><span>{product.audience==="men"?tr("For men","للرجال"):product.audience==="women"?tr("For women","للنساء"):tr("Unisex","للجميع")}</span></div>;
 }
 
 function Price({variant}:{variant:Variant}){

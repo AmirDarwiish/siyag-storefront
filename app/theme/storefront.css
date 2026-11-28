@@ -363,7 +363,7 @@ textarea {
   position:relative;
   overflow:hidden;
   background:var(--white);
-  aspect-ratio:4 / 5;
+  aspect-ratio:var(--catalog-photo-ratio);
   border-radius:var(--radius-control)}
 .product-photo {
   position:absolute;
@@ -928,7 +928,7 @@ textarea {
   width:100%;
   padding:0;
   cursor:zoom-in;
-  aspect-ratio:1/1.05;
+  aspect-ratio:var(--catalog-photo-ratio);
   background:var(--white);
   border:var(--commerce-border);
   border-radius:var(--commerce-radius);
@@ -936,7 +936,7 @@ textarea {
 .gallery-main img {
   width:100%;
   height:100%;
-  object-fit:cover}
+  object-fit:contain}
 .store-modal.product-photo-modal[data-slot=dialog-content] {
   width:calc(100% - var(--space-8));
   max-width:var(--product-photo-preview-width);
@@ -3101,6 +3101,16 @@ body select:disabled {opacity:.55;cursor:not-allowed}
 .journey-result-footer {display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--space-6);margin-top:var(--space-9);padding:var(--space-7);border:var(--border-fine);border-radius:var(--radius-card)}
 .journey-result-footer p {margin:0}
 
+.product-hover, .gallery-main img[src*="-photo"], .product-photo-large[src*="-photo"] {box-sizing:border-box;padding:var(--catalog-packshot-inset);object-fit:contain;background:var(--white)}
+.profile-notes {margin-block:var(--space-6);color:var(--ink)}
+.profile-notes h2 {font-size:var(--type-body);margin:0 0 var(--space-3)}
+.profile-notes dl {display:grid;gap:var(--space-3);margin:0}
+.profile-notes dt {font-size:var(--type-label);color:var(--moss);margin-block-end:var(--space-1)}
+.profile-notes dd {display:flex;flex-wrap:wrap;gap:var(--space-2);margin:0}
+.profile-notes dd span {padding:var(--space-1) var(--space-3);border:var(--commerce-border);border-radius:var(--radius-control);font-size:var(--type-label);overflow-wrap:anywhere}
+.profile-notes [data-layer="opening"] dd span {background:var(--profile-note-opening)}
+.profile-notes [data-layer="heart"] dd span {background:var(--profile-note-heart)}
+.profile-notes [data-layer="base"] dd span {background:var(--profile-note-base)}
 @media (hover:hover) {
   .product-visual:hover .product-hover {
   opacity:1}.home-edit:hover img,.home-family:hover img {transform:scale(var(--home-photo-hover-scale))}.home-care a:hover {background:var(--stone)}.home-cover .action:hover {background:var(--yellow);border-color:var(--yellow)}

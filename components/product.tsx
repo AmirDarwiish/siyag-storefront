@@ -149,6 +149,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
           <div className="eyebrow">SIYAG PARFUMS</div><h1>{title}</h1><AudienceLabel product={product}/>
           <div className="product-detail-meta">{concentrations[product.concentration]?.[ar?1:0]} {product.family!=="other"&&<><span>·</span> {families[product.family]?.[ar?1:0]}</>}</div>
           <Price variant={v}/>
+          <FragranceNotes product={product}/>
           <p>{ar?product.descriptionAr:product.descriptionEn}</p>
           {product.inspiration&&<section className="product-inspiration" aria-labelledby="product-inspiration-title">
             <div className="product-inspiration-copy"><span className="eyebrow">{tr('THE INSPIRATION','مصدر الإلهام')}</span>
@@ -156,7 +157,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
             <strong dir="auto">{ar?product.inspiration.nameAr:product.inspiration.nameEn}</strong>
             </div>
             {product.inspiration.imageUrl&&<div className="product-inspiration-bottle"><StoreImage src={imageUrl(product.inspiration.imageUrl)} alt={ar?product.inspiration.nameAr:product.inspiration.nameEn} width={160} height={208} sizes="(max-width: 600px) 80px, 104px" loading="lazy"/></div>}
-            <p>{ar?product.inspiration.descriptionAr:product.inspiration.descriptionEn}</p>
+            {!(ar?product.inspiration.descriptionAr:product.inspiration.descriptionEn).startsWith(ar?"مستوحى من "+product.inspiration.nameAr:"Inspired by "+product.inspiration.nameEn)&&<p>{ar?product.inspiration.descriptionAr:product.inspiration.descriptionEn}</p>}
           </section>}
           <div className="buy-zone">
             <div className="variant-label">{tr("Select size","اختر الحجم")} <span>{formats[v.format][ar?1:0]}</span></div>
@@ -193,7 +194,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
         </div>
       </div>}
     </Modal>
-    {product.slug==="siyag-7"?<ScentSignature key={product.slug+"-signature"} product={product}/>:<FragranceNotes product={product}/>}
+    {product.slug==="siyag-7"?<ScentSignature key={product.slug+"-signature"} product={product}/>:null}
     {product.slug==="siyag-7"&&<Reviews key={product.slug} product={product.slug}/>}
     {related.length>0&&<section id="available-alternatives" className="container section"><div className="section-head"><div><span className="eyebrow">SIYAG PARFUMS</span><h2>{tr("Available fragrances you may like","عطور متاحة ممكن تعجبك")}</h2></div></div><div className="product-grid">{related.map(p=><ProductCard key={p.id} product={p}/>)}</div></section>}
     {commerce.purchasingEnabled&&sticky&&!keyboardOpen&&<section className="product-purchase-dock" aria-label={tr("Purchase options","خيارات الشراء")}>

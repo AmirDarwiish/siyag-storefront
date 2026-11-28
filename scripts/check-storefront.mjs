@@ -103,7 +103,7 @@ assert.equal(new Set(publishedProducts.flatMap(p=>p.variants.map(v=>v.id))).size
 for(const slug of ['noir','musk','oud','amber-wood-preview'])assert.equal(publishedProduct(slug),null);
 assert.equal(publishedPage(new URLSearchParams('q=ناكسوس')).data[0].slug,'siyag-7');
 assert.equal(publishedPage(new URLSearchParams('q=ديسيشن')).data[0].slug,'siyag-6');
-assert.equal(publishedPage(new URLSearchParams('q=Musk Patchouli')).data[0].slug,'siyag-13');
+assert.equal(publishedPage(new URLSearchParams('q=Patchouli Musc')).data[0].slug,'siyag-13');
 assert.equal(publishedPage(new URLSearchParams('sizeMl=100')).totalCount,0);
 assert.equal(publishedPage(new URLSearchParams('sizeMl=30')).totalCount,21);
 assert.equal(publishedPage(new URLSearchParams('inStock=true')).totalCount,0);
@@ -120,7 +120,7 @@ for(const path of ['store/orders/track','store/events','store/reviews','store/pr
 assert.equal(publishedProduct('siyag-3').inspiration.nameEn,'Nishane Ani');
 assert.equal(publishedProduct('siyag-6').inspiration.nameEn,'Amouage Decision');
 assert.equal(publishedProduct('siyag-7').inspiration.nameEn,'Xerjoff Naxos');
-assert.equal(publishedProduct('siyag-13').inspiration.nameEn,'Laverne Musk Patchouli');
+assert.equal(publishedProduct('siyag-13').inspiration.nameEn,'Narciso Rodriguez Patchouli Musc');
 assert.equal(publishedProduct('siyag-19').inspiration,undefined,'Satsuma is a SIYAG creation');
 assert.equal(publishedProduct('siyag-7').variants[1].id,'8c97091c-5dd5-40fd-b84a-674ec8924d0c','retain the actual existing Naxos variant ID');
 console.log('Approved catalogue checks passed: all 21 sequential products, all 42 owner prices, gender, search, price sorting and purchasing enabled.');
@@ -154,7 +154,7 @@ assert(mergeCatalogInventory(publishedProducts,[]).every(p=>p.variants.every(v=>
 assert(mergeCatalogInventory(publishedProducts,[{...liveNaxos,slug:'siyag-8',nameEn:'SIYAG 8'}]).every(p=>p.variants.every(v=>!v.inStock)),'stale Naxos numbering cannot be sold under the corrected number');
 console.log('Commerce inventory checks passed: actual IDs and prices, size-specific availability, missing API data and legacy renumbering protection.');
 
-const customerOrder=["Emporio Armani Stronger With You Intensely", "Arabian Oud Feeling", "Nishane Ani", "BLEU DE CHANEL Eau de Parfum", "Parfums de Marly Althaïr", "Amouage Decision", "Xerjoff Naxos", "Louis Vuitton Stellar Times", "Clive Christian Blonde Amber", "Amouage Epic Man", "Matière Première Vanilla Powder Extrait de Parfum", "Amouage Outlands", "Laverne Musk Patchouli", "BLEU DE CHANEL L’EXCLUSIF", "Yves Saint Laurent Y Eau de Parfum", "OMANLUXURY Caden", "Tom Ford Tobacco Vanille", "Xerjoff Erba Pura", "SIYAG Satsuma", "Arabian Oud Amiri", "Valentino Uomo Born in Roma Intense"];
+const customerOrder=["Emporio Armani Stronger With You Intensely", "Arabian Oud Feeling Inn Black", "Nishane Ani", "BLEU DE CHANEL Eau de Parfum", "Parfums de Marly Althaïr", "Amouage Decision", "Xerjoff Naxos", "Louis Vuitton Stellar Times", "Clive Christian Blonde Amber", "Amouage Epic Man", "Matière Première Vanilla Powder Extrait de Parfum", "Amouage Outlands", "Narciso Rodriguez Patchouli Musc", "BLEU DE CHANEL L’EXCLUSIF", "Yves Saint Laurent Y Eau de Parfum", "OMANLUXURY Caden", "Tom Ford Tobacco Vanille", "Xerjoff Erba Pura", "SIYAG Satsuma", "Arabian Oud Amiri", "Valentino Uomo Born in Roma Intense"];
 assert.deepEqual(publishedProducts.map(p=>p.inspiration?.nameEn??"SIYAG Satsuma"),customerOrder,"exact sequential fragrance mapping from the customer, including the duplicated original number 4");
 assert.deepEqual(publishedPage(new URLSearchParams("pageSize=100"),[...publishedProducts].reverse()).data.map(p=>p.slug),publishedProducts.map(p=>p.slug),"default customer order survives shuffled API results");
 console.log("Customer sequence confirmed for all 21 source fragrances.");

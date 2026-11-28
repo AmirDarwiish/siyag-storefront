@@ -17,7 +17,7 @@ export const imageUrl = (value?:string) => !value ? "/brand/fallback.svg" : valu
 export const variantFor = (product:Product, id?:string|null) => product.variants.find(v=>v.id===id) ?? product.variants.find(v=>v.inStock) ?? product.variants[0];
 export const productUrl = (product:Product, variant?:Variant) => "/products/"+encodeURIComponent(product.slug)+(variant?"?variant="+encodeURIComponent(variant.id):"");
 export const formats = {fullBottle:["Full bottle","زجاجة كاملة"],decant:["Decant","عيّنة معبّأة"],sample:["Sample","عيّنة"]} as const;
-export const families: Record<string,[string,string]>={woody:["Woody","خشبي"],amber:["Amber","عنبري"],floral:["Floral","زهري"],fresh:["Fresh","منعش"],gourmand:["Gourmand","جورماند"],oriental:["Oriental","شرقي"],other:["Other","أخرى"]};
+export const families: Record<string,[string,string]>={woody:["Woody","خشبي"],amber:["Ambery","عنبري"],floral:["Floral","زهري"],fresh:["Fresh","منعش"],gourmand:["Gourmand","جورماند"],oriental:["Oriental","شرقي"],other:["Other","أخرى"]};
 export const concentrations: Record<string,[string,string]>={parfum:["Perfume","عطر"],eauDeParfum:["Eau de Parfum","أو دو بارفان"],eauDeToilette:["Eau de Toilette","أو دو تواليت"],oil:["Perfume oil","زيت عطري"],other:["Other","أخرى"]};
 
 export class ApiError extends Error {

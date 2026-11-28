@@ -72,23 +72,28 @@ export const publishedProducts:Product[]=[
     "slug": "siyag-2",
     "nameEn": "SIYAG 2",
     "nameAr": "SIYAG 2",
-    "descriptionEn": "An indulgent, toffee-like sweetness with a playful gourmand character. A fragrance for anyone who loves their signature unapologetically sweet.",
-    "descriptionAr": "إحساس غني بحلاوة تشبه التوفي وطابع جورماند مرح؛ لعشّاق العطور الحلوة بحضورها الواضح.",
+    "descriptionEn": "Juicy peach, apple and tangerine give SIYAG 2 its playful sweetness. Magnolia and jasmine soften the fruit before musk and patchouli settle on the skin.",
+    "descriptionAr": "خوخ وتفاح ويوسفي بيدّوا سياج ٢ حلاوة فاكهية من أول رشة. الماغنوليا والياسمين بيلطّفوا الافتتاحية، وفي الآخر بيفضل أثر المسك والباتشولي.",
     "brand": "SIYAG",
     "family": "gourmand",
     "concentration": "parfum",
     "audience": "unisex",
-    "topNotes": [],
-    "heartNotes": [],
-    "baseNotes": [
-      "Jackfruit Blossom | زهر الجاك فروت",
-      "Juniper Berry | توت العرعر",
+    "topNotes": [
+      "Tangerine | يوسفي",
+      "Peach | خوخ",
+      "Apple | تفاح"
+    ],
+    "heartNotes": [
       "Lily of the Valley | زنبق الوادي",
-      "Lychee | ليتشي",
-      "Teak | خشب الساج"
+      "Magnolia | ماغنوليا",
+      "Jasmine | ياسمين"
+    ],
+    "baseNotes": [
+      "Patchouli | باتشولي",
+      "Musk | مسك"
     ],
     "images": [
-      "/brand/numbered/siyag-2-notes-v2.webp",
+      "/brand/numbered/siyag-2-studio.webp",
       "/brand/numbered/siyag-2-photo-v2.webp"
     ],
     "featured": false,
@@ -96,11 +101,11 @@ export const publishedProducts:Product[]=[
       "signature"
     ],
     "inspiration": {
-      "nameEn": "Arabian Oud Feeling",
-      "nameAr": "العربية للعود فيلينج",
-      "descriptionEn": "Inspired by Arabian Oud Feeling.",
-      "descriptionAr": "مستوحى من العربية للعود فيلينج.",
-      "imageUrl": "/brand/inspiration/catalog-2-3d-v2.webp"
+      "nameEn": "Arabian Oud Feeling Inn Black",
+      "nameAr": "العربية للعود فيلينج إن بلاك",
+      "descriptionEn": "Inspired by Arabian Oud Feeling Inn Black.",
+      "descriptionAr": "مستوحى من العربية للعود فيلينج إن بلاك.",
+      "imageUrl": "/brand/inspiration/feeling-black.webp"
     },
     "variants": [
       {
@@ -124,9 +129,9 @@ export const publishedProducts:Product[]=[
     ],
     "seo": {
       "titleEn": "SIYAG 2",
-      "descriptionEn": "An indulgent, toffee-like sweetness with a playful gourmand character. A fragrance for anyone who loves their signature unapologetically sweet."
+      "descriptionEn": "Juicy peach, apple and tangerine give SIYAG 2 its playful sweetness. Magnolia and jasmine soften the fruit before musk and patchouli settle on the skin."
     },
-    "notesImageUrl": "/brand/numbered/siyag-2-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-2-studio.webp"
   },
   {
     "id": "d3cf7f87-319d-5d65-816c-903fa51b295c",
@@ -160,7 +165,7 @@ export const publishedProducts:Product[]=[
       "Sandalwood | خشب الصندل"
     ],
     "images": [
-      "/brand/numbered/siyag-3-notes-gold.webp",
+      "/brand/numbered/siyag-3-studio.webp",
       "/brand/numbered/siyag-3-photo-gold.webp"
     ],
     "featured": false,
@@ -175,7 +180,7 @@ export const publishedProducts:Product[]=[
       "descriptionAr": "مستوحى من نيشاني آني.",
       "imageUrl": "/brand/inspiration/ani-3d.webp"
     },
-    "notesImageUrl": "/brand/numbered/siyag-3-notes-gold.webp",
+    "notesImageUrl": "/brand/numbered/siyag-3-studio.webp",
     "variants": [
       {
         "id": "7b5cc861-73b2-59f9-97b1-65d4e2a35548",
@@ -220,7 +225,7 @@ export const publishedProducts:Product[]=[
       "Musk | مسك"
     ],
     "images": [
-      "/brand/numbered/siyag-4-owner.webp",
+      "/brand/numbered/siyag-4-studio.webp",
       "/brand/numbered/siyag-4-photo-v2.webp"
     ],
     "featured": false,
@@ -258,7 +263,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 4",
       "descriptionEn": "Fresh woods with a polished, versatile character. An effortless signature that moves comfortably between dressed-up occasions and everyday plans."
     },
-    "notesImageUrl": "/brand/numbered/siyag-4-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-4-studio.webp"
   },
   {
     "id": "00dbc4f1-30d6-57de-8e71-bafb88ed46fe",
@@ -287,7 +292,7 @@ export const publishedProducts:Product[]=[
       "Praline | برالين"
     ],
     "images": [
-      "/brand/numbered/siyag-5-owner.webp",
+      "/brand/numbered/siyag-5-studio.webp",
       "/brand/numbered/siyag-5-photo-v2.webp"
     ],
     "featured": false,
@@ -325,7 +330,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 5",
       "descriptionEn": "Creamy vanilla with a soft, enveloping sweetness. A deliciously comforting scent that feels warm, inviting and effortlessly indulgent."
     },
-    "notesImageUrl": "/brand/numbered/siyag-5-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-5-studio.webp"
   },
   {
     "id": "f2fee72f-216c-5175-9e64-76bc90da479e",
@@ -354,7 +359,7 @@ export const publishedProducts:Product[]=[
       "Vanilla | فانيليا"
     ],
     "images": [
-      "/brand/numbered/siyag-6-notes-gold.webp",
+      "/brand/numbered/siyag-6-studio.webp",
       "/brand/numbered/siyag-6-photo-v2.webp"
     ],
     "featured": false,
@@ -393,7 +398,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 6",
       "descriptionEn": "A distinctive frankincense-led character, lifted by freshness and grounded in woods. Refined and individual, for a signature with its own point of view."
     },
-    "notesImageUrl": "/brand/numbered/siyag-6-notes-gold.webp"
+    "notesImageUrl": "/brand/numbered/siyag-6-studio.webp"
   },
   {
     "id": "ea12f2a1-ee32-4454-9fc9-75d863db7f16",
@@ -423,7 +428,7 @@ export const publishedProducts:Product[]=[
       "Tonka Bean | حبوب التونكا"
     ],
     "images": [
-      "/brand/numbered/siyag-7-notes.webp",
+      "/brand/numbered/siyag-7-studio.webp",
       "/brand/numbered/siyag-7-photo.webp"
     ],
     "featured": false,
@@ -462,7 +467,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 7",
       "descriptionEn": "Warm, richly textured and confidently refined. A composed signature for formal occasions and moments when you want your presence to speak quietly."
     },
-    "notesImageUrl": "/brand/numbered/siyag-7-notes.webp"
+    "notesImageUrl": "/brand/numbered/siyag-7-studio.webp"
   },
   {
     "id": "4fdded53-6f25-5293-973b-8fd6c5bfe80d",
@@ -483,7 +488,7 @@ export const publishedProducts:Product[]=[
       "Peru Balsam | بلسم بيرو"
     ],
     "images": [
-      "/brand/numbered/siyag-8-owner.webp",
+      "/brand/numbered/siyag-8-studio.webp",
       "/brand/numbered/siyag-8-photo-v2.webp"
     ],
     "featured": false,
@@ -521,7 +526,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 8",
       "descriptionEn": "Luminous white florals with a deep, enveloping character. Elegant and expressive, balancing airy beauty with a richer sense of presence."
     },
-    "notesImageUrl": "/brand/numbered/siyag-8-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-8-studio.webp"
   },
   {
     "id": "eec0afe7-9647-5805-b721-1f400d17c9d5",
@@ -544,7 +549,7 @@ export const publishedProducts:Product[]=[
       "Tonka Bean | حبوب التونكا"
     ],
     "images": [
-      "/brand/numbered/siyag-9-owner.webp",
+      "/brand/numbered/siyag-9-studio.webp",
       "/brand/numbered/siyag-9-photo-v2.webp"
     ],
     "featured": false,
@@ -582,7 +587,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 9",
       "descriptionEn": "Rich amber and indulgent sweetness create a bold evening signature. Confident, dressed-up and full of character after dark."
     },
-    "notesImageUrl": "/brand/numbered/siyag-9-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-9-studio.webp"
   },
   {
     "id": "58c2145e-03d4-5c94-8bc4-54d9792c08de",
@@ -620,7 +625,7 @@ export const publishedProducts:Product[]=[
       "Castoreum | كاستوريوم"
     ],
     "images": [
-      "/brand/numbered/siyag-10-owner.webp",
+      "/brand/numbered/siyag-10-studio.webp",
       "/brand/numbered/siyag-10-photo-v2.webp"
     ],
     "featured": false,
@@ -658,7 +663,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 10",
       "descriptionEn": "A clean, fresh impression with an elegant Arabian character. Refined and distinctive, bringing a sense of tradition to a modern signature."
     },
-    "notesImageUrl": "/brand/numbered/siyag-10-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-10-studio.webp"
   },
   {
     "id": "e9060915-392d-55a0-92eb-1fc380a4212d",
@@ -679,7 +684,7 @@ export const publishedProducts:Product[]=[
       "White Powders | نوتات بودرية بيضاء"
     ],
     "images": [
-      "/brand/numbered/siyag-11-owner.webp",
+      "/brand/numbered/siyag-11-studio.webp",
       "/brand/numbered/siyag-11-photo-v2.webp"
     ],
     "featured": false,
@@ -717,7 +722,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 11",
       "descriptionEn": "Creamy, powdery vanilla with a softly coconut-like impression. A comforting gourmand signature with a delicate, feminine-leaning character."
     },
-    "notesImageUrl": "/brand/numbered/siyag-11-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-11-studio.webp"
   },
   {
     "id": "260905e7-ea02-5cb9-aefd-3d5e030010a1",
@@ -762,7 +767,7 @@ export const publishedProducts:Product[]=[
       "Oud | عود"
     ],
     "images": [
-      "/brand/numbered/siyag-12-owner.webp",
+      "/brand/numbered/siyag-12-studio.webp",
       "/brand/numbered/siyag-12-photo-v2.webp"
     ],
     "featured": false,
@@ -800,32 +805,33 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 12",
       "descriptionEn": "Cool aromatic freshness meets a vivid touch of spice and a deeper, dressed-up character. A distinctive choice for tailored looks and formal evenings."
     },
-    "notesImageUrl": "/brand/numbered/siyag-12-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-12-studio.webp"
   },
   {
     "id": "ed22818f-0e2e-5a5e-83d0-c1e6328b2a48",
     "slug": "siyag-13",
     "nameEn": "SIYAG 13",
     "nameAr": "SIYAG 13",
-    "descriptionEn": "A delicate veil of powdery rose and soft musk, grounded in elegant patchouli. Feminine and quietly captivating, with an intimate evening character.",
-    "descriptionAr": "ورد بودري ناعم يلتقي بالمسك ويستقر على أناقة الباتشولي؛ حضور أنثوي رقيق وجذّاب للمساء.",
+    "descriptionEn": "A warm flash of spice gives way to white flowers and soft musk. Indonesian patchouli brings an earthy depth, softened by vanilla and woods.",
+    "descriptionAr": "بداية دافية من التوابل، بعدها زهور بيضا ومسك ناعم. أوراق الباتشولي الإندونيسي بتدي العطر عمق ترابي، والفانيليا والأخشاب بتنعّم أثره.",
     "brand": "SIYAG",
     "family": "floral",
     "concentration": "parfum",
     "audience": "women",
     "topNotes": [
-      "Rose | ورد",
-      "Powdery Notes | نوتات بودرية"
+      "Spices | توابل"
     ],
     "heartNotes": [
-      "Musk | مسك",
-      "White Rose | ورد أبيض"
+      "White Flowers | زهور بيضاء",
+      "Musk | مسك"
     ],
     "baseNotes": [
-      "Patchouli | باتشولي"
+      "Indonesian Patchouli Leaf | أوراق الباتشولي الإندونيسي",
+      "Vanilla | فانيليا",
+      "Woody Notes | نوتات خشبية"
     ],
     "images": [
-      "/brand/numbered/siyag-13-owner.webp",
+      "/brand/numbered/siyag-13-studio.webp",
       "/brand/numbered/siyag-13-photo-v2.webp"
     ],
     "featured": false,
@@ -833,11 +839,11 @@ export const publishedProducts:Product[]=[
       "signature"
     ],
     "inspiration": {
-      "nameEn": "Laverne Musk Patchouli",
-      "nameAr": "لافيرن مسك باتشولي",
-      "descriptionEn": "Inspired by Laverne Musk Patchouli.",
-      "descriptionAr": "مستوحى من لافيرن مسك باتشولي.",
-      "imageUrl": "/brand/inspiration/catalog-14-3d-v2.webp"
+      "nameEn": "Narciso Rodriguez Patchouli Musc",
+      "nameAr": "نارسيسو رودريغز باتشولي مسك",
+      "descriptionEn": "Inspired by Narciso Rodriguez Patchouli Musc.",
+      "descriptionAr": "مستوحى من نارسيسو رودريغز باتشولي مسك.",
+      "imageUrl": "/brand/inspiration/patchouli-musc.webp"
     },
     "variants": [
       {
@@ -861,9 +867,9 @@ export const publishedProducts:Product[]=[
     ],
     "seo": {
       "titleEn": "SIYAG 13",
-      "descriptionEn": "A delicate veil of powdery rose and soft musk, grounded in elegant patchouli. Feminine and quietly captivating, with an intimate evening character."
+      "descriptionEn": "A warm flash of spice gives way to white flowers and soft musk. Indonesian patchouli brings an earthy depth, softened by vanilla and woods."
     },
-    "notesImageUrl": "/brand/numbered/siyag-13-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-13-studio.webp"
   },
   {
     "id": "1e0070e0-db0d-5409-a777-ee226a522566",
@@ -884,7 +890,7 @@ export const publishedProducts:Product[]=[
       "Amber Woods | أخشاب عنبرية"
     ],
     "images": [
-      "/brand/numbered/siyag-14-owner.webp",
+      "/brand/numbered/siyag-14-studio.webp",
       "/brand/numbered/siyag-14-photo-v2.webp"
     ],
     "featured": false,
@@ -922,7 +928,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 14",
       "descriptionEn": "Refined woods with a confident, dressed-up presence. A polished signature for formal moments and a quietly distinctive style."
     },
-    "notesImageUrl": "/brand/numbered/siyag-14-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-14-studio.webp"
   },
   {
     "id": "51780f2c-8ae5-58f7-8d92-0a091bca76d9",
@@ -944,7 +950,7 @@ export const publishedProducts:Product[]=[
       "Tonka Bean | حبوب التونكا"
     ],
     "images": [
-      "/brand/numbered/siyag-15-owner.webp",
+      "/brand/numbered/siyag-15-studio.webp",
       "/brand/numbered/siyag-15-photo-v2.webp"
     ],
     "featured": false,
@@ -982,7 +988,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 15",
       "descriptionEn": "Fresh, clean and effortlessly put together. An easy modern signature for bright starts, busy days and everyday confidence."
     },
-    "notesImageUrl": "/brand/numbered/siyag-15-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-15-studio.webp"
   },
   {
     "id": "38df8af5-9060-5926-a3be-4f5244fad735",
@@ -1015,7 +1021,7 @@ export const publishedProducts:Product[]=[
       "Amberwood | خشب عنبري"
     ],
     "images": [
-      "/brand/numbered/siyag-16-owner.webp",
+      "/brand/numbered/siyag-16-studio.webp",
       "/brand/numbered/siyag-16-photo-v2.webp"
     ],
     "featured": false,
@@ -1053,7 +1059,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 16",
       "descriptionEn": "Soft leather with a smooth, refined character. An intimate yet distinctive signature for special occasions and carefully chosen moments."
     },
-    "notesImageUrl": "/brand/numbered/siyag-16-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-16-studio.webp"
   },
   {
     "id": "e17fa2e9-bfbc-5f50-80d6-10069a86e5ca",
@@ -1078,7 +1084,7 @@ export const publishedProducts:Product[]=[
       "Dried Fruits | فواكه مجففة"
     ],
     "images": [
-      "/brand/numbered/siyag-17-owner.webp",
+      "/brand/numbered/siyag-17-studio.webp",
       "/brand/numbered/siyag-17-photo-v2.webp"
     ],
     "featured": false,
@@ -1116,7 +1122,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 17",
       "descriptionEn": "Rich vanilla wrapped in the warmth of tobacco. Deep, comforting and full-bodied, made for winter days and atmospheric evenings."
     },
-    "notesImageUrl": "/brand/numbered/siyag-17-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-17-studio.webp"
   },
   {
     "id": "71b24087-fc94-540e-863f-6b6fd8b39ddc",
@@ -1143,7 +1149,7 @@ export const publishedProducts:Product[]=[
       "White Musk | مسك أبيض"
     ],
     "images": [
-      "/brand/numbered/siyag-18-owner.webp",
+      "/brand/numbered/siyag-18-studio.webp",
       "/brand/numbered/siyag-18-photo-v2.webp"
     ],
     "featured": false,
@@ -1181,7 +1187,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 18",
       "descriptionEn": "Vibrant freshness with a bright, carefree holiday mood. A lively daytime signature that brings a little sunshine to everyday plans."
     },
-    "notesImageUrl": "/brand/numbered/siyag-18-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-18-studio.webp"
   },
   {
     "id": "46939e1f-64b3-58d0-aaf0-3b44a4ae5bb8",
@@ -1207,7 +1213,7 @@ export const publishedProducts:Product[]=[
       "Cashmere Wood | خشب الكشمير"
     ],
     "images": [
-      "/brand/numbered/siyag-19-owner.webp",
+      "/brand/numbered/siyag-19-studio.webp",
       "/brand/numbered/siyag-19-photo-v2.webp"
     ],
     "featured": false,
@@ -1238,7 +1244,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 19",
       "descriptionEn": "A SIYAG creation opening with sparkling mandarin and citrus. Orange and white florals soften the heart before white musk and cashmere wood leave a clean, gentle trail."
     },
-    "notesImageUrl": "/brand/numbered/siyag-19-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-19-studio.webp"
   },
   {
     "id": "149f0af9-7f98-5808-a8fa-a4c6c3fc78d0",
@@ -1261,7 +1267,7 @@ export const publishedProducts:Product[]=[
       "Amber | عنبر"
     ],
     "images": [
-      "/brand/numbered/siyag-20-owner.webp",
+      "/brand/numbered/siyag-20-studio.webp",
       "/brand/numbered/siyag-20-photo-v2.webp"
     ],
     "featured": false,
@@ -1299,7 +1305,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 20",
       "descriptionEn": "Fresh woods with a polished, formal character. Composed and confident, for a signature that feels as considered as your best-dressed look."
     },
-    "notesImageUrl": "/brand/numbered/siyag-20-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-20-studio.webp"
   },
   {
     "id": "8501a8e6-d97b-5fdd-9d1b-5489414aa432",
@@ -1322,7 +1328,7 @@ export const publishedProducts:Product[]=[
       "Vetiver | نجيل الهند"
     ],
     "images": [
-      "/brand/numbered/siyag-21-owner.webp",
+      "/brand/numbered/siyag-21-studio.webp",
       "/brand/numbered/siyag-21-photo-v2.webp"
     ],
     "featured": false,
@@ -1360,7 +1366,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 21",
       "descriptionEn": "An expressive lavender-led scent with a clean, freshly showered feeling. Smooth and polished, with a vibrant aromatic presence."
     },
-    "notesImageUrl": "/brand/numbered/siyag-21-owner.webp"
+    "notesImageUrl": "/brand/numbered/siyag-21-studio.webp"
   }
 ];
 export const publishedCollections:Collection[]=[

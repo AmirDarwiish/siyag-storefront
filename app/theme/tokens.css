@@ -24,6 +24,11 @@
   font-display: swap;
 }
 :root {
+  --catalog-packshot-inset: 6%;
+  --catalog-photo-ratio: 1 / 1;
+  --profile-note-opening: var(--tone-fresh);
+  --profile-note-heart: var(--tone-floral);
+  --profile-note-base: var(--tone-amber);
   --audience-men: #285568;
   --audience-women: #85475d;
   --audience-unisex: #52633e;
@@ -252,6 +257,11 @@
 }
 @media (max-width:767px) {
   :root {
+  --catalog-packshot-inset: 6%;
+  --catalog-photo-ratio: 1 / 1;
+  --profile-note-opening: var(--tone-fresh);
+  --profile-note-heart: var(--tone-floral);
+  --profile-note-base: var(--tone-amber);
     --home-section-space: 20px;
     --page-gutter: 16px;
     --type-card-title: 16px;
@@ -278,6 +288,11 @@
 }
 @media (min-width:1021px) {
  :root {
+  --catalog-packshot-inset: 6%;
+  --catalog-photo-ratio: 1 / 1;
+  --profile-note-opening: var(--tone-fresh);
+  --profile-note-heart: var(--tone-floral);
+  --profile-note-base: var(--tone-amber);
   --section-space:clamp(36px,3.4vw,48px);
   --type-section:clamp(30px,2.5vw,36px);
   --type-page:clamp(40px,3.4vw,48px);

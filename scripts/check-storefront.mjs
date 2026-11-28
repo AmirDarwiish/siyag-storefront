@@ -112,7 +112,7 @@ assert.equal(publishedPage(new URLSearchParams('sort=price-desc')).data[0].slug,
 assert.equal(publishedPage(new URLSearchParams('sizeMl=50&minPriceMinor=100000')).totalCount,1);
 assert.equal(publishedPage(new URLSearchParams('pageSize=2&pageNumber=2')).data.length,2);
 assert.equal(publishedPage(new URLSearchParams('collection=discovery')).totalCount,0);
-assert.deepEqual(publishedCollections.map(c=>c.slug),['signature']);
+assert.deepEqual(publishedCollections.map(c=>c.slug),['signature','bestsellers']);
 const {commerce,isPurchasePath}=await source('lib/commerce.ts');
 assert.equal(commerce.showPrices,true);assert.equal(commerce.purchasingEnabled,true);
 for(const path of ['store/carts','store/cart','store/cart/lines/abc','store/cart/quote','store/orders','store/orders/payment/paymob'])assert(isPurchasePath(path),path);
@@ -166,13 +166,14 @@ for(const product of publishedProducts.filter(p=>p.inspiration?.imageUrl)){
 }
 console.log('All 20 inspired-by images retain transparent alpha; Satsuma has no external source bottle.');
 
-const {audienceGroups,audienceProducts,audienceHref,pendingCatalog}=await source('lib/home-catalog.ts');
+const {audienceGroups,pendingCatalog}=await source('lib/home-catalog.ts');
 assert.deepEqual(audienceGroups.map(g=>g.audience),['men','women','unisex']);
 for(const group of audienceGroups){
- const members=audienceProducts([...publishedProducts].reverse(),group.audience);
+ const filtered=publishedPage(new URLSearchParams("audience="+group.audience));
+ const members=filtered.data;
  assert(members.length>0);assert(members.every(p=>p.audience===group.audience));
  const numbers=members.map(p=>Number(p.slug.slice(6)));assert.deepEqual(numbers,[...numbers].sort((a,b)=>a-b));
- assert.equal(publishedPage(new URLSearchParams(audienceHref(group.audience).split('?')[1])).totalCount,publishedProducts.filter(p=>p.audience===group.audience).length);
+ assert.equal(filtered.totalCount,publishedProducts.filter(p=>p.audience===group.audience).length);
 }
 assert(pendingCatalog(publishedProducts).every(p=>p.inventoryStatus==='pending'&&p.variants.every(v=>!v.inStock)));
 const {createCatalogLoader}=await source('lib/catalog-loader.ts');
@@ -184,3 +185,10 @@ clock=101;fail=true;const failed=loader();await Promise.resolve();finish();await
 await assert.rejects(loader(),/temporarily unavailable/);assert.equal(calls,2,'failed retries are bounded and stale stock is not served');
 clock=112;fail=false;const recovered=loader();await Promise.resolve();finish();assert.equal((await recovered).revision,3);
 console.log('Homepage groups and performance checks passed: customer order, working audience links, safe initial presentation, request deduplication, bounded freshness, failure and recovery.');
+
+const {homeSections,sectionProducts,giftSelections}=await source('lib/home-catalog.ts');
+assert.deepEqual(homeSections.map(s=>s.key),['bestsellers','fragrances']);
+assert.deepEqual(sectionProducts(publishedProducts,'bestsellers').map(p=>p.slug),['siyag-1','siyag-3','siyag-7','siyag-8']);
+assert.equal(publishedPage(new URLSearchParams('collection=bestsellers')).totalCount,4);
+for(const selection of giftSelections){assert.equal(selection.slugs.length,4);assert(selection.slugs.every(slug=>publishedProduct(slug).variants.some(v=>v.sizeMl===selection.sizeMl)));assert.equal(publishedPage(new URLSearchParams(selection.href.split('?')[1])).totalCount,21)}
+console.log('Homepage merchandising checks passed: best sellers then full collection, 30/50 ml gift selection links, four real fragrances per visual, and audience filters retained.');

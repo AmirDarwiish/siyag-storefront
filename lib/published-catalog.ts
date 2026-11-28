@@ -31,7 +31,8 @@ export const publishedProducts:Product[]=[
     ],
     "featured": false,
     "collections": [
-      "signature"
+      "signature",
+      "bestsellers"
     ],
     "inspiration": {
       "nameEn": "Emporio Armani Stronger With You Intensely",
@@ -164,7 +165,8 @@ export const publishedProducts:Product[]=[
     ],
     "featured": false,
     "collections": [
-      "signature"
+      "signature",
+      "bestsellers"
     ],
     "inspiration": {
       "nameEn": "Nishane Ani",
@@ -418,7 +420,8 @@ export const publishedProducts:Product[]=[
     ],
     "featured": false,
     "collections": [
-      "signature"
+      "signature",
+      "bestsellers"
     ],
     "inspiration": {
       "nameEn": "Amouage Decision",
@@ -486,7 +489,8 @@ export const publishedProducts:Product[]=[
     ],
     "featured": false,
     "collections": [
-      "signature"
+      "signature",
+      "bestsellers"
     ],
     "inspiration": {
       "nameEn": "Xerjoff Naxos",
@@ -1365,6 +1369,12 @@ export const publishedCollections:Collection[]=[
     "nameEn": "The SIYAG collection",
     "nameAr": "مجموعة SIYAG",
     "imageUrl": "/brand/categories/signature.webp"
+  },
+  {
+    "slug": "bestsellers",
+    "nameEn": "Best sellers",
+    "nameAr": "الأكثر مبيعًا",
+    "imageUrl": "/brand/numbered/siyag-8-notes-v2.webp"
   }
 ];
 export function publishedProduct(slug:string){return publishedProducts.find(p=>p.slug===slug)??null}

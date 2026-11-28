@@ -11,7 +11,7 @@ import {HomeProductRail} from "./home-product-rail";
 import {track} from "@/lib/analytics";
 import {StoreReviewsLink} from "./reviews";
 import {HomeBanners} from "./home-banners";
-import {audienceGroups,audienceProducts,audienceHref,homeCatalogPolicy} from "@/lib/home-catalog";
+import {homeSections,sectionProducts,giftSelections,homeCatalogPolicy} from "@/lib/home-catalog";
 import {ShopByCategory} from "./shop-by-category";
 
 type FeatureProps={tone:"discovery"|"house"; eyebrow:string; title:string; copy:string; image:string; href:string; action:string};
@@ -22,10 +22,10 @@ function EditorialFeature({tone,eyebrow,title,copy,image,href,action}:FeaturePro
   </section>;
 }
 
-function HomeAudienceCollection({group,catalog,first}:{group:typeof audienceGroups[number];catalog:Product[];first:boolean}){
+function HomeCollection({group,catalog,first}:{group:typeof homeSections[number];catalog:Product[];first:boolean}){
  const {tr,lang}=useStore(),region=useRef<HTMLElement>(null);
  const [visible,setVisible]=useState(first);
- const products=useMemo(()=>audienceProducts(catalog,group.audience),[catalog,group.audience]);
+ const products=useMemo(()=>sectionProducts(catalog,group.collection),[catalog,group.collection]);
  useEffect(()=>{
   if(visible)return;
   if(typeof IntersectionObserver==='undefined'){setVisible(true);return}
@@ -33,10 +33,24 @@ function HomeAudienceCollection({group,catalog,first}:{group:typeof audienceGrou
   const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){setVisible(true);observer.disconnect()}},{rootMargin:homeCatalogPolicy.revealMargin});
   observer.observe(node);return()=>observer.disconnect();
  },[visible]);
- useEffect(()=>{if(visible&&products.length)track("view_item_list",{list_id:"home-"+group.audience,items:products.map(p=>({item_id:p.variants[0]?.id??p.id,item_name:p.nameEn,item_category:p.family}))})},[visible,products,group.audience]);
- return <section ref={region} className="catalog-home" aria-labelledby={'home-'+group.audience}><div className="container section">
-  <div className="section-head"><div><span className="eyebrow">SIYAG</span><h2 id={'home-'+group.audience}>{name(group,lang)}</h2></div><Link className="text-link" href={audienceHref(group.audience)}>{tr("View all","عرض الكل")}</Link></div>
+ useEffect(()=>{if(visible&&products.length)track("view_item_list",{list_id:"home-"+group.key,items:products.map(p=>({item_id:p.variants[0]?.id??p.id,item_name:p.nameEn,item_category:p.family}))})},[visible,products,group.key]);
+ return <section ref={region} className="catalog-home" aria-labelledby={'home-'+group.key}><div className="container section">
+  <div className="section-head"><div><span className="eyebrow">SIYAG</span><h2 id={'home-'+group.key}>{name(group,lang)}</h2></div><Link className="text-link" href={group.href}>{tr("View all","عرض الكل")}</Link></div>
   {visible?<HomeProductRail products={products}/>:<div className="product-grid home-rail-loading" aria-hidden="true">{products.slice(0,3).map(p=><div className="skeleton" key={p.id}/>)}</div>}
+ </div></section>;
+}
+
+function HomeGifts({catalog}:{catalog:Product[]}){
+ const {tr,lang}=useStore();
+ return <section className="catalog-home" aria-labelledby="home-gifts"><div className="container section">
+  <div className="section-head"><div><span className="eyebrow">SIYAG4</span><h2 id="home-gifts">{tr("Bundles & gifts","باقات وهدايا")}</h2></div></div>
+  <div className="home-gift-grid">{giftSelections.map(selection=><article className="home-gift-card" key={selection.sizeMl}>
+   <Link href={selection.href} className="home-gift-visual" aria-label={tr(`Choose four ${selection.sizeMl} ml perfumes`,`اختار ٤ عطور بحجم ${selection.sizeMl} مل`)}>{selection.slugs.map(slug=>{
+    const product=catalog.find(p=>p.slug===slug);if(!product)return null;
+    return <StoreImage key={slug} src={product.images[1]||product.images[0]} alt={name(product,lang)} width={300} height={300} sizes="(max-width:767px) 22vw,11vw" loading="lazy"/>;
+   })}</Link>
+   <div className="home-gift-copy"><h3>{name(selection,lang)}</h3><p>{tr("Choose 4 perfumes. Pay for just 3.","اختار ٤ عطور وهتدفع تمن ٣ بس.")}</p><p>{tr("For gifting, sharing, or finding a new favourite.","للهدايا، للمشاركة، أو لاكتشاف عطرك المفضل.")}</p><Link href={selection.href} className="text-link">{tr("Choose your four","اختار ٤ عطور")}</Link></div>
+  </article>)}</div>
  </div></section>;
 }
 
@@ -62,7 +76,8 @@ export function Home({initialProducts}:{initialProducts:Product[]}) {
 
     <div id="collections">
       {failed&&<div className="container"><p role="status">{tr("Availability is temporarily unavailable. Your fragrance collection is still here.","تعذّر تحديث التوفر مؤقتًا؛ تقدر تتصفح العطور.")} <button className="text-link" onClick={()=>setAttempt(value=>value+1)}>{tr("Try again","إعادة المحاولة")}</button></p></div>}
-      {audienceGroups.map((group,index)=><HomeAudienceCollection key={group.audience} group={group} catalog={products} first={index===0}/>)}
+      {homeSections.map((group,index)=><HomeCollection key={group.key} group={group} catalog={products} first={index===0}/>)}
+      <HomeGifts catalog={products}/>
     </div>
 
     <div className="home-stories container">

@@ -202,71 +202,10 @@ export const publishedProducts:Product[]=[
     }
   },
   {
-    "id": "8501a8e6-d97b-5fdd-9d1b-5489414aa432",
+    "id": "da3c97a7-fdb9-5fdc-a661-6c1ee085109e",
     "slug": "siyag-4",
     "nameEn": "SIYAG 4",
     "nameAr": "SIYAG 4",
-    "descriptionEn": "An expressive lavender-led scent with a clean, freshly showered feeling. Smooth and polished, with a vibrant aromatic presence.",
-    "descriptionAr": "حضور عطري واضح يقوده اللافندر، بإحساس نظيف ومنتعش يشبه الخروج من الدش؛ ناعم ومرتب وحيوي.",
-    "brand": "SIYAG",
-    "family": "woody",
-    "concentration": "parfum",
-    "audience": "unisex",
-    "topNotes": [
-      "Bourbon Vanilla | فانيليا بوربون"
-    ],
-    "heartNotes": [
-      "Lavender | لافندر"
-    ],
-    "baseNotes": [
-      "Vetiver | نجيل الهند"
-    ],
-    "images": [
-      "/brand/numbered/siyag-4-notes-v2.webp",
-      "/brand/numbered/siyag-4-photo-v2.webp"
-    ],
-    "featured": false,
-    "collections": [
-      "signature"
-    ],
-    "inspiration": {
-      "nameEn": "Valentino Uomo Born in Roma Intense",
-      "nameAr": "فالنتينو أومو بورن إن روما إنتنس",
-      "descriptionEn": "Inspired by Valentino Uomo Born in Roma Intense.",
-      "descriptionAr": "مستوحى من فالنتينو أومو بورن إن روما إنتنس.",
-      "imageUrl": "/brand/inspiration/catalog-4-3d-v2.webp"
-    },
-    "variants": [
-      {
-        "id": "69bcb508-ef0d-5c03-8b75-3adf3137cef8",
-        "sku": "SIYAG-4-30-FULLBOTTLE",
-        "sizeMl": 30,
-        "format": "fullBottle",
-        "priceMinor": 35000,
-        "compareAtMinor": null,
-        "inStock": false
-      },
-      {
-        "id": "6ca34f63-d6d1-5ea4-b84f-86594d0087ea",
-        "sku": "SIYAG-4-50-FULLBOTTLE",
-        "sizeMl": 50,
-        "format": "fullBottle",
-        "priceMinor": 60000,
-        "compareAtMinor": null,
-        "inStock": false
-      }
-    ],
-    "seo": {
-      "titleEn": "SIYAG 4",
-      "descriptionEn": "An expressive lavender-led scent with a clean, freshly showered feeling. Smooth and polished, with a vibrant aromatic presence."
-    },
-    "notesImageUrl": "/brand/numbered/siyag-4-notes-v2.webp"
-  },
-  {
-    "id": "da3c97a7-fdb9-5fdc-a661-6c1ee085109e",
-    "slug": "siyag-5",
-    "nameEn": "SIYAG 5",
-    "nameAr": "SIYAG 5",
     "descriptionEn": "Fresh woods with a polished, versatile character. An effortless signature that moves comfortably between dressed-up occasions and everyday plans.",
     "descriptionAr": "أخشاب منعشة بطابع أنيق ومرن؛ توقيع عطري يناسب إطلالة رسمية أو يومك العادي بسهولة.",
     "brand": "SIYAG",
@@ -281,8 +220,8 @@ export const publishedProducts:Product[]=[
       "Musk | مسك"
     ],
     "images": [
-      "/brand/numbered/siyag-5-notes-v2.webp",
-      "/brand/numbered/siyag-5-photo-v2.webp"
+      "/brand/numbered/siyag-4-owner.webp",
+      "/brand/numbered/siyag-4-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -298,7 +237,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "31f5f49d-7bc3-551d-9e77-06a34c5365e8",
-        "sku": "SIYAG-5-30-FULLBOTTLE",
+        "sku": "SIYAG-4-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 46000,
@@ -307,7 +246,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "d75700ec-f2b0-566d-9ef4-ed72fce8420f",
-        "sku": "SIYAG-5-50-FULLBOTTLE",
+        "sku": "SIYAG-4-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 82000,
@@ -316,16 +255,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 5",
+      "titleEn": "SIYAG 4",
       "descriptionEn": "Fresh woods with a polished, versatile character. An effortless signature that moves comfortably between dressed-up occasions and everyday plans."
     },
-    "notesImageUrl": "/brand/numbered/siyag-5-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-4-owner.webp"
   },
   {
     "id": "00dbc4f1-30d6-57de-8e71-bafb88ed46fe",
-    "slug": "siyag-6",
-    "nameEn": "SIYAG 6",
-    "nameAr": "SIYAG 6",
+    "slug": "siyag-5",
+    "nameEn": "SIYAG 5",
+    "nameAr": "SIYAG 5",
     "descriptionEn": "Creamy vanilla with a soft, enveloping sweetness. A deliciously comforting scent that feels warm, inviting and effortlessly indulgent.",
     "descriptionAr": "فانيليا كريمية بحلاوة ناعمة تحتضن الحواس؛ إحساس شهي ودافئ يترك حضورًا جذّابًا ومريحًا.",
     "brand": "SIYAG",
@@ -348,8 +287,8 @@ export const publishedProducts:Product[]=[
       "Praline | برالين"
     ],
     "images": [
-      "/brand/numbered/siyag-6-notes-v2.webp",
-      "/brand/numbered/siyag-6-photo-v2.webp"
+      "/brand/numbered/siyag-5-owner.webp",
+      "/brand/numbered/siyag-5-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -365,7 +304,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "16151a35-080b-5f7d-9ee7-d101d8fab948",
-        "sku": "SIYAG-6-30-FULLBOTTLE",
+        "sku": "SIYAG-5-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 38000,
@@ -374,7 +313,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "bd747ddd-55ec-5e06-815f-014e049bad46",
-        "sku": "SIYAG-6-50-FULLBOTTLE",
+        "sku": "SIYAG-5-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 63000,
@@ -383,16 +322,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 6",
+      "titleEn": "SIYAG 5",
       "descriptionEn": "Creamy vanilla with a soft, enveloping sweetness. A deliciously comforting scent that feels warm, inviting and effortlessly indulgent."
     },
-    "notesImageUrl": "/brand/numbered/siyag-6-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-5-owner.webp"
   },
   {
     "id": "f2fee72f-216c-5175-9e64-76bc90da479e",
-    "slug": "siyag-7",
-    "nameEn": "SIYAG 7",
-    "nameAr": "SIYAG 7",
+    "slug": "siyag-6",
+    "nameEn": "SIYAG 6",
+    "nameAr": "SIYAG 6",
     "descriptionEn": "A distinctive frankincense-led character, lifted by freshness and grounded in woods. Refined and individual, for a signature with its own point of view.",
     "descriptionAr": "طابع مميز يقوده اللبان، ترفعه لمسة انتعاش وتمنحه الأخشاب عمقًا أنيقًا؛ لمن يحب عطرًا له شخصية مختلفة.",
     "brand": "SIYAG",
@@ -415,8 +354,8 @@ export const publishedProducts:Product[]=[
       "Vanilla | فانيليا"
     ],
     "images": [
-      "/brand/numbered/siyag-7-notes-v2.webp",
-      "/brand/numbered/siyag-7-photo.webp"
+      "/brand/numbered/siyag-6-notes-gold.webp",
+      "/brand/numbered/siyag-6-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -433,7 +372,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "1a85ea21-83d1-5dbe-abc1-bbce139dc58a",
-        "sku": "SIYAG-7-30-FULLBOTTLE",
+        "sku": "SIYAG-6-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 65000,
@@ -442,7 +381,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "8aee8ff0-44ba-5635-b086-8af7bc778775",
-        "sku": "SIYAG-7-50-FULLBOTTLE",
+        "sku": "SIYAG-6-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 100000,
@@ -451,16 +390,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 7",
+      "titleEn": "SIYAG 6",
       "descriptionEn": "A distinctive frankincense-led character, lifted by freshness and grounded in woods. Refined and individual, for a signature with its own point of view."
     },
-    "notesImageUrl": "/brand/numbered/siyag-7-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-6-notes-gold.webp"
   },
   {
     "id": "ea12f2a1-ee32-4454-9fc9-75d863db7f16",
-    "slug": "siyag-8",
-    "nameEn": "SIYAG 8",
-    "nameAr": "SIYAG 8",
+    "slug": "siyag-7",
+    "nameEn": "SIYAG 7",
+    "nameAr": "SIYAG 7",
     "descriptionEn": "Warm, richly textured and confidently refined. A composed signature for formal occasions and moments when you want your presence to speak quietly.",
     "descriptionAr": "دافئ وغني بالتفاصيل بطابع واثق وراقٍ؛ توقيع متزن للمناسبات الرسمية ولحضور أنيق يلفت من غير مبالغة.",
     "brand": "SIYAG",
@@ -484,8 +423,8 @@ export const publishedProducts:Product[]=[
       "Tonka Bean | حبوب التونكا"
     ],
     "images": [
-      "/brand/numbered/siyag-8-notes-v2.webp",
-      "/brand/numbered/siyag-8-photo-v2.webp"
+      "/brand/numbered/siyag-7-notes.webp",
+      "/brand/numbered/siyag-7-photo.webp"
     ],
     "featured": false,
     "collections": [
@@ -502,7 +441,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "4a639957-0872-5454-9258-56beebdc792c",
-        "sku": "SIYAG-8-30-FULLBOTTLE",
+        "sku": "SIYAG-7-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 35000,
@@ -511,7 +450,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "8c97091c-5dd5-40fd-b84a-674ec8924d0c",
-        "sku": "SIYAG-8-50-FULLBOTTLE",
+        "sku": "SIYAG-7-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 60000,
@@ -520,16 +459,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 8",
+      "titleEn": "SIYAG 7",
       "descriptionEn": "Warm, richly textured and confidently refined. A composed signature for formal occasions and moments when you want your presence to speak quietly."
     },
-    "notesImageUrl": "/brand/numbered/siyag-8-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-7-notes.webp"
   },
   {
     "id": "4fdded53-6f25-5293-973b-8fd6c5bfe80d",
-    "slug": "siyag-9",
-    "nameEn": "SIYAG 9",
-    "nameAr": "SIYAG 9",
+    "slug": "siyag-8",
+    "nameEn": "SIYAG 8",
+    "nameAr": "SIYAG 8",
     "descriptionEn": "Luminous white florals with a deep, enveloping character. Elegant and expressive, balancing airy beauty with a richer sense of presence.",
     "descriptionAr": "زهور بيضاء مضيئة بطابع عميق يحتضن الحواس؛ أناقة تجمع نعومة الزهور وحضورها الغني.",
     "brand": "SIYAG",
@@ -544,8 +483,8 @@ export const publishedProducts:Product[]=[
       "Peru Balsam | بلسم بيرو"
     ],
     "images": [
-      "/brand/numbered/siyag-9-notes-v2.webp",
-      "/brand/numbered/siyag-9-photo-v2.webp"
+      "/brand/numbered/siyag-8-owner.webp",
+      "/brand/numbered/siyag-8-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -561,7 +500,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "409d4fea-cf9d-5fe3-8388-4b80c2b4f9ed",
-        "sku": "SIYAG-9-30-FULLBOTTLE",
+        "sku": "SIYAG-8-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 39000,
@@ -570,7 +509,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "adadf83c-79e2-5a82-aada-71633f92237a",
-        "sku": "SIYAG-9-50-FULLBOTTLE",
+        "sku": "SIYAG-8-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 67000,
@@ -579,16 +518,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 9",
+      "titleEn": "SIYAG 8",
       "descriptionEn": "Luminous white florals with a deep, enveloping character. Elegant and expressive, balancing airy beauty with a richer sense of presence."
     },
-    "notesImageUrl": "/brand/numbered/siyag-9-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-8-owner.webp"
   },
   {
     "id": "eec0afe7-9647-5805-b721-1f400d17c9d5",
-    "slug": "siyag-10",
-    "nameEn": "SIYAG 10",
-    "nameAr": "SIYAG 10",
+    "slug": "siyag-9",
+    "nameEn": "SIYAG 9",
+    "nameAr": "SIYAG 9",
     "descriptionEn": "Rich amber and indulgent sweetness create a bold evening signature. Confident, dressed-up and full of character after dark.",
     "descriptionAr": "عنبر غني وحلاوة عميقة يصنعان توقيعًا مسائيًا جريئًا؛ حضور واثق يناسب الإطلالات الرسمية والليالي المميزة.",
     "brand": "SIYAG",
@@ -605,8 +544,8 @@ export const publishedProducts:Product[]=[
       "Tonka Bean | حبوب التونكا"
     ],
     "images": [
-      "/brand/numbered/siyag-10-notes-v2.webp",
-      "/brand/numbered/siyag-10-photo-v2.webp"
+      "/brand/numbered/siyag-9-owner.webp",
+      "/brand/numbered/siyag-9-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -622,7 +561,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "de6e1d11-c470-5dc9-8d9a-c1aaf00f2133",
-        "sku": "SIYAG-10-30-FULLBOTTLE",
+        "sku": "SIYAG-9-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 42000,
@@ -631,7 +570,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "26568e4c-b7bc-5c1e-afc9-b19a8c890cb4",
-        "sku": "SIYAG-10-50-FULLBOTTLE",
+        "sku": "SIYAG-9-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 75000,
@@ -640,16 +579,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 10",
+      "titleEn": "SIYAG 9",
       "descriptionEn": "Rich amber and indulgent sweetness create a bold evening signature. Confident, dressed-up and full of character after dark."
     },
-    "notesImageUrl": "/brand/numbered/siyag-10-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-9-owner.webp"
   },
   {
     "id": "58c2145e-03d4-5c94-8bc4-54d9792c08de",
-    "slug": "siyag-11",
-    "nameEn": "SIYAG 11",
-    "nameAr": "SIYAG 11",
+    "slug": "siyag-10",
+    "nameEn": "SIYAG 10",
+    "nameAr": "SIYAG 10",
     "descriptionEn": "A clean, fresh impression with an elegant Arabian character. Refined and distinctive, bringing a sense of tradition to a modern signature.",
     "descriptionAr": "إحساس نظيف ومنتعش بلمسة عربية أنيقة؛ طابع مميز يجمع روح الأصالة بحضور عصري.",
     "brand": "SIYAG",
@@ -681,8 +620,8 @@ export const publishedProducts:Product[]=[
       "Castoreum | كاستوريوم"
     ],
     "images": [
-      "/brand/numbered/siyag-11-notes-v2.webp",
-      "/brand/numbered/siyag-11-photo-v2.webp"
+      "/brand/numbered/siyag-10-owner.webp",
+      "/brand/numbered/siyag-10-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -698,7 +637,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "3d4a5e6f-ef49-52e3-ad3c-3ee3b42d02f8",
-        "sku": "SIYAG-11-30-FULLBOTTLE",
+        "sku": "SIYAG-10-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 45000,
@@ -707,7 +646,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "7e9eb75e-4a96-550e-911c-d04685972c99",
-        "sku": "SIYAG-11-50-FULLBOTTLE",
+        "sku": "SIYAG-10-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 80000,
@@ -716,16 +655,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 11",
+      "titleEn": "SIYAG 10",
       "descriptionEn": "A clean, fresh impression with an elegant Arabian character. Refined and distinctive, bringing a sense of tradition to a modern signature."
     },
-    "notesImageUrl": "/brand/numbered/siyag-11-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-10-owner.webp"
   },
   {
     "id": "e9060915-392d-55a0-92eb-1fc380a4212d",
-    "slug": "siyag-12",
-    "nameEn": "SIYAG 12",
-    "nameAr": "SIYAG 12",
+    "slug": "siyag-11",
+    "nameEn": "SIYAG 11",
+    "nameAr": "SIYAG 11",
     "descriptionEn": "Creamy, powdery vanilla with a softly coconut-like impression. A comforting gourmand signature with a delicate, feminine-leaning character.",
     "descriptionAr": "فانيليا كريمية وبودرية بإحساس ناعم يذكّر بجوز الهند؛ توقيع جورماند مريح للجميع يميل للرقة الأنثوية.",
     "brand": "SIYAG",
@@ -740,8 +679,8 @@ export const publishedProducts:Product[]=[
       "White Powders | نوتات بودرية بيضاء"
     ],
     "images": [
-      "/brand/numbered/siyag-12-notes-v2.webp",
-      "/brand/numbered/siyag-12-photo-v2.webp"
+      "/brand/numbered/siyag-11-owner.webp",
+      "/brand/numbered/siyag-11-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -757,7 +696,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "381e76f5-3ca1-5c8f-89e5-fd24a276729a",
-        "sku": "SIYAG-12-30-FULLBOTTLE",
+        "sku": "SIYAG-11-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 38000,
@@ -766,7 +705,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "95c6e34d-147c-5947-8d6b-c670bbd70af5",
-        "sku": "SIYAG-12-50-FULLBOTTLE",
+        "sku": "SIYAG-11-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 65000,
@@ -775,16 +714,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 12",
+      "titleEn": "SIYAG 11",
       "descriptionEn": "Creamy, powdery vanilla with a softly coconut-like impression. A comforting gourmand signature with a delicate, feminine-leaning character."
     },
-    "notesImageUrl": "/brand/numbered/siyag-12-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-11-owner.webp"
   },
   {
     "id": "260905e7-ea02-5cb9-aefd-3d5e030010a1",
-    "slug": "siyag-13",
-    "nameEn": "SIYAG 13",
-    "nameAr": "SIYAG 13",
+    "slug": "siyag-12",
+    "nameEn": "SIYAG 12",
+    "nameAr": "SIYAG 12",
     "descriptionEn": "Cool aromatic freshness meets a vivid touch of spice and a deeper, dressed-up character. A distinctive choice for tailored looks and formal evenings.",
     "descriptionAr": "انتعاش عطري بارد تبرزه لمسة توابل وعمق أنيق؛ اختيار مميز للإطلالات الرسمية والبدل.",
     "brand": "SIYAG",
@@ -823,8 +762,8 @@ export const publishedProducts:Product[]=[
       "Oud | عود"
     ],
     "images": [
-      "/brand/numbered/siyag-13-notes-v2.webp",
-      "/brand/numbered/siyag-13-photo-v2.webp"
+      "/brand/numbered/siyag-12-owner.webp",
+      "/brand/numbered/siyag-12-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -840,7 +779,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "9215456c-9547-5c23-afc6-30cebc417247",
-        "sku": "SIYAG-13-30-FULLBOTTLE",
+        "sku": "SIYAG-12-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 40000,
@@ -849,7 +788,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "12004817-42d4-529a-ac9d-edacb7fbddc0",
-        "sku": "SIYAG-13-50-FULLBOTTLE",
+        "sku": "SIYAG-12-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 72000,
@@ -858,16 +797,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 13",
+      "titleEn": "SIYAG 12",
       "descriptionEn": "Cool aromatic freshness meets a vivid touch of spice and a deeper, dressed-up character. A distinctive choice for tailored looks and formal evenings."
     },
-    "notesImageUrl": "/brand/numbered/siyag-13-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-12-owner.webp"
   },
   {
     "id": "ed22818f-0e2e-5a5e-83d0-c1e6328b2a48",
-    "slug": "siyag-14",
-    "nameEn": "SIYAG 14",
-    "nameAr": "SIYAG 14",
+    "slug": "siyag-13",
+    "nameEn": "SIYAG 13",
+    "nameAr": "SIYAG 13",
     "descriptionEn": "A delicate veil of powdery rose and soft musk, grounded in elegant patchouli. Feminine and quietly captivating, with an intimate evening character.",
     "descriptionAr": "ورد بودري ناعم يلتقي بالمسك ويستقر على أناقة الباتشولي؛ حضور أنثوي رقيق وجذّاب للمساء.",
     "brand": "SIYAG",
@@ -886,8 +825,8 @@ export const publishedProducts:Product[]=[
       "Patchouli | باتشولي"
     ],
     "images": [
-      "/brand/numbered/siyag-14-notes-v2.webp",
-      "/brand/numbered/siyag-14-photo-v2.webp"
+      "/brand/numbered/siyag-13-owner.webp",
+      "/brand/numbered/siyag-13-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -903,7 +842,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "ef303b30-f333-5da5-8ced-0efd7215ba3f",
-        "sku": "SIYAG-14-30-FULLBOTTLE",
+        "sku": "SIYAG-13-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 38000,
@@ -912,7 +851,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "bcda51f7-8626-537d-8faa-0fd739619788",
-        "sku": "SIYAG-14-50-FULLBOTTLE",
+        "sku": "SIYAG-13-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 65000,
@@ -921,16 +860,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 14",
+      "titleEn": "SIYAG 13",
       "descriptionEn": "A delicate veil of powdery rose and soft musk, grounded in elegant patchouli. Feminine and quietly captivating, with an intimate evening character."
     },
-    "notesImageUrl": "/brand/numbered/siyag-14-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-13-owner.webp"
   },
   {
     "id": "1e0070e0-db0d-5409-a777-ee226a522566",
-    "slug": "siyag-15",
-    "nameEn": "SIYAG 15",
-    "nameAr": "SIYAG 15",
+    "slug": "siyag-14",
+    "nameEn": "SIYAG 14",
+    "nameAr": "SIYAG 14",
     "descriptionEn": "Refined woods with a confident, dressed-up presence. A polished signature for formal moments and a quietly distinctive style.",
     "descriptionAr": "أخشاب أنيقة بحضور واثق يناسب المناسبات الرسمية؛ توقيع راقٍ لمن يحب التميز بهدوء.",
     "brand": "SIYAG",
@@ -945,8 +884,8 @@ export const publishedProducts:Product[]=[
       "Amber Woods | أخشاب عنبرية"
     ],
     "images": [
-      "/brand/numbered/siyag-15-notes-v2.webp",
-      "/brand/numbered/siyag-15-photo-v2.webp"
+      "/brand/numbered/siyag-14-owner.webp",
+      "/brand/numbered/siyag-14-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -962,7 +901,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "49376e30-a3d3-56dd-83e5-bd49eb93e9d8",
-        "sku": "SIYAG-15-30-FULLBOTTLE",
+        "sku": "SIYAG-14-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 40000,
@@ -971,7 +910,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "872fcc36-41c9-51fa-81dd-ff397c667227",
-        "sku": "SIYAG-15-50-FULLBOTTLE",
+        "sku": "SIYAG-14-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 72000,
@@ -980,16 +919,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 15",
+      "titleEn": "SIYAG 14",
       "descriptionEn": "Refined woods with a confident, dressed-up presence. A polished signature for formal moments and a quietly distinctive style."
     },
-    "notesImageUrl": "/brand/numbered/siyag-15-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-14-owner.webp"
   },
   {
     "id": "51780f2c-8ae5-58f7-8d92-0a091bca76d9",
-    "slug": "siyag-16",
-    "nameEn": "SIYAG 16",
-    "nameAr": "SIYAG 16",
+    "slug": "siyag-15",
+    "nameEn": "SIYAG 15",
+    "nameAr": "SIYAG 15",
     "descriptionEn": "Fresh, clean and effortlessly put together. An easy modern signature for bright starts, busy days and everyday confidence.",
     "descriptionAr": "منعش ونظيف بطابع عصري ومرتب؛ توقيع سهل لبداية يومك ومشاويرك اليومية بثقة.",
     "brand": "SIYAG",
@@ -1005,8 +944,8 @@ export const publishedProducts:Product[]=[
       "Tonka Bean | حبوب التونكا"
     ],
     "images": [
-      "/brand/numbered/siyag-16-notes-v2.webp",
-      "/brand/numbered/siyag-16-photo-v2.webp"
+      "/brand/numbered/siyag-15-owner.webp",
+      "/brand/numbered/siyag-15-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -1022,7 +961,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "320f55e5-1ac6-5dbb-8a3f-c5b5564b7603",
-        "sku": "SIYAG-16-30-FULLBOTTLE",
+        "sku": "SIYAG-15-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 40000,
@@ -1031,7 +970,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "e952a5fe-b654-5d0d-8974-70339287562f",
-        "sku": "SIYAG-16-50-FULLBOTTLE",
+        "sku": "SIYAG-15-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 72000,
@@ -1040,16 +979,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 16",
+      "titleEn": "SIYAG 15",
       "descriptionEn": "Fresh, clean and effortlessly put together. An easy modern signature for bright starts, busy days and everyday confidence."
     },
-    "notesImageUrl": "/brand/numbered/siyag-16-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-15-owner.webp"
   },
   {
     "id": "38df8af5-9060-5926-a3be-4f5244fad735",
-    "slug": "siyag-17",
-    "nameEn": "SIYAG 17",
-    "nameAr": "SIYAG 17",
+    "slug": "siyag-16",
+    "nameEn": "SIYAG 16",
+    "nameAr": "SIYAG 16",
     "descriptionEn": "Soft leather with a smooth, refined character. An intimate yet distinctive signature for special occasions and carefully chosen moments.",
     "descriptionAr": "جلد ناعم بطابع سلس وراقٍ؛ توقيع قريب ومميز للمناسبات الخاصة واللحظات اللي تختار لها تفاصيلك بعناية.",
     "brand": "SIYAG",
@@ -1076,8 +1015,8 @@ export const publishedProducts:Product[]=[
       "Amberwood | خشب عنبري"
     ],
     "images": [
-      "/brand/numbered/siyag-17-notes-v2.webp",
-      "/brand/numbered/siyag-17-photo-v2.webp"
+      "/brand/numbered/siyag-16-owner.webp",
+      "/brand/numbered/siyag-16-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -1093,7 +1032,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "874bfc2d-8e84-5236-8ab0-d58afb0e00c3",
-        "sku": "SIYAG-17-30-FULLBOTTLE",
+        "sku": "SIYAG-16-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 42000,
@@ -1102,7 +1041,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "bd218830-d912-5c23-9ad8-aa099ea229fe",
-        "sku": "SIYAG-17-50-FULLBOTTLE",
+        "sku": "SIYAG-16-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 75000,
@@ -1111,16 +1050,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 17",
+      "titleEn": "SIYAG 16",
       "descriptionEn": "Soft leather with a smooth, refined character. An intimate yet distinctive signature for special occasions and carefully chosen moments."
     },
-    "notesImageUrl": "/brand/numbered/siyag-17-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-16-owner.webp"
   },
   {
     "id": "e17fa2e9-bfbc-5f50-80d6-10069a86e5ca",
-    "slug": "siyag-18",
-    "nameEn": "SIYAG 18",
-    "nameAr": "SIYAG 18",
+    "slug": "siyag-17",
+    "nameEn": "SIYAG 17",
+    "nameAr": "SIYAG 17",
     "descriptionEn": "Rich vanilla wrapped in the warmth of tobacco. Deep, comforting and full-bodied, made for winter days and atmospheric evenings.",
     "descriptionAr": "فانيليا غنية يحيط بها دفء التبغ؛ طابع عميق ومريح وممتلئ، يناسب الشتاء والأمسيات الدافئة.",
     "brand": "SIYAG",
@@ -1139,8 +1078,8 @@ export const publishedProducts:Product[]=[
       "Dried Fruits | فواكه مجففة"
     ],
     "images": [
-      "/brand/numbered/siyag-18-notes-v2.webp",
-      "/brand/numbered/siyag-18-photo-v2.webp"
+      "/brand/numbered/siyag-17-owner.webp",
+      "/brand/numbered/siyag-17-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -1156,7 +1095,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "90d0767c-4b58-5a32-b1b1-d34c24b9c4ad",
-        "sku": "SIYAG-18-30-FULLBOTTLE",
+        "sku": "SIYAG-17-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 45000,
@@ -1165,7 +1104,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "df49826a-e86c-578c-8136-4852b7c05573",
-        "sku": "SIYAG-18-50-FULLBOTTLE",
+        "sku": "SIYAG-17-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 80000,
@@ -1174,16 +1113,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 18",
+      "titleEn": "SIYAG 17",
       "descriptionEn": "Rich vanilla wrapped in the warmth of tobacco. Deep, comforting and full-bodied, made for winter days and atmospheric evenings."
     },
-    "notesImageUrl": "/brand/numbered/siyag-18-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-17-owner.webp"
   },
   {
     "id": "71b24087-fc94-540e-863f-6b6fd8b39ddc",
-    "slug": "siyag-19",
-    "nameEn": "SIYAG 19",
-    "nameAr": "SIYAG 19",
+    "slug": "siyag-18",
+    "nameEn": "SIYAG 18",
+    "nameAr": "SIYAG 18",
     "descriptionEn": "Vibrant freshness with a bright, carefree holiday mood. A lively daytime signature that brings a little sunshine to everyday plans.",
     "descriptionAr": "انتعاش حيوي بروح مشرقة وخفيفة تشبه أجواء الإجازة؛ توقيع نهاري يضيف لمسة صيفية ليومك.",
     "brand": "SIYAG",
@@ -1204,8 +1143,8 @@ export const publishedProducts:Product[]=[
       "White Musk | مسك أبيض"
     ],
     "images": [
-      "/brand/numbered/siyag-19-notes-v2.webp",
-      "/brand/numbered/siyag-19-photo-v2.webp"
+      "/brand/numbered/siyag-18-owner.webp",
+      "/brand/numbered/siyag-18-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -1221,7 +1160,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "9a8f14f0-d4e2-5b3c-b3b3-ad4355130f37",
-        "sku": "SIYAG-19-30-FULLBOTTLE",
+        "sku": "SIYAG-18-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 42000,
@@ -1230,7 +1169,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "b35e2281-7c8d-5d28-89e2-3522dfa15f81",
-        "sku": "SIYAG-19-50-FULLBOTTLE",
+        "sku": "SIYAG-18-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 75000,
@@ -1239,16 +1178,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 19",
+      "titleEn": "SIYAG 18",
       "descriptionEn": "Vibrant freshness with a bright, carefree holiday mood. A lively daytime signature that brings a little sunshine to everyday plans."
     },
-    "notesImageUrl": "/brand/numbered/siyag-19-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-18-owner.webp"
   },
   {
     "id": "46939e1f-64b3-58d0-aaf0-3b44a4ae5bb8",
-    "slug": "siyag-20",
-    "nameEn": "SIYAG 20 · Satsuma",
-    "nameAr": "SIYAG 20 · Satsuma",
+    "slug": "siyag-19",
+    "nameEn": "SIYAG 19",
+    "nameAr": "SIYAG 19",
     "descriptionEn": "A SIYAG creation opening with sparkling mandarin and citrus. Orange and white florals soften the heart before white musk and cashmere wood leave a clean, gentle trail.",
     "descriptionAr": "إبداع من SIYAG يبدأ بإشراقة الماندرين والحمضيات، يليه قلب ناعم من البرتقال والزهور البيضاء، ويستقر على المسك الأبيض وخشب الكشمير بأثر نظيف وهادئ.",
     "brand": "SIYAG",
@@ -1268,8 +1207,8 @@ export const publishedProducts:Product[]=[
       "Cashmere Wood | خشب الكشمير"
     ],
     "images": [
-      "/brand/numbered/siyag-20-notes-v2.webp",
-      "/brand/numbered/siyag-20-photo-v2.webp"
+      "/brand/numbered/siyag-19-owner.webp",
+      "/brand/numbered/siyag-19-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -1278,7 +1217,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "34be47bf-4a63-553c-998b-3a07675d8ee7",
-        "sku": "SIYAG-20-30-FULLBOTTLE",
+        "sku": "SIYAG-19-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 38000,
@@ -1287,7 +1226,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "0bdf16da-c2ef-5e2c-96b5-0c5656c5ed0f",
-        "sku": "SIYAG-20-50-FULLBOTTLE",
+        "sku": "SIYAG-19-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 65000,
@@ -1296,16 +1235,16 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 20 · Satsuma",
+      "titleEn": "SIYAG 19",
       "descriptionEn": "A SIYAG creation opening with sparkling mandarin and citrus. Orange and white florals soften the heart before white musk and cashmere wood leave a clean, gentle trail."
     },
-    "notesImageUrl": "/brand/numbered/siyag-20-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-19-owner.webp"
   },
   {
     "id": "149f0af9-7f98-5808-a8fa-a4c6c3fc78d0",
-    "slug": "siyag-21",
-    "nameEn": "SIYAG 21",
-    "nameAr": "SIYAG 21",
+    "slug": "siyag-20",
+    "nameEn": "SIYAG 20",
+    "nameAr": "SIYAG 20",
     "descriptionEn": "Fresh woods with a polished, formal character. Composed and confident, for a signature that feels as considered as your best-dressed look.",
     "descriptionAr": "أخشاب منعشة بطابع رسمي ومرتب؛ حضور متزن وواثق يكمل إطلالة أنيقة بتفاصيل محسوبة.",
     "brand": "SIYAG",
@@ -1322,8 +1261,8 @@ export const publishedProducts:Product[]=[
       "Amber | عنبر"
     ],
     "images": [
-      "/brand/numbered/siyag-21-notes-v2.webp",
-      "/brand/numbered/siyag-21-photo-v2.webp"
+      "/brand/numbered/siyag-20-owner.webp",
+      "/brand/numbered/siyag-20-photo-v2.webp"
     ],
     "featured": false,
     "collections": [
@@ -1339,7 +1278,7 @@ export const publishedProducts:Product[]=[
     "variants": [
       {
         "id": "6fb44bd0-423f-51d2-a33e-a961ca5a2d99",
-        "sku": "SIYAG-21-30-FULLBOTTLE",
+        "sku": "SIYAG-20-30-FULLBOTTLE",
         "sizeMl": 30,
         "format": "fullBottle",
         "priceMinor": 38000,
@@ -1348,7 +1287,7 @@ export const publishedProducts:Product[]=[
       },
       {
         "id": "61209a5b-ad2e-5158-b516-87c56fea97e7",
-        "sku": "SIYAG-21-50-FULLBOTTLE",
+        "sku": "SIYAG-20-50-FULLBOTTLE",
         "sizeMl": 50,
         "format": "fullBottle",
         "priceMinor": 65000,
@@ -1357,10 +1296,71 @@ export const publishedProducts:Product[]=[
       }
     ],
     "seo": {
-      "titleEn": "SIYAG 21",
+      "titleEn": "SIYAG 20",
       "descriptionEn": "Fresh woods with a polished, formal character. Composed and confident, for a signature that feels as considered as your best-dressed look."
     },
-    "notesImageUrl": "/brand/numbered/siyag-21-notes-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-20-owner.webp"
+  },
+  {
+    "id": "8501a8e6-d97b-5fdd-9d1b-5489414aa432",
+    "slug": "siyag-21",
+    "nameEn": "SIYAG 21",
+    "nameAr": "SIYAG 21",
+    "descriptionEn": "An expressive lavender-led scent with a clean, freshly showered feeling. Smooth and polished, with a vibrant aromatic presence.",
+    "descriptionAr": "حضور عطري واضح يقوده اللافندر، بإحساس نظيف ومنتعش يشبه الخروج من الدش؛ ناعم ومرتب وحيوي.",
+    "brand": "SIYAG",
+    "family": "woody",
+    "concentration": "parfum",
+    "audience": "unisex",
+    "topNotes": [
+      "Bourbon Vanilla | فانيليا بوربون"
+    ],
+    "heartNotes": [
+      "Lavender | لافندر"
+    ],
+    "baseNotes": [
+      "Vetiver | نجيل الهند"
+    ],
+    "images": [
+      "/brand/numbered/siyag-21-owner.webp",
+      "/brand/numbered/siyag-21-photo-v2.webp"
+    ],
+    "featured": false,
+    "collections": [
+      "signature"
+    ],
+    "inspiration": {
+      "nameEn": "Valentino Uomo Born in Roma Intense",
+      "nameAr": "فالنتينو أومو بورن إن روما إنتنس",
+      "descriptionEn": "Inspired by Valentino Uomo Born in Roma Intense.",
+      "descriptionAr": "مستوحى من فالنتينو أومو بورن إن روما إنتنس.",
+      "imageUrl": "/brand/inspiration/catalog-4-3d-v2.webp"
+    },
+    "variants": [
+      {
+        "id": "69bcb508-ef0d-5c03-8b75-3adf3137cef8",
+        "sku": "SIYAG-21-30-FULLBOTTLE",
+        "sizeMl": 30,
+        "format": "fullBottle",
+        "priceMinor": 35000,
+        "compareAtMinor": null,
+        "inStock": false
+      },
+      {
+        "id": "6ca34f63-d6d1-5ea4-b84f-86594d0087ea",
+        "sku": "SIYAG-21-50-FULLBOTTLE",
+        "sizeMl": 50,
+        "format": "fullBottle",
+        "priceMinor": 60000,
+        "compareAtMinor": null,
+        "inStock": false
+      }
+    ],
+    "seo": {
+      "titleEn": "SIYAG 21",
+      "descriptionEn": "An expressive lavender-led scent with a clean, freshly showered feeling. Smooth and polished, with a vibrant aromatic presence."
+    },
+    "notesImageUrl": "/brand/numbered/siyag-21-owner.webp"
   }
 ];
 export const publishedCollections:Collection[]=[
@@ -1374,7 +1374,7 @@ export const publishedCollections:Collection[]=[
     "slug": "bestsellers",
     "nameEn": "Best sellers",
     "nameAr": "الأكثر مبيعًا",
-    "imageUrl": "/brand/numbered/siyag-8-notes-v2.webp"
+    "imageUrl": "/brand/numbered/siyag-7-notes.webp"
   }
 ];
 export function publishedProduct(slug:string){return publishedProducts.find(p=>p.slug===slug)??null}

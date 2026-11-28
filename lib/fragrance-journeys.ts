@@ -19,8 +19,8 @@ export const quizSteps:{key:keyof QuizAnswers;en:string;ar:string;hintEn:string;
  {key:'audience',en:'Who is it for?',ar:'العطر لمين؟',hintEn:'Unisex fragrances are included in every suitable selection.',hintAr:'العطور المناسبة للجميع بتدخل ضمن الترشيحات.',options:[{id:'men',en:'For men',ar:'للرجال',icon:'user'},{id:'women',en:'For women',ar:'للنساء',icon:'user'},{id:'any',en:'Any style',ar:'أي طابع',icon:'users'}]},
 ];
 const profile={
- fresh:[4,5,7,11,16,19,20,21],cozy:[1,2,3,6,8,12,18],confident:[7,8,10,11,13,15,17,21],soft:[3,6,9,12,14],
- everyday:[4,5,14,16,19,20],work:[5,7,8,11,13,15,16,20,21],date:[1,3,4,6,9,10,12,14,18],evening:[1,6,7,8,10,13,15,17,18,21],
+ fresh:[21,4,6,10,15,18,19,20],cozy:[1,2,3,5,7,11,17],confident:[6,7,9,10,12,14,16,20],soft:[3,5,8,11,13],
+ everyday:[21,4,13,15,18,19],work:[4,6,7,10,12,14,15,19,20],date:[1,3,21,5,8,9,11,13,17],evening:[1,5,6,7,9,12,14,16,17,20],
 } as Record<string,number[]>;
 const notePatterns:Record<string,RegExp>={citrus:/bergamot|lemon|mandarin|orange/,vanilla:/vanilla/,woody:/wood|cedar|vetiver|patchouli|teak|sandal|cashmere/,floral:/rose|flower|jasmine|lavender|blossom|geranium/,amber:/amber|benzoin|labdanum|frankincense|myrrh/,leather:/leather|suede|cade/};
 export function validQuizAnswers(answers:QuizAnswers){return quizSteps.every(step=>step.options.some(option=>option.id===answers[step.key]))}

@@ -91,7 +91,7 @@ console.log('Public catalog visibility checks passed: discovery sizes hidden wit
 
 const {publishedProducts,publishedProduct,publishedPage,publishedCollections}=await source('lib/published-catalog.ts');
 assert.deepEqual(publishedProducts.map(p=>p.slug),Array.from({length:21},(_,i)=>'siyag-'+(i+1)));
-const pricePairs=[[450,800],[290,520],[380,650],[350,600],[460,820],[380,630],[650,1000],[350,600],[390,670],[420,750],[450,800],[380,650],[400,720],[380,650],[400,720],[400,720],[420,750],[450,800],[420,750],[380,650],[380,650]];
+const pricePairs=[[450, 800], [290, 520], [380, 650], [460, 820], [380, 630], [650, 1000], [350, 600], [390, 670], [420, 750], [450, 800], [380, 650], [400, 720], [380, 650], [400, 720], [400, 720], [420, 750], [450, 800], [420, 750], [380, 650], [380, 650], [350, 600]];
 for(const [i,p] of publishedProducts.entries()){
  assert.deepEqual(p.variants.map(v=>v.sizeMl),[30,50]);
  assert.deepEqual(p.variants.map(v=>v.priceMinor),pricePairs[i].map(price=>price*100));
@@ -101,14 +101,14 @@ for(const [i,p] of publishedProducts.entries()){
 }
 assert.equal(new Set(publishedProducts.flatMap(p=>p.variants.map(v=>v.id))).size,42);
 for(const slug of ['noir','musk','oud','amber-wood-preview'])assert.equal(publishedProduct(slug),null);
-assert.equal(publishedPage(new URLSearchParams('q=ناكسوس')).data[0].slug,'siyag-8');
-assert.equal(publishedPage(new URLSearchParams('q=ديسيشن')).data[0].slug,'siyag-7');
-assert.equal(publishedPage(new URLSearchParams('q=Musk Patchouli')).data[0].slug,'siyag-14');
+assert.equal(publishedPage(new URLSearchParams('q=ناكسوس')).data[0].slug,'siyag-7');
+assert.equal(publishedPage(new URLSearchParams('q=ديسيشن')).data[0].slug,'siyag-6');
+assert.equal(publishedPage(new URLSearchParams('q=Musk Patchouli')).data[0].slug,'siyag-13');
 assert.equal(publishedPage(new URLSearchParams('sizeMl=100')).totalCount,0);
 assert.equal(publishedPage(new URLSearchParams('sizeMl=30')).totalCount,21);
 assert.equal(publishedPage(new URLSearchParams('inStock=true')).totalCount,0);
 assert.equal(publishedPage(new URLSearchParams('sort=price-asc')).data[0].slug,'siyag-2');
-assert.equal(publishedPage(new URLSearchParams('sort=price-desc')).data[0].slug,'siyag-7');
+assert.equal(publishedPage(new URLSearchParams('sort=price-desc')).data[0].slug,'siyag-6');
 assert.equal(publishedPage(new URLSearchParams('sizeMl=50&minPriceMinor=100000')).totalCount,1);
 assert.equal(publishedPage(new URLSearchParams('pageSize=2&pageNumber=2')).data.length,2);
 assert.equal(publishedPage(new URLSearchParams('collection=discovery')).totalCount,0);
@@ -116,13 +116,13 @@ assert.deepEqual(publishedCollections.map(c=>c.slug),['signature','bestsellers']
 const {commerce,isPurchasePath}=await source('lib/commerce.ts');
 assert.equal(commerce.showPrices,true);assert.equal(commerce.purchasingEnabled,true);
 for(const path of ['store/carts','store/cart','store/cart/lines/abc','store/cart/quote','store/orders','store/orders/payment/paymob'])assert(isPurchasePath(path),path);
-for(const path of ['store/orders/track','store/events','store/reviews','store/products/siyag-7','store/collections'])assert(!isPurchasePath(path),path);
+for(const path of ['store/orders/track','store/events','store/reviews','store/products/siyag-6','store/collections'])assert(!isPurchasePath(path),path);
 assert.equal(publishedProduct('siyag-3').inspiration.nameEn,'Nishane Ani');
-assert.equal(publishedProduct('siyag-7').inspiration.nameEn,'Amouage Decision');
-assert.equal(publishedProduct('siyag-8').inspiration.nameEn,'Xerjoff Naxos');
-assert.equal(publishedProduct('siyag-14').inspiration.nameEn,'Laverne Musk Patchouli');
-assert.equal(publishedProduct('siyag-20').inspiration,undefined,'Satsuma is a SIYAG creation');
-assert.equal(publishedProduct('siyag-8').variants[1].id,'8c97091c-5dd5-40fd-b84a-674ec8924d0c','retain the actual existing Naxos variant ID');
+assert.equal(publishedProduct('siyag-6').inspiration.nameEn,'Amouage Decision');
+assert.equal(publishedProduct('siyag-7').inspiration.nameEn,'Xerjoff Naxos');
+assert.equal(publishedProduct('siyag-13').inspiration.nameEn,'Laverne Musk Patchouli');
+assert.equal(publishedProduct('siyag-19').inspiration,undefined,'Satsuma is a SIYAG creation');
+assert.equal(publishedProduct('siyag-7').variants[1].id,'8c97091c-5dd5-40fd-b84a-674ec8924d0c','retain the actual existing Naxos variant ID');
 console.log('Approved catalogue checks passed: all 21 sequential products, all 42 owner prices, gender, search, price sorting and purchasing enabled.');
 
 const {nextImageAttempt,imagePlaceholderSource}=await source('lib/store-images.ts');
@@ -143,7 +143,7 @@ for(const [file,hash] of [['siyag-7-photo.webp','517524cece8f488357a363934d1d531
 console.log('Image resilience checks passed: legacy URLs, bounded retry, network-free fallback and unchanged bundled Naxos photography.');
 
 const {mergeCatalogInventory}=await source('lib/catalog-inventory.ts');
-const naxos=publishedProduct('siyag-8'),actualId='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+const naxos=publishedProduct('siyag-7'),actualId='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
 const liveNaxos={...naxos,variants:[{...naxos.variants[1],id:actualId,priceMinor:61234,inStock:true}]};
 const hydrated=mergeCatalogInventory(publishedProducts,[liveNaxos]).find(p=>p.id===naxos.id);
 assert.equal(hydrated.variants[1].id,actualId,'use the actual warehouse variant ID, not a generated public ID');
@@ -151,10 +151,10 @@ assert.equal(hydrated.variants[1].priceMinor,61234,'staff price updates must be 
 assert.equal(hydrated.variants[1].inStock,true);
 assert.equal(hydrated.variants[0].inStock,false,'missing sizes cannot be purchased');
 assert(mergeCatalogInventory(publishedProducts,[]).every(p=>p.variants.every(v=>!v.inStock)),'API failure must fail closed');
-assert(mergeCatalogInventory(publishedProducts,[{...liveNaxos,slug:'siyag-7',nameEn:'SIYAG 7'}]).every(p=>p.variants.every(v=>!v.inStock)),'legacy Naxos cannot be sold under the new Decision number');
+assert(mergeCatalogInventory(publishedProducts,[{...liveNaxos,slug:'siyag-8',nameEn:'SIYAG 8'}]).every(p=>p.variants.every(v=>!v.inStock)),'stale Naxos numbering cannot be sold under the corrected number');
 console.log('Commerce inventory checks passed: actual IDs and prices, size-specific availability, missing API data and legacy renumbering protection.');
 
-const customerOrder=["Emporio Armani Stronger With You Intensely", "Arabian Oud Feeling", "Nishane Ani", "Valentino Uomo Born in Roma Intense", "BLEU DE CHANEL Eau de Parfum", "Parfums de Marly Althaïr", "Amouage Decision", "Xerjoff Naxos", "Louis Vuitton Stellar Times", "Clive Christian Blonde Amber", "Amouage Epic Man", "Matière Première Vanilla Powder Extrait de Parfum", "Amouage Outlands", "Laverne Musk Patchouli", "BLEU DE CHANEL L’EXCLUSIF", "Yves Saint Laurent Y Eau de Parfum", "OMANLUXURY Caden", "Tom Ford Tobacco Vanille", "Xerjoff Erba Pura", "SIYAG Satsuma", "Arabian Oud Amiri"];
+const customerOrder=["Emporio Armani Stronger With You Intensely", "Arabian Oud Feeling", "Nishane Ani", "BLEU DE CHANEL Eau de Parfum", "Parfums de Marly Althaïr", "Amouage Decision", "Xerjoff Naxos", "Louis Vuitton Stellar Times", "Clive Christian Blonde Amber", "Amouage Epic Man", "Matière Première Vanilla Powder Extrait de Parfum", "Amouage Outlands", "Laverne Musk Patchouli", "BLEU DE CHANEL L’EXCLUSIF", "Yves Saint Laurent Y Eau de Parfum", "OMANLUXURY Caden", "Tom Ford Tobacco Vanille", "Xerjoff Erba Pura", "SIYAG Satsuma", "Arabian Oud Amiri", "Valentino Uomo Born in Roma Intense"];
 assert.deepEqual(publishedProducts.map(p=>p.inspiration?.nameEn??"SIYAG Satsuma"),customerOrder,"exact sequential fragrance mapping from the customer, including the duplicated original number 4");
 assert.deepEqual(publishedPage(new URLSearchParams("pageSize=100"),[...publishedProducts].reverse()).data.map(p=>p.slug),publishedProducts.map(p=>p.slug),"default customer order survives shuffled API results");
 console.log("Customer sequence confirmed for all 21 source fragrances.");
@@ -188,7 +188,7 @@ console.log('Homepage groups and performance checks passed: customer order, work
 
 const {homeSections,sectionProducts,giftSelections}=await source('lib/home-catalog.ts');
 assert.deepEqual(homeSections.map(s=>s.key),['bestsellers','fragrances']);
-assert.deepEqual(sectionProducts(publishedProducts,'bestsellers').map(p=>p.slug),['siyag-1','siyag-3','siyag-7','siyag-8']);
+assert.deepEqual(sectionProducts(publishedProducts,'bestsellers').map(p=>p.slug),['siyag-1','siyag-3','siyag-6','siyag-7']);
 assert.equal(publishedPage(new URLSearchParams('collection=bestsellers')).totalCount,4);
 for(const selection of giftSelections){assert.equal(selection.slugs.length,4);assert(selection.slugs.every(slug=>publishedProduct(slug).variants.some(v=>v.sizeMl===selection.sizeMl)));assert.equal(publishedPage(new URLSearchParams(selection.href.split('?')[1])).totalCount,21)}
 console.log('Homepage merchandising checks passed: best sellers then full collection, 30/50 ml gift selection links, four real fragrances per visual, and audience filters retained.');
@@ -204,10 +204,10 @@ const catalogueForQuiz=publishedProducts.map(p=>({...p,variants:p.variants.map(v
 const cozyAnswers={mood:'cozy',occasion:'date',note:'vanilla',audience:'women'};
 assert.deepEqual(journeys.recommendByMood(catalogueForQuiz,{}),[]);
 const cozyMatches=journeys.recommendByMood(catalogueForQuiz,cozyAnswers);
-assert.deepEqual(cozyMatches.map(x=>x.product.slug),['siyag-3','siyag-6','siyag-12']);
+assert.deepEqual(cozyMatches.map(x=>x.product.slug),['siyag-3','siyag-5','siyag-11']);
 assert(cozyMatches.every(x=>x.product.audience!=='men'&&x.reasons.includes('note')));
 const leatherAnswers={mood:'confident',occasion:'evening',note:'leather',audience:'men'};
-assert.equal(journeys.recommendByMood(catalogueForQuiz,leatherAnswers)[0].product.slug,'siyag-17');
+assert.equal(journeys.recommendByMood(catalogueForQuiz,leatherAnswers)[0].product.slug,'siyag-16');
 const onlyOneAvailable=catalogueForQuiz.map(p=>({...p,variants:p.variants.map(v=>({...v,inStock:p.slug==='siyag-3'}))}));
 assert.deepEqual(journeys.recommendByMood(onlyOneAvailable,cozyAnswers).map(x=>x.product.slug),['siyag-3']);
 assert.deepEqual(journeys.recommendByMood(catalogueForQuiz,cozyAnswers),cozyMatches);

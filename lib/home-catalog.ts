@@ -16,6 +16,6 @@ export const homeSections=[
 ] as const;
 export function sectionProducts(products:Product[],collection:string){return products.filter(p=>p.collections.includes(collection)).sort((a,b)=>Number(a.slug.slice(6))-Number(b.slug.slice(6))).slice(0,homeCatalogPolicy.railLimit)}
 export const giftSelections=[
- {sizeMl:30,nameEn:'The 30 ml selection',nameAr:'باقة ٣٠ مل',slugs:['siyag-1','siyag-3','siyag-7','siyag-8'],href:'/shop?sizeMl=30'},
- {sizeMl:50,nameEn:'The 50 ml selection',nameAr:'باقة ٥٠ مل',slugs:['siyag-4','siyag-6','siyag-14','siyag-19'],href:'/shop?sizeMl=50'},
+ {sizeMl:30,nameEn:'The 30 ml selection',nameAr:'باقة ٣٠ مل',slugs:['siyag-1','siyag-3','siyag-6','siyag-7'],href:'/shop?sizeMl=30'},
+ {sizeMl:50,nameEn:'The 50 ml selection',nameAr:'باقة ٥٠ مل',slugs:['siyag-21','siyag-5','siyag-13','siyag-18'],href:'/shop?sizeMl=50'},
 ] as const;

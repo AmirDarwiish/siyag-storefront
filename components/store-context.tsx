@@ -59,15 +59,29 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
   };
   useEffect(()=>{
     if(readLocal("siyag-lang")==="ar") setLang("ar");
+    const wishlistKey = "siyag-saved-customer-21";
+    if (readLocal(wishlistKey) === null) {
+      try {
+        const previous: unknown = JSON.parse(readLocal("siyag-saved") || "[]");
+        if (Array.isArray(previous)) {
+          const migrated = previous.map(slug => {
+            if (typeof slug !== "string" || !/^siyag-(?:[4-9]|1[0-9]|2[01])$/.test(slug)) return slug;
+            const number = Number(slug.slice(6));
+            return "siyag-" + (number === 4 ? 21 : number - 1);
+          });
+          writeLocal(wishlistKey, JSON.stringify(migrated));
+        }
+      } catch {}
+    }
     function restoreSaved(){
       try{
-        const items:unknown=JSON.parse(readLocal("siyag-saved")||"[]");
+        const items:unknown=JSON.parse(readLocal(wishlistKey)||"[]");
         setSaved(Array.isArray(items)?items.filter((item):item is string=>typeof item==="string"&&/^[a-z0-9-]+$/.test(item)):[]);
       }catch{setSaved([])}
     }
     restoreSaved();
     function syncSaved(event:StorageEvent){
-      if(event.key==="siyag-saved"||event.key===null)restoreSaved();
+      if(event.key===wishlistKey||event.key===null)restoreSaved();
     }
     window.addEventListener("storage",syncSaved);
     const cleanup=()=>window.removeEventListener("storage",syncSaved);
@@ -145,7 +159,7 @@ export function StoreProvider({children,demo}:{children:ReactNode;demo:boolean})
     toggleLanguage:()=>{const next=lang==="ar"?"en":"ar";writeLocal("siyag-lang",next);setLang(next)},
     add:(p,v,q)=>update(v.id,q,p,v,true),
     setQuantity:update,
-    saved,toggleSaved:(slug)=>{const next=saved.includes(slug)?saved.filter(s=>s!==slug):[...saved,slug];if(!saved.includes(slug))track("add_to_wishlist",{items:[{item_id:slug}]});writeLocal("siyag-saved",JSON.stringify(next));setSaved(next)},
+    saved,toggleSaved:(slug)=>{const next=saved.includes(slug)?saved.filter(s=>s!==slug):[...saved,slug];if(!saved.includes(slug))track("add_to_wishlist",{items:[{item_id:slug}]});writeLocal("siyag-saved-customer-21",JSON.stringify(next));setSaved(next)},
     clearCart:()=>{saveToken("");set(EMPTY)},
   };
   return <Context.Provider value={value}>{children}<div className="toast-live" aria-live="polite">{!cartOpen&&bagNotice&&<section className="bag-confirmation refined-confirmation" data-kind={bagNotice.kind} aria-label={tr("Bag update","تحديث الحقيبة")}>

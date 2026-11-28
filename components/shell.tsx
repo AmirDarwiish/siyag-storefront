@@ -146,13 +146,13 @@ export function Header(){
           {searchState==="done"&&!results.length&&<p>{tr("No fragrances found.","لا توجد نتائج. جرّب اسم عطر آخر.")}</p>}
           {results.map(product=>{
             const variant=variantFor(product);
-            return <Link key={product.id} href={productUrl(product,variant)} onClick={()=>setSearch(false)}>
+            return <a key={product.id} href={productUrl(product,variant)}>
               <StorePhoto src={imageUrl(product.images[0])} alt=""/><span>{name(product,ar?"ar":"en")}</span>
               {commerce.showPrices&&variant&&<small>{money(variant.priceMinor,ar?"ar":"en")}</small>}
-            </Link>;
+            </a>;
           })}
         </div>
-        {results.length>0&&<Link className="text-link" href={resultsUrl} onClick={()=>setSearch(false)}>{tr("View all results","عرض كل النتائج")}<ArrowUpRight size={14}/></Link>}
+        {results.length>0&&<a className="text-link" href={resultsUrl}>{tr("View all results","عرض كل النتائج")}<ArrowUpRight size={14}/></a>}
       </div>}
     </div>
   </header>;

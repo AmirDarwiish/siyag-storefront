@@ -6,7 +6,7 @@ const empty:OfficeSnapshot={data:undefined,error:"",loading:false,verifiedAt:0,i
 const entries=new Map<string,Entry>(),healthListeners=new Set<()=>void>();
 let version=0;
 export function officePolicy(key:string){
- const critical=/^(orders|inventory|reports\/summary|catalog-details|products\/)/.test(key);
+ const critical=/^(fragrance-requests|orders|inventory|reports\/summary|catalog-details|products\/)/.test(key);
  return {critical,ttl:critical?5000:/^(catalog|collections|shipping|staff)/.test(key)?60000:30000,poll:critical?15000:key.startsWith("reports/")?60000:60000};
 }
 function entry(key:string){
@@ -47,12 +47,12 @@ export function invalidateOffice(prefixes:string[]){
 }
 export function invalidateOfficeMutation(path:string){
  const root=path.split('/')[0];
- const domains:Record<string,string[]>={products:["products","catalog","inventory","reports/summary"],variants:["products","catalog-details","inventory","reports/summary"],collections:["collections","catalog"],orders:["orders","reports","inventory","catalog-details","notifications"],shipping:["shipping","integrations/shipping"],staff:["staff"],reviews:["reviews"],integrations:["integrations"],notifications:["notifications"]};
+ const domains:Record<string,string[]>={"fragrance-requests":["fragrance-requests","notifications"],products:["products","catalog","inventory","reports/summary"],variants:["products","catalog-details","inventory","reports/summary"],collections:["collections","catalog"],orders:["orders","reports","inventory","catalog-details","notifications"],shipping:["shipping","integrations/shipping"],staff:["staff"],reviews:["reviews"],integrations:["integrations"],notifications:["notifications"]};
  invalidateOffice(domains[root]??[root]);
 }
 export function resetOfficeCache(){for(const value of entries.values()){value.epoch++;value.controller?.abort();value.promise=undefined;value.snapshot=empty;emit(value)}entries.clear();emit()}
 export function connectOfficeCache(){
- const changed=()=>invalidateOffice(["orders","inventory","reports","catalog-details","notifications"]);
+ const changed=()=>invalidateOffice(["orders","fragrance-requests","inventory","reports","catalog-details","notifications"]);
  const refocus=()=>{if(document.hidden)return;for(const [key,value] of entries)if(value.listeners.size&&value.loader&&(value.snapshot.invalidated||Date.now()-value.snapshot.verifiedAt>=officePolicy(key).ttl)&&Date.now()-value.lastAttempt>3000)void loadOffice(key,value.loader).catch(()=>{})};
  window.addEventListener("siyag-office-changed",changed);window.addEventListener("focus",refocus);window.addEventListener("online",changed);document.addEventListener("visibilitychange",refocus);
  return()=>{window.removeEventListener("siyag-office-changed",changed);window.removeEventListener("focus",refocus);window.removeEventListener("online",changed);document.removeEventListener("visibilitychange",refocus)};

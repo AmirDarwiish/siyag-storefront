@@ -3036,6 +3036,56 @@ body select:disabled {opacity:.55;cursor:not-allowed}
 .category-discovery-item:hover .category-discovery-visual {border-color:var(--moss);transform:translateY(-2px)}
 .category-discovery-item:focus-visible {outline:2px solid var(--moss);outline-offset:var(--space-2);border-radius:var(--radius-control)}
 .category-discovery-monogram {display:grid;place-items:center;width:100%;height:100%;background:var(--color-secondary);color:var(--moss);font-family:var(--serif);font-size:var(--type-section);border-radius:var(--radius-pill)}
+
+/* Fragrance journeys share the storefront palette, controls and spacing. */
+.home-banner-slide[data-journey=true]>a {position:relative}
+.journey-banner-copy {position:absolute;left:0;top:0;bottom:0;width:var(--journey-banner-copy-width);padding:var(--space-10);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:var(--space-5);color:var(--ink)}
+.journey-banner-copy h2 {font-size:var(--type-journey-banner);line-height:1.1;margin:0}
+.journey-banner-copy p {margin:0;font-size:var(--type-body)}
+.journey-banner-copy .action {min-height:var(--control-height)}
+.journey-page {max-width:var(--journey-width)}
+.journey-heading {display:grid;gap:var(--space-4);margin-bottom:var(--space-9);max-width:var(--care-copy-width)}
+.journey-heading .text-link {justify-self:start;margin-bottom:var(--space-4)}
+.journey-heading p {margin:0;color:var(--muted)}
+.journey-layout {display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:var(--space-8);align-items:start}
+.journey-art {overflow:hidden;border:var(--border-fine);border-radius:var(--radius-card);background:var(--glass-surface)}
+.journey-art>img {height:var(--journey-art-height);object-fit:cover;object-position:72% center}
+.journey-art>div {padding:var(--space-7)}
+.journey-art h2 {font-size:var(--type-lead);margin-block:var(--space-4)}
+.journey-art p {margin:0;color:var(--muted)}
+.journey-panel {padding:var(--space-8);border:var(--border-fine);border-radius:var(--radius-card);background:var(--glass-surface);box-shadow:var(--glass-shadow)}
+.journey-form fieldset {border:0;padding:0;margin:0;min-width:0;display:grid;gap:var(--space-6)}
+.journey-form label {display:grid;gap:var(--space-3);min-width:0;font-weight:600}
+.journey-form input,.journey-form textarea {width:100%;min-width:0;padding:var(--space-4);border:var(--border-fine);border-radius:var(--select-radius);background:var(--white);color:var(--ink);font:inherit}
+.journey-form textarea {resize:vertical}
+.journey-form .muted {font-size:var(--type-label);margin:0}
+.journey-form-row {display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:var(--space-5);align-items:start}
+.journey-size legend {padding:0;margin-bottom:var(--space-3);font-weight:600}
+.journey-size .sizes {margin:0;display:flex;gap:var(--space-3)}
+.journey-confirmation {display:grid;gap:var(--space-6);justify-items:start;padding-block:var(--space-9)}
+.journey-confirmation>svg {width:var(--space-10);height:var(--space-10);color:var(--moss)}
+.journey-confirmation h2,.journey-confirmation p {margin:0}
+.journey-confirmation strong {padding:var(--space-4);border:var(--border-fine);border-radius:var(--select-radius);overflow-wrap:anywhere}
+.journey-quiz {max-width:var(--journey-quiz-width);margin-inline:auto}
+.journey-progress {list-style:none;padding:0;margin:0 0 var(--space-9);display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--space-4)}
+.journey-progress li {display:grid;justify-items:center;text-align:center;gap:var(--space-3);font-size:var(--type-caption);color:var(--muted)}
+.journey-progress li>span {width:var(--space-9);height:var(--space-9);display:grid;place-items:center;border:var(--border-fine);border-radius:var(--radius-pill)}
+.journey-progress li[aria-current],.journey-progress li[data-complete=true] {color:var(--moss)}
+.journey-progress li[aria-current]>span {background:var(--moss);color:var(--white)}
+.journey-quiz h2 {font-size:var(--type-section);margin:0}
+.journey-options {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-5);margin-block:var(--space-7)}
+.journey-option {position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:var(--space-4);min-height:var(--journey-option-height);padding:var(--space-6);border:var(--border-fine);border-radius:var(--radius-card);background:var(--white);text-align:center}
+.journey-option>svg {width:var(--space-8);height:var(--space-8);color:var(--moss)}
+.journey-option[aria-pressed=true] {border-color:var(--moss);background:var(--color-secondary);box-shadow:inset 0 0 0 1px var(--moss)}
+.journey-option>svg.journey-option-check {position:absolute;top:var(--space-3);inset-inline-end:var(--space-3);width:var(--space-5);height:var(--space-5)}
+.journey-navigation {display:flex;justify-content:space-between;align-items:center;gap:var(--space-5);border-top:var(--border-fine);padding-top:var(--space-6)}
+.journey-navigation .action {min-width:40%}
+.journey-match {min-width:0;display:flex;flex-direction:column;gap:var(--space-4)}
+.journey-match .product-card {flex:1}
+.journey-match-reason {font-size:var(--type-caption);color:var(--moss);margin:0;min-height:var(--space-9)}
+.journey-result-footer {display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:var(--space-6);margin-top:var(--space-9);padding:var(--space-7);border:var(--border-fine);border-radius:var(--radius-card)}
+.journey-result-footer p {margin:0}
+
 @media (hover:hover) {
   .product-visual:hover .product-hover {
   opacity:1}.home-edit:hover img,.home-family:hover img {transform:scale(var(--home-photo-hover-scale))}.home-care a:hover {background:var(--stone)}.home-cover .action:hover {background:var(--yellow);border-color:var(--yellow)}
@@ -3429,6 +3479,19 @@ body {
   }
 }
 @media (max-width:767px) {
+ .journey-banner-copy {width:var(--journey-banner-mobile-width);padding:var(--space-5);gap:var(--space-3)}
+ .journey-banner-copy h2 {font-size:var(--type-journey-banner-mobile)}
+ .journey-banner-copy p {display:none}
+ .journey-banner-copy .eyebrow {font-size:var(--type-micro);letter-spacing:0}
+ .journey-banner-copy .action {font-size:var(--type-caption);padding:var(--space-3) var(--space-4)}
+ .journey-layout {grid-template-columns:1fr;gap:var(--space-6)}
+ .journey-art {display:none}
+ .journey-panel {padding:var(--space-6)}
+ .journey-heading h1 {font-size:var(--type-section)}
+ .journey-progress {gap:var(--space-2)}
+ .journey-options {gap:var(--space-4)}
+ .journey-option {padding:var(--space-5)}
+
 .home-gift-grid {grid-template-columns:1fr}
   .checkout-page .checkout-grid {
   display:flex;

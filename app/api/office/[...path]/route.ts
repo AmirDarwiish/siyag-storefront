@@ -7,6 +7,8 @@ const guid="[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}";
 const slug="[a-z0-9]+(?:-[a-z0-9]+)*";
 const number="SYG-[A-F0-9]{16}";
 const rules=[
+  {method:"GET",pattern:/^fragrance-requests$/},
+  {method:"PUT",pattern:new RegExp(`^fragrance-requests/${guid}/status$`,"i")},
   {method:"POST",pattern:/^realtime\/ticket$/},
   {method:"GET",pattern:/^notifications$/},
   {method:"PUT",pattern:/^notifications\/read$/},

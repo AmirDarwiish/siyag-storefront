@@ -192,3 +192,23 @@ assert.deepEqual(sectionProducts(publishedProducts,'bestsellers').map(p=>p.slug)
 assert.equal(publishedPage(new URLSearchParams('collection=bestsellers')).totalCount,4);
 for(const selection of giftSelections){assert.equal(selection.slugs.length,4);assert(selection.slugs.every(slug=>publishedProduct(slug).variants.some(v=>v.sizeMl===selection.sizeMl)));assert.equal(publishedPage(new URLSearchParams(selection.href.split('?')[1])).totalCount,21)}
 console.log('Homepage merchandising checks passed: best sellers then full collection, 30/50 ml gift selection links, four real fragrances per visual, and audience filters retained.');
+
+const journeys=await source('lib/fragrance-journeys.ts');
+const existingHero={slug:'saved-hero',imageUrl:'/brand/hero-v2.webp',actionUrl:'/shop'};
+assert.deepEqual(journeys.mergeJourneyBanners([existingHero])[0],existingHero);
+assert.equal(journeys.mergeJourneyBanners([]).length,3);
+assert.equal(journeys.mergeJourneyBanners([existingHero,...journeys.journeyBanners]).length,3);
+for(const banner of journeys.journeyBanners)assert.equal(bannerHref(banner.actionUrl),banner.actionUrl);
+assert.equal(journeys.normalizeJourneyPhone('+٢٠ (١٠) ١٢٣٤-٥٦٧٨'),'+201012345678');
+const catalogueForQuiz=publishedProducts.map(p=>({...p,variants:p.variants.map(v=>({...v,inStock:true}))}));
+const cozyAnswers={mood:'cozy',occasion:'date',note:'vanilla',audience:'women'};
+assert.deepEqual(journeys.recommendByMood(catalogueForQuiz,{}),[]);
+const cozyMatches=journeys.recommendByMood(catalogueForQuiz,cozyAnswers);
+assert.deepEqual(cozyMatches.map(x=>x.product.slug),['siyag-3','siyag-6','siyag-12']);
+assert(cozyMatches.every(x=>x.product.audience!=='men'&&x.reasons.includes('note')));
+const leatherAnswers={mood:'confident',occasion:'evening',note:'leather',audience:'men'};
+assert.equal(journeys.recommendByMood(catalogueForQuiz,leatherAnswers)[0].product.slug,'siyag-17');
+const onlyOneAvailable=catalogueForQuiz.map(p=>({...p,variants:p.variants.map(v=>({...v,inStock:p.slug==='siyag-3'}))}));
+assert.deepEqual(journeys.recommendByMood(onlyOneAvailable,cozyAnswers).map(x=>x.product.slug),['siyag-3']);
+assert.deepEqual(journeys.recommendByMood(catalogueForQuiz,cozyAnswers),cozyMatches);
+console.log('Fragrance journey checks passed: existing banners preserved, no duplicate paths, phone normalization, deterministic note-based matches, audience and live availability.');

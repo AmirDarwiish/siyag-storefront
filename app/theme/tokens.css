@@ -24,6 +24,14 @@
   font-display: swap;
 }
 :root {
+  --journey-width: 1080px;
+  --journey-quiz-width: 760px;
+  --journey-banner-copy-width: 49%;
+  --journey-banner-mobile-width: 59%;
+  --type-journey-banner: clamp(26px,3.4vw,48px);
+  --type-journey-banner-mobile: clamp(19px,5vw,28px);
+  --journey-option-height: 116px;
+  --journey-art-height: 280px;
   --image-placeholder-surface: var(--color-secondary);
   --image-placeholder-size: 44%;
   --image-placeholder-art: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20320%20260%22%3E%3Cg%20fill%3D%22none%22%20stroke%3D%22rgb%2897%2C104%2C89%29%22%20stroke-width%3D%221%22%3E%3Ccircle%20cx%3D%22160%22%20cy%3D%22104%22%20r%3D%2264%22%2F%3E%3Ccircle%20cx%3D%22160%22%20cy%3D%22104%22%20r%3D%2257%22%20opacity%3D%22.3%22%2F%3E%3Cpath%20d%3D%22M104%20204h112%22%20opacity%3D%22.4%22%2F%3E%3C%2Fg%3E%3Cg%20fill%3D%22rgb%2897%2C104%2C89%29%22%20font-family%3D%22Georgia%2Cserif%22%20text-anchor%3D%22middle%22%3E%3Ctext%20x%3D%22160%22%20y%3D%22126%22%20font-size%3D%2262%22%3ES%3C%2Ftext%3E%3Ctext%20x%3D%22163%22%20y%3D%22188%22%20font-size%3D%2223%22%20letter-spacing%3D%226%22%3ESIYAG%3C%2Ftext%3E%3C%2Fg%3E%3C%2Fsvg%3E");
@@ -262,15 +270,8 @@
   --type-feature:clamp(30px,2.8vw,40px);
   --home-feature-height:clamp(360px,31vw,440px);
   --desktop-header-height:88px;
-  --desktop-header-gutter:max(var(--page-gutter),calc((100% - var(--content-width))/2));
-  --desktop-header-gap:var(--space-8);
-  --desktop-campaign-height:36px;
-  --desktop-search-panel:420px;
-  --desktop-search-width:clamp(260px,26vw,380px);
-  --desktop-search-gap:var(--space-4);
-  --desktop-search-thumb:48px;
-  --desktop-search-surface:var(--white);
-  --desktop-search-max-height:min(520px,calc(100dvh - var(--store-header-height,124px) - var(--space-8)));
+  --desktop-search-panel:360px;
+  --desktop-search-width:clamp(180px,17vw,240px);
   --type-desktop-wordmark:38px;
   --type-desktop-title:clamp(30px,2.6vw,38px);
   --type-desktop-secondary:clamp(28px,2.3vw,34px);

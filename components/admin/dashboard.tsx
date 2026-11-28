@@ -9,11 +9,12 @@ import {usePathname,useRouter} from "next/navigation";
 const IntegrationSettings=dynamic(()=>import("./integration-settings").then(m=>m.IntegrationSettings),{loading:PageSkeleton});
 import {OfficeChrome} from "./office-chrome";
 import {Activity,useEffect,useLayoutEffect,useRef,useState,type FormEvent} from "react";
-import {CreditCard,PanelRightClose,PanelRightOpen,ArrowUpRight,Plus,Store,ShieldCheck,LayoutDashboard,Menu,Warehouse,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Star,Truck,Users} from "lucide-react";
+import {Sparkles,CreditCard,PanelRightClose,PanelRightOpen,ArrowUpRight,Plus,Store,ShieldCheck,LayoutDashboard,Menu,Warehouse,Boxes,FolderOpen,KeyRound,LogOut,PackageCheck,Star,Truck,Users} from "lucide-react";
 import {office,roleNames,type StaffUser} from "@/lib/admin";
 const Products=dynamic(()=>import("./catalog").then(m=>m.Products),{loading:PageSkeleton});
 const StorefrontContent=dynamic(()=>import("./storefront-content").then(m=>m.StorefrontContent),{loading:PageSkeleton});
 const Collections=dynamic(()=>import("./catalog").then(m=>m.Collections),{loading:PageSkeleton});
+const FragranceRequests=dynamic(()=>import("./fragrance-requests").then(m=>m.FragranceRequests),{loading:PageSkeleton});
 const Orders=dynamic(()=>import("./orders").then(m=>m.Orders),{loading:PageSkeleton});
 const ShippingOptions=dynamic(()=>import("./shipping").then(m=>m.ShippingOptions),{loading:PageSkeleton});
 const Staff=dynamic(()=>import("./staff").then(m=>m.Staff),{loading:PageSkeleton});
@@ -28,6 +29,7 @@ const panels=[
   {id:"overview",label:"نظرة عامة",description:"ملخص المتجر والمهام التي تحتاج انتباهك.",icon:LayoutDashboard,component:JourneyDashboard,roles:["Owner","Catalog","Fulfillment"]},
   {id:"journey",label:"رحلة العميل",description:"تابع الزيارات والحملات والسلة وإتمام الطلب.",icon:Users,component:JourneyDashboard,roles:["Owner"]},
   {id:"orders",label:"الطلبات",description:"تابع الطلبات الجديدة، وحالات الشحن والتسليم.",icon:PackageCheck,component:Orders,roles:["Owner","Fulfillment"]},
+  {id:"fragrance-requests",label:"طلبات العطور الخاصة",description:"طلبات العملاء لعطور مخصصة ومتابعة التواصل والتفاصيل.",icon:Sparkles,component:FragranceRequests,roles:["Owner","Fulfillment"]},
   {id:"inventory",label:"المخزون",description:"الكميات المتاحة وتنبيهات المخزون المنخفض.",icon:Warehouse,component:Products,roles:["Owner","Catalog"]},
   {id:"products",label:"المنتجات",description:"أدر بيانات العطور والصور والأحجام والأسعار والمخزون.",icon:Boxes,component:Products,roles:["Owner","Catalog"]},
   {id:"shipping",label:"التوصيل",description:"اضبط المحافظات ورسوم التوصيل قبل استقبال الطلبات.",icon:Truck,component:ShippingOptions,roles:["Owner","Fulfillment"]},

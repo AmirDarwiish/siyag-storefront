@@ -14,10 +14,11 @@ import {Modal} from "./shell";
 import {StoreImage} from "./store-image";
 import {discoveryProduct} from "@/lib/catalog-experience";
 import {bannerHref} from "@/lib/banners";
+import {audienceGroups} from "@/lib/home-catalog";
 import {scentMoods} from "@/lib/scent-moods";
 
 type CatalogResult = {page: Page<Product>; catalogEmpty: boolean};
-const filters=["q","collection","family","concentration","format","sizeMl","inStock","sort","pageNumber"] as const;
+const filters=["q","collection","audience","family","concentration","format","sizeMl","inStock","sort","pageNumber"] as const;
 
 export function Shop(){
   const {tr,ar,lang,saved}=useStore();
@@ -79,7 +80,7 @@ export function Shop(){
   const title=query.get("sort")==="newest"?tr("New arrivals","وصل حديثًا"):savedOnly?tr("Your favourites","عطورك المفضّلة"):collection?name(collection,lang):term?tr("Search results","نتائج البحث"):tr("The fragrance collection","مجموعة SIYAG");
   const activeFilters=filters.filter(key=>!["sort","pageNumber"].includes(key)&&!(key==="collection"&&!term)&&!(key==="family"&&mood&&moodNavigation)&&query.has(key)).map(key=>{
     const value=query.get(key)!;
-    const label=key==="collection"?name(collections.find(c=>c.slug===value)??{nameEn:value,nameAr:value},lang):key==="family"?(mood?name(mood,lang):(families[value]?.[ar?1:0]??value)):key==="concentration"?(concentrations[value]?.[ar?1:0]??value):key==="format"?(formats[value as keyof typeof formats]?.[ar?1:0]??value):key==="sizeMl"?`${value} ${tr("ml","مل")}`:key==="inStock"?tr("In stock","متوفر"):value;
+    const label=key==="collection"?name(collections.find(c=>c.slug===value)??{nameEn:value,nameAr:value},lang):key==="audience"?name(audienceGroups.find(g=>g.audience===value)??{nameEn:value,nameAr:value},lang):key==="family"?(mood?name(mood,lang):(families[value]?.[ar?1:0]??value)):key==="concentration"?(concentrations[value]?.[ar?1:0]??value):key==="format"?(formats[value as keyof typeof formats]?.[ar?1:0]??value):key==="sizeMl"?`${value} ${tr("ml","مل")}`:key==="inStock"?tr("In stock","متوفر"):value;
     return {key,label};
   });
   const hasTools=!savedOnly&&catalogAvailable&&!error;

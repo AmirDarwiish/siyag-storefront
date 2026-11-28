@@ -9,7 +9,7 @@ export async function requestStore(path:string, query="", init?:RequestInit) {
   const base = new URL(origin);
   const url = new URL(path, base.origin);
   url.search = query;
-  return fetch(url,{...init,cache:"no-store",signal:AbortSignal.timeout(12000),redirect:"error"});
+  return fetch(url,{...init,cache:"no-store",signal:init?.signal??AbortSignal.timeout(12000),redirect:"error"});
 }
 
 export async function loadProduct(slug:string):Promise<Product|null> {

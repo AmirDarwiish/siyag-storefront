@@ -1,2 +1,4 @@
 import {Home} from "@/components/home";
-export default function Page(){return <Home/>}
+import {publishedProducts} from "@/lib/published-catalog";
+import {pendingCatalog} from "@/lib/home-catalog";
+export default function Page(){return <Home initialProducts={pendingCatalog(publishedProducts)}/>}

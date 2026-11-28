@@ -1,7 +1,7 @@
 import type {ProductInspiration} from './product-inspiration';
 export type Language = "en" | "ar";
 export type Variant = { id: string; sku: string; imageUrl?: string; sizeMl: number; format: "fullBottle" | "decant" | "sample"; priceMinor: number; compareAtMinor?: number | null; inStock: boolean };
-export type Product = { id: string; slug: string; nameEn: string; nameAr: string; descriptionEn: string; descriptionAr: string; brand: string; family: string; concentration: string; audience: string; topNotes: string[]; heartNotes: string[]; baseNotes: string[]; images: string[]; featured: boolean; variants: Variant[]; collections: string[]; inspiration?:ProductInspiration; notesImageUrl?:string; seo?: {titleEn?:string; descriptionEn?:string} };
+export type Product = { inventoryStatus?:"pending"|"ready"|"unavailable"; id: string; slug: string; nameEn: string; nameAr: string; descriptionEn: string; descriptionAr: string; brand: string; family: string; concentration: string; audience: string; topNotes: string[]; heartNotes: string[]; baseNotes: string[]; images: string[]; featured: boolean; variants: Variant[]; collections: string[]; inspiration?:ProductInspiration; notesImageUrl?:string; seo?: {titleEn?:string; descriptionEn?:string} };
 export type Collection = {slug:string; nameEn:string; nameAr:string; imageUrl?:string};
 export type Content = {slug:string; titleEn:string;titleAr:string;textEn:string;textAr:string;imageUrl?:string;actionUrl?:string;actionEn?:string;actionAr?:string};
 export type Page<T> = {data:T[]; totalCount:number; pageNumber:number; pageSize:number; totalPages:number};

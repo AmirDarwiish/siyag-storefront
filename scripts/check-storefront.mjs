@@ -165,3 +165,22 @@ for(const product of publishedProducts.filter(p=>p.inspiration?.imageUrl)){
  assert(file.includes(Buffer.from('ALPH'))||(file.toString('ascii',12,16)==='VP8L'&&(file[24]&16)!==0),product.slug+' inspiration must retain an actual WebP alpha channel');
 }
 console.log('All 20 inspired-by images retain transparent alpha; Satsuma has no external source bottle.');
+
+const {audienceGroups,audienceProducts,audienceHref,pendingCatalog}=await source('lib/home-catalog.ts');
+assert.deepEqual(audienceGroups.map(g=>g.audience),['men','women','unisex']);
+for(const group of audienceGroups){
+ const members=audienceProducts([...publishedProducts].reverse(),group.audience);
+ assert(members.length>0);assert(members.every(p=>p.audience===group.audience));
+ const numbers=members.map(p=>Number(p.slug.slice(6)));assert.deepEqual(numbers,[...numbers].sort((a,b)=>a-b));
+ assert.equal(publishedPage(new URLSearchParams(audienceHref(group.audience).split('?')[1])).totalCount,publishedProducts.filter(p=>p.audience===group.audience).length);
+}
+assert(pendingCatalog(publishedProducts).every(p=>p.inventoryStatus==='pending'&&p.variants.every(v=>!v.inStock)));
+const {createCatalogLoader}=await source('lib/catalog-loader.ts');
+let clock=0,calls=0,finish,fail=false;
+const loader=createCatalogLoader(()=>{calls++;return new Promise((resolve,reject)=>{finish=()=>fail?reject(new Error('offline')):resolve({revision:calls})})},{ttlMs:100,retryMs:10},()=>clock);
+const first=loader(),concurrent=loader();assert.equal(first,concurrent,'concurrent catalog callers share one upstream request');
+await Promise.resolve();finish();assert.deepEqual(await first,{revision:1});assert.equal((await loader()).revision,1);assert.equal(calls,1);
+clock=101;fail=true;const failed=loader();await Promise.resolve();finish();await assert.rejects(failed,/offline/);
+await assert.rejects(loader(),/temporarily unavailable/);assert.equal(calls,2,'failed retries are bounded and stale stock is not served');
+clock=112;fail=false;const recovered=loader();await Promise.resolve();finish();assert.equal((await recovered).revision,3);
+console.log('Homepage groups and performance checks passed: customer order, working audience links, safe initial presentation, request deduplication, bounded freshness, failure and recovery.');

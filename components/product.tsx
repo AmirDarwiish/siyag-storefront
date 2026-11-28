@@ -48,18 +48,20 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
   const initial=variantFor(product,preferred);
   const [selection,setSelection]=useState(initial?.id);
   const [quick,setQuick]=useState(false);
+  useEffect(()=>{if(product.inventoryStatus==="ready")setSelection(current=>product.variants.some(v=>v.id===current&&v.inStock)?current:variantFor(product)?.id)},[product]);
   const v=variantFor(product,selection);
   if(!v)return null;
   const title=name(product,lang);
-  const availability=tr("Sold out","نفد المخزون");
+  const inventoryPending=product.inventoryStatus==="pending";
+  const availability=inventoryPending?tr("Checking availability…","جاري التحقق من التوفر…"):product.inventoryStatus==="unavailable"?tr("Temporarily unavailable","غير متاح مؤقتًا"):tr("Sold out","نفد المخزون");
   const liked=saved.includes(product.slug);
-  return <article className="product-card" data-unavailable={!v.inStock}>
+  return <article className="product-card" data-unavailable={!v.inStock&&!inventoryPending}>
     <div className="product-visual">
       <Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)} className="product-photo" aria-label={title}>
         <StoreImage sizes={photoSizes} src={imageUrl(variantImage(product,v))} alt={title} loading="lazy" width={520} height={560}/>
         {!v.imageUrl&&product.images[1]&&<StoreImage sizes={photoSizes} className="product-hover" src={imageUrl(product.images[1])} alt="" loading="lazy" width={520} height={560}/>}
       </Link>
-      <div className="product-labels">{!v.inStock?<span className="product-badge" data-state="unavailable">{availability}</span>:commerce.showPrices&&(v.compareAtMinor??0)>v.priceMinor?<span className="product-badge" data-state="sale"><strong>{tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`)}</strong></span>:product.featured?<span className="product-badge" data-state="featured">{tr('SIYAG edit','مختاراتنا')}</span>:null}</div>
+      <div className="product-labels">{!v.inStock&&!inventoryPending?<span className="product-badge" data-state="unavailable">{availability}</span>:commerce.showPrices&&(v.compareAtMinor??0)>v.priceMinor?<span className="product-badge" data-state="sale"><strong>{tr(`${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}% off`,`خصم ${Math.round((1-v.priceMinor/v.compareAtMinor!)*100)}٪`)}</strong></span>:product.featured?<span className="product-badge" data-state="featured">{tr('SIYAG edit','مختاراتنا')}</span>:null}</div>
       <button type="button" className="icon favorite" aria-pressed={liked} aria-label={liked?tr("Remove from wishlist","إزالة من المفضلة"):tr("Save to wishlist","حفظ في المفضلة")} onClick={()=>toggleSaved(product.slug)}><Heart size={17} fill={liked?"currentColor":"none"}/></button>
       {v.inStock&&<button type="button" className="photo-quick" onClick={()=>setQuick(true)}>{tr("Quick view","عرض سريع")}</button>}
     </div>

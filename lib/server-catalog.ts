@@ -1,3 +1,5 @@
+import {createCatalogLoader} from './catalog-loader';
+import {homeCatalogPolicy} from './home-catalog';
 import {mergeCatalogInventory} from './catalog-inventory';
 import {publishedPage,publishedProducts} from './published-catalog';
 import {defaultVariantImages} from './variant-image-defaults';
@@ -37,10 +39,13 @@ export async function cartImages(response:Response){
 }
 
 /** Published copy/media remain curated; live IDs, prices and inventory always come from commerce. */
+const loadLiveInventory=createCatalogLoader(async()=>{
+ const response=await requestStore('/api/v1/store/products','pageSize=100',{signal:AbortSignal.timeout(homeCatalogPolicy.inventoryTimeoutMs)});
+ if(!response.ok)throw new Error('Inventory unavailable');
+ const result=await response.json();
+ if(!Array.isArray(result.data))throw new Error('Invalid inventory');
+ return result.data as Product[];
+},{ttlMs:homeCatalogPolicy.inventoryTtlMs,retryMs:homeCatalogPolicy.inventoryRetryMs});
 export async function livePublishedProducts():Promise<Product[]>{
- try{
-  const response=await requestStore('/api/v1/store/products','pageSize=100');
-  if(response.ok)return mergeCatalogInventory(publishedProducts,(await response.json()).data);
- }catch{}
- return mergeCatalogInventory(publishedProducts,[]);
+ try{return mergeCatalogInventory(publishedProducts,await loadLiveInventory())}catch{return mergeCatalogInventory(publishedProducts,[])}
 }

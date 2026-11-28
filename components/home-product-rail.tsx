@@ -1,5 +1,5 @@
 "use client";
-import {useEffect,useRef,useState,type CSSProperties} from "react";
+import {useEffect,useRef,useState} from "react";
 import {imageSizes} from "@/lib/image-sizes";
 import {registerRailAutoplay} from "@/lib/rail-autoplay";
 import {cssMilliseconds} from "@/lib/rail-motion";
@@ -45,7 +45,6 @@ export function HomeProductRail({products}:{products:Product[]}) {
  const goTo=(index:number)=>{stop();rail.current?.scrollTo({left:(ar?-1:1)*targets.current[index],behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"})};
  return <div className="home-rail-carousel">
  <div ref={rail} className="home-product-rail" dir={ar?"rtl":"ltr"} data-mode="step" data-count={products.length}
-  style={{"--rail-visible":Math.max(1,Math.min(products.length,3))} as CSSProperties}
   tabIndex={0} role="region" aria-roledescription={tr("carousel","عرض متحرك")} aria-label={tr("Selected fragrances. Swipe or use arrow keys. Automatic movement pauses when you interact.","مختارات العطور. اسحب أو استخدم الأسهم. تتوقف الحركة مؤقتًا عند تفاعلك.")}
   onPointerDownCapture={()=>{dragging.current=true;stop()}} onPointerUpCapture={()=>{dragging.current=false;stop()}} onPointerCancelCapture={()=>{dragging.current=false;stop()}} onTouchStartCapture={()=>{dragging.current=true;stop()}} onTouchEndCapture={()=>{dragging.current=false;stop()}} onTouchCancelCapture={()=>{dragging.current=false;stop()}} onWheel={stop} onFocusCapture={stop}
   onKeyDown={event=>{

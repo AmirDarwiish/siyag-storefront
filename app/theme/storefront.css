@@ -3102,13 +3102,13 @@ body select:disabled {opacity:.55;cursor:not-allowed}
 .journey-result-footer p {margin:0}
 
 .product-hover, .gallery-main img[src*="-photo"], .product-photo-large[src*="-photo"] {box-sizing:border-box;padding:var(--catalog-packshot-inset);object-fit:contain;background:var(--white)}
-.profile-notes {margin-block:var(--space-6);color:var(--ink)}
-.profile-notes h2 {font-size:var(--type-body);margin:0 0 var(--space-3)}
-.profile-notes dl {display:grid;gap:var(--space-3);margin:0}
-.profile-notes dd {display:flex;flex-wrap:wrap;gap:var(--space-2);margin:0}
-.profile-notes dt {display:flex;align-items:center;gap:var(--space-2);font-size:var(--type-label);color:var(--moss);margin-block-end:var(--space-1)}
+.profile-notes {margin-block:var(--profile-notes-space);padding-block:var(--profile-notes-space);border-block:var(--border-fine);color:var(--ink)}
+.profile-notes h2 {font-size:var(--type-notes-heading);font-weight:500;line-height:1.4;margin:0 0 var(--profile-notes-layer-gap)}
+.profile-notes dl {display:grid;gap:var(--profile-notes-layer-gap);margin:0}
+.profile-notes dd {display:flex;flex-wrap:wrap;gap:var(--profile-notes-chip-gap);margin:0}
+.profile-notes dt {display:flex;align-items:center;gap:var(--space-2);font-size:var(--type-notes-layer);font-weight:600;line-height:1.5;color:var(--moss);margin-block-end:var(--space-3)}
 .profile-notes dt svg {width:var(--note-layer-icon);height:var(--note-layer-icon)}
-.profile-notes .note-chip {display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-3);border:var(--commerce-border);border-radius:var(--radius-control);font-size:var(--type-label);overflow-wrap:anywhere;background:var(--note-surface);max-width:100%;min-width:0}
+.profile-notes .note-chip {display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) var(--space-4);min-height:var(--profile-notes-chip-height);border:var(--commerce-border);border-radius:var(--radius-control);font-size:var(--type-notes-chip);line-height:1.6;overflow-wrap:anywhere;background:var(--note-surface);max-width:100%;min-width:0}
 .note-chip>svg {flex-shrink:0;width:var(--note-icon);height:var(--note-icon);color:var(--note-ink)}
 .note-chip>span {min-width:0}
 .note-chip[data-tone="citrus"], .note-chip[data-tone="sweet"] {--note-surface:var(--tone-amber);--note-ink:var(--note-gold)}

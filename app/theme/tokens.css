@@ -24,6 +24,13 @@
   font-display: swap;
 }
 :root {
+  --profile-notes-space: clamp(24px,3vw,36px);
+  --profile-notes-layer-gap: 24px;
+  --profile-notes-chip-gap: 10px;
+  --profile-notes-chip-height: 44px;
+  --type-notes-heading: 24px;
+  --type-notes-layer: 13px;
+  --type-notes-chip: 14px;
   --note-icon: 22px;
   --note-layer-icon: 16px;
   --note-gold: #82611f;

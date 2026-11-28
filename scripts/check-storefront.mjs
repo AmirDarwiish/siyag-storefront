@@ -153,3 +153,15 @@ assert.equal(hydrated.variants[0].inStock,false,'missing sizes cannot be purchas
 assert(mergeCatalogInventory(publishedProducts,[]).every(p=>p.variants.every(v=>!v.inStock)),'API failure must fail closed');
 assert(mergeCatalogInventory(publishedProducts,[{...liveNaxos,slug:'siyag-7',nameEn:'SIYAG 7'}]).every(p=>p.variants.every(v=>!v.inStock)),'legacy Naxos cannot be sold under the new Decision number');
 console.log('Commerce inventory checks passed: actual IDs and prices, size-specific availability, missing API data and legacy renumbering protection.');
+
+const customerOrder=["Emporio Armani Stronger With You Intensely", "Arabian Oud Feeling", "Nishane Ani", "Valentino Uomo Born in Roma Intense", "BLEU DE CHANEL Eau de Parfum", "Parfums de Marly Althaïr", "Amouage Decision", "Xerjoff Naxos", "Louis Vuitton Stellar Times", "Clive Christian Blonde Amber", "Amouage Epic Man", "Matière Première Vanilla Powder Extrait de Parfum", "Amouage Outlands", "Laverne Musk Patchouli", "BLEU DE CHANEL L’EXCLUSIF", "Yves Saint Laurent Y Eau de Parfum", "OMANLUXURY Caden", "Tom Ford Tobacco Vanille", "Xerjoff Erba Pura", "SIYAG Satsuma", "Arabian Oud Amiri"];
+assert.deepEqual(publishedProducts.map(p=>p.inspiration?.nameEn??"SIYAG Satsuma"),customerOrder,"exact sequential fragrance mapping from the customer, including the duplicated original number 4");
+assert.deepEqual(publishedPage(new URLSearchParams("pageSize=100"),[...publishedProducts].reverse()).data.map(p=>p.slug),publishedProducts.map(p=>p.slug),"default customer order survives shuffled API results");
+console.log("Customer sequence confirmed for all 21 source fragrances.");
+
+for(const product of publishedProducts.filter(p=>p.inspiration?.imageUrl)){
+ const file=readFileSync('public'+product.inspiration.imageUrl);
+ assert.equal(file.toString('ascii',0,4),'RIFF');
+ assert(file.includes(Buffer.from('ALPH'))||(file.toString('ascii',12,16)==='VP8L'&&(file[24]&16)!==0),product.slug+' inspiration must retain an actual WebP alpha channel');
+}
+console.log('All 20 inspired-by images retain transparent alpha; Satsuma has no external source bottle.');

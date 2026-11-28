@@ -99,7 +99,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "العربية للعود فيلينج",
       "descriptionEn": "Inspired by Arabian Oud Feeling.",
       "descriptionAr": "مستوحى من العربية للعود فيلينج.",
-      "imageUrl": "/brand/inspiration/catalog-2.webp"
+      "imageUrl": "/brand/inspiration/catalog-2-3d-v2.webp"
     },
     "variants": [
       {
@@ -232,7 +232,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "فالنتينو أومو بورن إن روما إنتنس",
       "descriptionEn": "Inspired by Valentino Uomo Born in Roma Intense.",
       "descriptionAr": "مستوحى من فالنتينو أومو بورن إن روما إنتنس.",
-      "imageUrl": "/brand/inspiration/catalog-4.webp"
+      "imageUrl": "/brand/inspiration/catalog-4-3d-v2.webp"
     },
     "variants": [
       {
@@ -291,7 +291,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "بلو دي شانيل أو دو بارفان",
       "descriptionEn": "Inspired by BLEU DE CHANEL Eau de Parfum.",
       "descriptionAr": "مستوحى من بلو دي شانيل أو دو بارفان.",
-      "imageUrl": "/brand/inspiration/catalog-5.webp"
+      "imageUrl": "/brand/inspiration/catalog-5-3d-v2.webp"
     },
     "variants": [
       {
@@ -358,7 +358,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "بارفامز دي مارلي ألثير",
       "descriptionEn": "Inspired by Parfums de Marly Althaïr.",
       "descriptionAr": "مستوحى من بارفامز دي مارلي ألثير.",
-      "imageUrl": "/brand/inspiration/catalog-6.webp"
+      "imageUrl": "/brand/inspiration/catalog-6-3d-v2.webp"
     },
     "variants": [
       {
@@ -552,7 +552,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "لويس فويتون ستيلار تايمز",
       "descriptionEn": "Inspired by Louis Vuitton Stellar Times.",
       "descriptionAr": "مستوحى من لويس فويتون ستيلار تايمز.",
-      "imageUrl": "/brand/inspiration/catalog-9.webp"
+      "imageUrl": "/brand/inspiration/catalog-9-3d-v2.webp"
     },
     "variants": [
       {
@@ -613,7 +613,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "كلايف كريستيان بلوند أمبر",
       "descriptionEn": "Inspired by Clive Christian Blonde Amber.",
       "descriptionAr": "مستوحى من كلايف كريستيان بلوند أمبر.",
-      "imageUrl": "/brand/inspiration/catalog-10.webp"
+      "imageUrl": "/brand/inspiration/catalog-10-3d-v2.webp"
     },
     "variants": [
       {
@@ -689,7 +689,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "أمواج إبيك مان",
       "descriptionEn": "Inspired by Amouage Epic Man.",
       "descriptionAr": "مستوحى من أمواج إبيك مان.",
-      "imageUrl": "/brand/inspiration/catalog-11.webp"
+      "imageUrl": "/brand/inspiration/catalog-11-3d-v2.webp"
     },
     "variants": [
       {
@@ -748,7 +748,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "ماتيير بريميير فانيلا باودر إكستريت",
       "descriptionEn": "Inspired by Matière Première Vanilla Powder Extrait de Parfum.",
       "descriptionAr": "مستوحى من ماتيير بريميير فانيلا باودر إكستريت.",
-      "imageUrl": "/brand/inspiration/catalog-12.webp"
+      "imageUrl": "/brand/inspiration/catalog-12-3d-v2.webp"
     },
     "variants": [
       {
@@ -831,7 +831,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "أمواج أوتلاندز",
       "descriptionEn": "Inspired by Amouage Outlands.",
       "descriptionAr": "مستوحى من أمواج أوتلاندز.",
-      "imageUrl": "/brand/inspiration/catalog-13.webp"
+      "imageUrl": "/brand/inspiration/catalog-13-3d-v2.webp"
     },
     "variants": [
       {
@@ -894,7 +894,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "لافيرن مسك باتشولي",
       "descriptionEn": "Inspired by Laverne Musk Patchouli.",
       "descriptionAr": "مستوحى من لافيرن مسك باتشولي.",
-      "imageUrl": "/brand/inspiration/catalog-14.webp"
+      "imageUrl": "/brand/inspiration/catalog-14-3d-v2.webp"
     },
     "variants": [
       {
@@ -953,7 +953,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "بلو دي شانيل ليكسكلوسيف",
       "descriptionEn": "Inspired by BLEU DE CHANEL L’EXCLUSIF.",
       "descriptionAr": "مستوحى من بلو دي شانيل ليكسكلوسيف.",
-      "imageUrl": "/brand/inspiration/catalog-15.webp"
+      "imageUrl": "/brand/inspiration/catalog-15-3d-v2.webp"
     },
     "variants": [
       {
@@ -1013,7 +1013,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "إيف سان لوران واي أو دو بارفان",
       "descriptionEn": "Inspired by Yves Saint Laurent Y Eau de Parfum.",
       "descriptionAr": "مستوحى من إيف سان لوران واي أو دو بارفان.",
-      "imageUrl": "/brand/inspiration/catalog-16.webp"
+      "imageUrl": "/brand/inspiration/catalog-16-3d-v2.webp"
     },
     "variants": [
       {
@@ -1084,7 +1084,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "عمان لاكشري كادن",
       "descriptionEn": "Inspired by OMANLUXURY Caden.",
       "descriptionAr": "مستوحى من عمان لاكشري كادن.",
-      "imageUrl": "/brand/inspiration/catalog-17.webp"
+      "imageUrl": "/brand/inspiration/catalog-17-3d-v2.webp"
     },
     "variants": [
       {
@@ -1147,7 +1147,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "توم فورد توباكو فاني",
       "descriptionEn": "Inspired by Tom Ford Tobacco Vanille.",
       "descriptionAr": "مستوحى من توم فورد توباكو فاني.",
-      "imageUrl": "/brand/inspiration/catalog-18.webp"
+      "imageUrl": "/brand/inspiration/catalog-18-3d-v2.webp"
     },
     "variants": [
       {
@@ -1212,7 +1212,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "زيرجوف إربا بورا",
       "descriptionEn": "Inspired by Xerjoff Erba Pura.",
       "descriptionAr": "مستوحى من زيرجوف إربا بورا.",
-      "imageUrl": "/brand/inspiration/catalog-19.webp"
+      "imageUrl": "/brand/inspiration/catalog-19-3d-v2.webp"
     },
     "variants": [
       {
@@ -1330,7 +1330,7 @@ export const publishedProducts:Product[]=[
       "nameAr": "العربية للعود أميري",
       "descriptionEn": "Inspired by Arabian Oud Amiri.",
       "descriptionAr": "مستوحى من العربية للعود أميري.",
-      "imageUrl": "/brand/inspiration/catalog-21.webp"
+      "imageUrl": "/brand/inspiration/catalog-21-3d-v2.webp"
     },
     "variants": [
       {
@@ -1375,5 +1375,6 @@ export function publishedPage(query:URLSearchParams,products:Product[]=published
  const selectedPrice=(p:Product)=>Math.min(...p.variants.filter(v=>!query.get('sizeMl')||v.sizeMl===Number(query.get('sizeMl'))).map(v=>v.priceMinor));
  if(query.get('sort')==='price-asc')data.sort((a,b)=>selectedPrice(a)-selectedPrice(b));
  else if(query.get('sort')==='price-desc')data.sort((a,b)=>selectedPrice(b)-selectedPrice(a));
+ else data.sort((a,b)=>Number(a.slug.slice(6))-Number(b.slug.slice(6)));
  return {data:data.slice((pageNumber-1)*pageSize,pageNumber*pageSize),totalCount:data.length,pageSize,pageNumber,totalPages:Math.ceil(data.length/pageSize)};
 }

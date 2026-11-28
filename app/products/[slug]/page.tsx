@@ -11,7 +11,7 @@ type Props={params:Promise<{slug:string}>;searchParams:Promise<{variant?:string}
 export async function generateMetadata({params}:Props){
   const p=await find((await params).slug).catch(()=>null);
   if(!p)return {title:"Fragrance unavailable",robots:{index:false,follow:false}};
-  return storeMetadata(p.seo?.titleEn||p.nameEn,p.seo?.descriptionEn||p.descriptionEn,"/products/"+encodeURIComponent(p.slug),"/brand/share/notes/"+p.slug+".jpg");
+  return storeMetadata(p.seo?.titleEn||p.nameEn,p.seo?.descriptionEn||p.descriptionEn,"/products/"+encodeURIComponent(p.slug),"/brand/share/notes-v2/"+p.slug+".jpg");
 }
 export default async function Page({params,searchParams}:Props){
   const p=await find((await params).slug);

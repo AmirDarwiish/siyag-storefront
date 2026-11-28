@@ -1267,7 +1267,7 @@ export const publishedProducts:Product[]=[
       "Amber | عنبر"
     ],
     "images": [
-      "/brand/numbered/siyag-20-studio-v2.webp",
+      "/brand/numbered/siyag-20-studio-v3.webp",
       "/brand/numbered/siyag-20-photo-v2.webp"
     ],
     "featured": false,
@@ -1305,7 +1305,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 20",
       "descriptionEn": "Fresh woods with a polished, formal character. Composed and confident, for a signature that feels as considered as your best-dressed look."
     },
-    "notesImageUrl": "/brand/numbered/siyag-20-studio-v2.webp"
+    "notesImageUrl": "/brand/numbered/siyag-20-studio-v3.webp"
   },
   {
     "id": "8501a8e6-d97b-5fdd-9d1b-5489414aa432",
@@ -1328,7 +1328,7 @@ export const publishedProducts:Product[]=[
       "Vetiver | نجيل الهند"
     ],
     "images": [
-      "/brand/numbered/siyag-21-studio.webp",
+      "/brand/numbered/siyag-21-studio-v2.webp",
       "/brand/numbered/siyag-21-photo-v2.webp"
     ],
     "featured": false,
@@ -1366,7 +1366,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 21",
       "descriptionEn": "An expressive lavender-led scent with a clean, freshly showered feeling. Smooth and polished, with a vibrant aromatic presence."
     },
-    "notesImageUrl": "/brand/numbered/siyag-21-studio.webp"
+    "notesImageUrl": "/brand/numbered/siyag-21-studio-v2.webp"
   }
 ];
 export const publishedCollections:Collection[]=[

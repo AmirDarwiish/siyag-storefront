@@ -84,6 +84,19 @@ export function Header(){
   const [results,setResults]=useState<Product[]>([]);
   const [searchState,setSearchState]=useState<"idle"|"loading"|"done"|"error">("idle");
   const resultsUrl="/shop?q="+encodeURIComponent(query.trim());
+  const searchRef=useRef<HTMLDivElement>(null);
+  useEffect(()=>{
+    if(!search)return;
+    const closeOutside=(event:Event)=>{
+      if(event.target instanceof Node&&!searchRef.current?.contains(event.target))setSearch(false);
+    };
+    document.addEventListener("pointerdown",closeOutside);
+    document.addEventListener("focusin",closeOutside);
+    return()=>{
+      document.removeEventListener("pointerdown",closeOutside);
+      document.removeEventListener("focusin",closeOutside);
+    };
+  },[search]);
   useEffect(()=>{
     if(!search||query.trim().length<2)return;
     const controller=new AbortController();
@@ -113,7 +126,7 @@ export function Header(){
     <Modal open={menu} onOpenChange={setMenu} title={tr("Menu","القائمة")} className="nav-modal" placement="side">
       <Wordmark/>{navigationCollections.map(collection=><Link key={collection.slug} href={"/shop?collection="+encodeURIComponent(collection.slug)} onClick={()=>setMenu(false)}>{name(collection,ar?"ar":"en")}</Link>)}<Link href="/shop" onClick={()=>setMenu(false)}>{tr("Fragrances","العطور")}</Link><Link href="/about" onClick={()=>setMenu(false)}>{tr("The house","دار SIYAG")}</Link><Link href="/shop?saved=1" onClick={()=>setMenu(false)}>{tr("Wishlist","المفضلة")}</Link><Link href="/track" onClick={()=>setMenu(false)}>{tr("Track your order","تتبّع طلبك")}</Link><Link href="/contact" onClick={()=>setMenu(false)}>{tr("Client care","خدمة العملاء")}</Link>
     </Modal>
-    <div className="container header-search" onBlur={event=>{if(!event.currentTarget.contains(event.relatedTarget))setSearch(false)}}
+    <div ref={searchRef} className="container header-search"
       onKeyDown={event=>{if(event.key==="Escape")setSearch(false)}}>
       <form className="header-search-form" role="search" onSubmit={event=>{
         event.preventDefault();

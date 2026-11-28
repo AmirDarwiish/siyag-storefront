@@ -1,8 +1,8 @@
 import type {Content,Product} from './store';
 export const journeyPolicy={carouselIntervalMs:5000,carouselPauseMs:8000,maxNotes:1500,maxFragranceName:180,maxName:120,maxQuantity:20,sizes:[30,50] as const};
 export const journeyBanners:Content[]=[
- {slug:'journey-custom',titleEn:'A scent, just for you.',titleAr:'عطر معمول ليك.',textEn:'Tell us the fragrance you have in mind. Start your personal request.',textAr:'قولّنا العطر اللي نفسك فيه، ونبدأ من ذوقك.',imageUrl:'/brand/journeys/custom-banner.webp',actionUrl:'/custom-fragrance',actionEn:'Create your request',actionAr:'اطلب عطرك الخاص'},
- {slug:'journey-mood',titleEn:'Your mood. Your fragrance.',titleAr:'عطرك على مودك.',textEn:'A few simple choices. Fragrances that feel like you.',textAr:'اختيارات بسيطة توصّلك للعطر اللي يشبهك.',imageUrl:'/brand/journeys/mood-banner.webp',actionUrl:'/find-your-scent',actionEn:'Find my scent',actionAr:'اكتشف عطرك'},
+ {slug:'journey-custom',titleEn:'Made for you.',titleAr:'عطر على ذوقك',textEn:'Tell us the fragrance you dream of.',textAr:'قولّنا العطر اللي نفسك فيه.',imageUrl:'/brand/journeys/custom-banner.webp',actionUrl:'/custom-fragrance',actionEn:'Create your request',actionAr:'اطلب عطرك الخاص'},
+ {slug:'journey-mood',titleEn:'Find your scent.',titleAr:'عطرك على مودك',textEn:'A few choices. Your kind of fragrance.',textAr:'اختيارات بسيطة، وترشيحات ليك.',imageUrl:'/brand/journeys/mood-banner.webp',actionUrl:'/find-your-scent',actionEn:'Find my scent',actionAr:'اكتشف عطرك'},
 ];
 export const fallbackHero:Content={slug:'house-fallback',titleEn:'Explore SIYAG fragrances',titleAr:'اكتشف عطور SIYAG',textEn:'',textAr:'',imageUrl:'/brand/hero-v2.webp',actionUrl:'/shop'};
 export function mergeJourneyBanners(rows:Content[]){

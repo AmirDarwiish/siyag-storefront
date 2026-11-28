@@ -26,10 +26,13 @@
 :root {
   --journey-width: 1080px;
   --journey-quiz-width: 760px;
-  --journey-banner-copy-width: 49%;
-  --journey-banner-mobile-width: 59%;
+  --journey-banner-copy-width: 45%;
+  --journey-banner-mobile-width: 48%;
   --type-journey-banner: clamp(26px,3.4vw,48px);
-  --type-journey-banner-mobile: clamp(19px,5vw,28px);
+  --type-journey-banner-mobile: clamp(21px,5.8vw,32px);
+  --journey-banner-padding: clamp(20px,4vw,56px);
+  --journey-banner-copy-measure: 22ch;
+  --journey-banner-mobile-position: 46% center;
   --journey-option-height: 116px;
   --journey-art-height: 280px;
   --image-placeholder-surface: var(--color-secondary);

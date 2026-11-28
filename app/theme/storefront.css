@@ -3039,10 +3039,9 @@ body select:disabled {opacity:.55;cursor:not-allowed}
 
 /* Fragrance journeys share the storefront palette, controls and spacing. */
 .home-banner-slide[data-journey=true]>a {position:relative}
-.journey-banner-copy {position:absolute;left:0;top:0;bottom:0;width:var(--journey-banner-copy-width);padding:var(--space-10);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:var(--space-5);color:var(--ink)}
-.journey-banner-copy h2 {font-size:var(--type-journey-banner);line-height:1.1;margin:0}
-.journey-banner-copy p {margin:0;font-size:var(--type-body)}
-.journey-banner-copy .action {min-height:var(--control-height)}
+.journey-banner-copy {position:absolute;left:0;top:0;bottom:0;width:var(--journey-banner-copy-width);padding:var(--journey-banner-padding);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:var(--space-5);color:var(--ink);pointer-events:none}
+.journey-banner-copy h2 {font-size:var(--type-journey-banner);line-height:1.2;margin:0;text-wrap:balance}
+.journey-banner-copy p {margin:0;font-size:var(--type-body);max-width:var(--journey-banner-copy-measure);line-height:1.65;text-wrap:pretty}
 .journey-page {max-width:var(--journey-width)}
 .journey-heading {display:grid;gap:var(--space-4);margin-bottom:var(--space-9);max-width:var(--care-copy-width)}
 .journey-heading .text-link {justify-self:start;margin-bottom:var(--space-4)}
@@ -3480,10 +3479,9 @@ body {
 }
 @media (max-width:767px) {
  .journey-banner-copy {width:var(--journey-banner-mobile-width);padding:var(--space-5);gap:var(--space-3)}
- .journey-banner-copy h2 {font-size:var(--type-journey-banner-mobile)}
- .journey-banner-copy p {display:none}
- .journey-banner-copy .eyebrow {font-size:var(--type-micro);letter-spacing:0}
- .journey-banner-copy .action {font-size:var(--type-caption);padding:var(--space-3) var(--space-4)}
+ .home-banner-slide[data-journey=true] img {object-position:var(--journey-banner-mobile-position)}
+ .journey-banner-copy h2 {font-size:var(--type-journey-banner-mobile);line-height:1.25}
+ .journey-banner-copy p {font-size:var(--type-caption);line-height:1.55}
  .journey-layout {grid-template-columns:1fr;gap:var(--space-6)}
  .journey-art {display:none}
  .journey-panel {padding:var(--space-6)}

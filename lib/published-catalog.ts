@@ -1149,7 +1149,7 @@ export const publishedProducts:Product[]=[
       "White Musk | مسك أبيض"
     ],
     "images": [
-      "/brand/numbered/siyag-18-studio.webp",
+      "/brand/numbered/siyag-18-studio-v2.webp",
       "/brand/numbered/siyag-18-photo-v2.webp"
     ],
     "featured": false,
@@ -1187,7 +1187,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 18",
       "descriptionEn": "Vibrant freshness with a bright, carefree holiday mood. A lively daytime signature that brings a little sunshine to everyday plans."
     },
-    "notesImageUrl": "/brand/numbered/siyag-18-studio.webp"
+    "notesImageUrl": "/brand/numbered/siyag-18-studio-v2.webp"
   },
   {
     "id": "46939e1f-64b3-58d0-aaf0-3b44a4ae5bb8",
@@ -1267,7 +1267,7 @@ export const publishedProducts:Product[]=[
       "Amber | عنبر"
     ],
     "images": [
-      "/brand/numbered/siyag-20-studio.webp",
+      "/brand/numbered/siyag-20-studio-v2.webp",
       "/brand/numbered/siyag-20-photo-v2.webp"
     ],
     "featured": false,
@@ -1305,7 +1305,7 @@ export const publishedProducts:Product[]=[
       "titleEn": "SIYAG 20",
       "descriptionEn": "Fresh woods with a polished, formal character. Composed and confident, for a signature that feels as considered as your best-dressed look."
     },
-    "notesImageUrl": "/brand/numbered/siyag-20-studio.webp"
+    "notesImageUrl": "/brand/numbered/siyag-20-studio-v2.webp"
   },
   {
     "id": "8501a8e6-d97b-5fdd-9d1b-5489414aa432",

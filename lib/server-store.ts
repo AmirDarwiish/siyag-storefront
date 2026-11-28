@@ -13,5 +13,8 @@ export async function requestStore(path:string, query="", init?:RequestInit) {
 }
 
 export async function loadProduct(slug:string):Promise<Product|null> {
-  return publishedProduct(slug);
+  const approved=publishedProduct(slug);
+  if(!approved)return null;
+  const {livePublishedProducts}=await import("./server-catalog");
+  return (await livePublishedProducts()).find(p=>p.id===approved.id)??null;
 }

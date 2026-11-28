@@ -18,6 +18,11 @@ import {variantImage,recommendations} from "@/lib/catalog-experience";
 import {FragranceNotes} from "./fragrance-notes";
 import {ScentSignature} from "./scent-signature";
 
+function AudienceLabel({product}:{product:Product}){
+  const {tr}=useStore();
+  return <div className="product-audience">{product.audience==="men"?tr("For men","للرجال"):product.audience==="women"?tr("For women","للنساء"):tr("Unisex","للجميع")}</div>;
+}
+
 function Price({variant}:{variant:Variant}){
   const {lang}=useStore();
   if(!commerce.showPrices)return null;
@@ -61,6 +66,7 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
     <div className="product-card-body">
       <div className="product-meta"><span className="family-tag" data-family={product.family}>{product.family!=="other"&&(families[product.family]?.[ar?1:0]??product.family)}</span><span>{concentrations[product.concentration]?.[ar?1:0]??product.concentration}</span></div>
       <div className="product-title"><Link onClick={()=>track("select_item",itemData(product,v))} href={productUrl(product,v)}>{title}</Link><Price variant={v}/></div>
+      <AudienceLabel product={product}/>
       <p className="product-card-notes">{(product.topNotes.length?product.topNotes.slice(0,3).map(note=>noteName(note,ar)).join(" · "):(ar?product.descriptionAr:product.descriptionEn))||" "}</p>
       <div className="card-options">
         <span>{tr("Choose your size","اختر الحجم")}</span>
@@ -70,7 +76,7 @@ export function ProductCard({product,preferred,photoSizes=imageSizes.card}:{prod
     </div>
     <Modal open={quick} onOpenChange={setQuick} title={title} className="quick-modal">
       <StoreImage className="quick-image" sizes="(max-width:767px) 100vw,385px" width={600} height={600} src={imageUrl(variantImage(product,v))} alt={title}/>
-      <div className="quick-copy"><div className="eyebrow">SIYAG PARFUMS</div><h2>{title}</h2><Price variant={v}/>
+      <div className="quick-copy"><div className="eyebrow">SIYAG PARFUMS</div><h2>{title}</h2><AudienceLabel product={product}/><Price variant={v}/>
         <p className="quick-description" tabIndex={0} role="region" aria-label={tr('Fragrance description','وصف العطر')}>{ar?product.descriptionAr:product.descriptionEn}</p>
         <div className="quick-actions">
         <Sizes product={product} selected={v} onSelect={choice=>setSelection(choice.id)}/>
@@ -137,7 +143,7 @@ export function ProductDetail({product,variantId}:{product:Product;variantId?:st
           {gallery.length>1&&<div className="gallery-thumbs">{gallery.map((src,i)=><button type="button" key={src+i} aria-pressed={src===(activeImage||gallery[0])} aria-label={tr(`Show image ${i+1}`,`اعرض صورة ${i+1}`)} onClick={()=>setActiveImage(src)}><StoreImage src={imageUrl(src)} alt="" sizes="64px" width={64} height={70} loading="lazy"/></button>)}</div>}
         </div>
         <div className="product-info">
-          <div className="eyebrow">SIYAG PARFUMS</div><h1>{title}</h1>
+          <div className="eyebrow">SIYAG PARFUMS</div><h1>{title}</h1><AudienceLabel product={product}/>
           <div className="product-detail-meta">{concentrations[product.concentration]?.[ar?1:0]} {product.family!=="other"&&<><span>·</span> {families[product.family]?.[ar?1:0]}</>}</div>
           <Price variant={v}/>
           <p>{ar?product.descriptionAr:product.descriptionEn}</p>

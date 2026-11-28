@@ -1,4 +1,5 @@
-import {publishedPage} from './published-catalog';
+import {mergeCatalogInventory} from './catalog-inventory';
+import {publishedPage,publishedProducts} from './published-catalog';
 import {defaultVariantImages} from './variant-image-defaults';
 import {requestStore} from './server-store';
 import {storefrontProduct,applyVariantImages,parseVariantImages,type VariantImages} from './catalog-experience';
@@ -20,7 +21,7 @@ export async function loadVariantImages():Promise<VariantImages>{
 }
 /** Sort the full matching result before slicing, so stocked products never hide on later pages. */
 export async function catalogPage(query:URLSearchParams){
- return Response.json(publishedPage(query),{headers:{'Cache-Control':'no-store'}});
+ return Response.json(publishedPage(query,await livePublishedProducts()),{headers:{'Cache-Control':'no-store'}});
 }
 export async function catalogProduct(response:Response){
  if(!response.ok)return response;
@@ -32,5 +33,14 @@ export async function catalogProduct(response:Response){
 export async function cartImages(response:Response){
  if(!response.ok||response.status===204)return response;
  const [cart,images]=await Promise.all([response.json() as Promise<Cart>,loadVariantImages()]);
- return Response.json({...cart,lines:cart.lines.map(line=>({...line,image:images[line.variantId]||line.image}))},{headers:{'Cache-Control':'no-store'}});
+ return Response.json({...cart,lines:cart.lines.map(line=>({...line,image:publishedProducts.find(p=>p.variants.some(v=>v.id===line.variantId))?.images[0]||images[line.variantId]||line.image}))},{headers:{'Cache-Control':'no-store'}});
+}
+
+/** Published copy/media remain curated; live IDs, prices and inventory always come from commerce. */
+export async function livePublishedProducts():Promise<Product[]>{
+ try{
+  const response=await requestStore('/api/v1/store/products','pageSize=100');
+  if(response.ok)return mergeCatalogInventory(publishedProducts,(await response.json()).data);
+ }catch{}
+ return mergeCatalogInventory(publishedProducts,[]);
 }

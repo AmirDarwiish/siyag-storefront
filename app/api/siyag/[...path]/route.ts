@@ -1,7 +1,7 @@
 import {commerce,isPurchasePath} from "@/lib/commerce";
 import {publishedProduct,publishedCollections} from "@/lib/published-catalog";
 import {catalogPage,catalogProduct,cartImages} from "@/lib/server-catalog";
-import { requestStore } from "@/lib/server-store";
+import { requestStore,loadProduct } from "@/lib/server-store";
 
 const readPaths=/^store\/(products(?:\/[a-z0-9-]+)?|collections(?:\/[a-z0-9-]+)?|content(?:\/[a-z0-9-]+)?|settings|shipping|cart)$/;
 const postPaths=/^store\/(events|carts|cart\/quote|orders(?:\/track|\/payment\/paymob)?)$/;
@@ -32,7 +32,7 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
     return collection?Response.json(collection):Response.json({detail:"Not found."},{status:404});
   }
   if(method==="GET"&&/^store\/products\/[a-z0-9-]+$/.test(path)){
-    const product=publishedProduct(path.split("/").at(-1)!);
+    const product=await loadProduct(path.split("/").at(-1)!);
     return product?Response.json(product,{headers:{"Cache-Control":"no-store"}}):Response.json({detail:"Not found."},{status:404});
   }
   try {
@@ -63,7 +63,8 @@ async function proxy(request:Request, {params}:{params:Promise<{path:string[]}>}
       return Response.json(rows.filter(row=>!row.imageUrl?.includes('discovery')&&!row.actionUrl?.includes('decant')&&!row.actionUrl?.includes('discovery')&&(!row.actionUrl?.startsWith('/products/')||!!publishedProduct(row.actionUrl.split('/').at(-1)!))),{headers:{"Cache-Control":"no-store"}});
     }
     if(method==="GET"&&path==="store/settings"&&response.ok){
-      return Response.json({...await response.json(),acceptOrders:commerce.purchasingEnabled},{headers:{"Cache-Control":"no-store"}});
+      const settings=await response.json();
+      return Response.json({...settings,acceptOrders:commerce.purchasingEnabled&&settings.acceptOrders},{headers:{"Cache-Control":"no-store"}});
     }
     if(method==="GET"&&/^store\/products\/[a-z0-9-]+$/.test(path))return await catalogProduct(response);
     if((method==="GET"&&path==="store/cart")||linePath.test(path))return await cartImages(response);

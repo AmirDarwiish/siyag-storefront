@@ -1,0 +1,546 @@
+{
+  "status": "approved_21_products_42_prices",
+  "numbering": "Sequential 1–21 in owner message order, including both entries originally numbered 4.",
+  "currency": "EGP",
+  "audienceClassification": "Owner-supplied recommendations; not an assertion of the original brand marketing classification.",
+  "existingPurchaseRestrictions": "Owner approved visible prices and full purchasing.",
+  "products": [
+    {
+      "number": 1,
+      "nameEn": "SIYAG 1",
+      "sourceFragrance": "Emporio Armani Stronger With You Intensely",
+      "audience": "men",
+      "descriptionEn": "Warm, sensual and inviting, with a softly sweet character made for date nights and evenings that deserve a little more presence.",
+      "descriptionAr": "دافئ وجذّاب بحلاوة ناعمة وحضور مميز، اختيار مناسب للمواعيد المسائية واللحظات القريبة.",
+      "pricesEGP": {
+        "30": 450,
+        "50": 800
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 45000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 80000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 2,
+      "nameEn": "SIYAG 2",
+      "sourceFragrance": "Arabian Oud Feeling",
+      "audience": "unisex",
+      "descriptionEn": "An indulgent, toffee-like sweetness with a playful gourmand character. A fragrance for anyone who loves their signature unapologetically sweet.",
+      "descriptionAr": "إحساس غني بحلاوة تشبه التوفي وطابع جورماند مرح؛ لعشّاق العطور الحلوة بحضورها الواضح.",
+      "pricesEGP": {
+        "30": 290,
+        "50": 520
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 29000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 52000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 3,
+      "nameEn": "SIYAG 3",
+      "sourceFragrance": "Nishane Ani",
+      "audience": "unisex",
+      "descriptionEn": "Bright citrus meets creamy vanilla in a scent that brings a freshly baked lemon cake to mind. Comforting, smooth and full of character.",
+      "descriptionAr": "انتعاش حمضي يلتقي بفانيليا كريمية في إحساس يذكّرك بكيكة الليمون؛ ناعم ودافئ ومليان شخصية.",
+      "pricesEGP": {
+        "30": 380,
+        "50": 650
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 38000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 65000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 4,
+      "nameEn": "SIYAG 4",
+      "sourceFragrance": "Valentino Uomo Born in Roma Intense",
+      "audience": "unisex",
+      "descriptionEn": "An expressive lavender-led scent with a clean, freshly showered feeling. Smooth and polished, with a vibrant aromatic presence.",
+      "descriptionAr": "حضور عطري واضح يقوده اللافندر، بإحساس نظيف ومنتعش يشبه الخروج من الدش؛ ناعم ومرتب وحيوي.",
+      "pricesEGP": {
+        "30": 350,
+        "50": 600
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 35000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 60000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 5,
+      "nameEn": "SIYAG 5",
+      "sourceFragrance": "BLEU DE CHANEL Eau de Parfum",
+      "audience": "men",
+      "descriptionEn": "Fresh woods with a polished, versatile character. An effortless signature that moves comfortably between dressed-up occasions and everyday plans.",
+      "descriptionAr": "أخشاب منعشة بطابع أنيق ومرن؛ توقيع عطري يناسب إطلالة رسمية أو يومك العادي بسهولة.",
+      "pricesEGP": {
+        "30": 460,
+        "50": 820
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 46000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 82000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 6,
+      "nameEn": "SIYAG 6",
+      "sourceFragrance": "Parfums de Marly Althaïr",
+      "audience": "unisex",
+      "descriptionEn": "Creamy vanilla with a soft, enveloping sweetness. A deliciously comforting scent that feels warm, inviting and effortlessly indulgent.",
+      "descriptionAr": "فانيليا كريمية بحلاوة ناعمة تحتضن الحواس؛ إحساس شهي ودافئ يترك حضورًا جذّابًا ومريحًا.",
+      "pricesEGP": {
+        "30": 380,
+        "50": 630
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 38000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 63000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 7,
+      "nameEn": "SIYAG 7",
+      "sourceFragrance": "Amouage Decision",
+      "audience": "men",
+      "descriptionEn": "A distinctive frankincense-led character, lifted by freshness and grounded in woods. Refined and individual, for a signature with its own point of view.",
+      "descriptionAr": "طابع مميز يقوده اللبان، ترفعه لمسة انتعاش وتمنحه الأخشاب عمقًا أنيقًا؛ لمن يحب عطرًا له شخصية مختلفة.",
+      "pricesEGP": {
+        "30": 650,
+        "50": 1000
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 65000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 100000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 8,
+      "nameEn": "SIYAG 8",
+      "sourceFragrance": "Xerjoff Naxos",
+      "audience": "unisex",
+      "descriptionEn": "Warm, richly textured and confidently refined. A composed signature for formal occasions and moments when you want your presence to speak quietly.",
+      "descriptionAr": "دافئ وغني بالتفاصيل بطابع واثق وراقٍ؛ توقيع متزن للمناسبات الرسمية ولحضور أنيق يلفت من غير مبالغة.",
+      "pricesEGP": {
+        "30": 350,
+        "50": 600
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 35000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 60000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 9,
+      "nameEn": "SIYAG 9",
+      "sourceFragrance": "Louis Vuitton Stellar Times",
+      "audience": "unisex",
+      "descriptionEn": "Luminous white florals with a deep, enveloping character. Elegant and expressive, balancing airy beauty with a richer sense of presence.",
+      "descriptionAr": "زهور بيضاء مضيئة بطابع عميق يحتضن الحواس؛ أناقة تجمع نعومة الزهور وحضورها الغني.",
+      "pricesEGP": {
+        "30": 390,
+        "50": 670
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 39000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 67000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 10,
+      "nameEn": "SIYAG 10",
+      "sourceFragrance": "Clive Christian Blonde Amber",
+      "audience": "men",
+      "descriptionEn": "Rich amber and indulgent sweetness create a bold evening signature. Confident, dressed-up and full of character after dark.",
+      "descriptionAr": "عنبر غني وحلاوة عميقة يصنعان توقيعًا مسائيًا جريئًا؛ حضور واثق يناسب الإطلالات الرسمية والليالي المميزة.",
+      "pricesEGP": {
+        "30": 420,
+        "50": 750
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 42000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 75000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 11,
+      "nameEn": "SIYAG 11",
+      "sourceFragrance": "Amouage Epic Man",
+      "audience": "men",
+      "descriptionEn": "A clean, fresh impression with an elegant Arabian character. Refined and distinctive, bringing a sense of tradition to a modern signature.",
+      "descriptionAr": "إحساس نظيف ومنتعش بلمسة عربية أنيقة؛ طابع مميز يجمع روح الأصالة بحضور عصري.",
+      "pricesEGP": {
+        "30": 450,
+        "50": 800
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 45000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 80000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 12,
+      "nameEn": "SIYAG 12",
+      "sourceFragrance": "Matière Première Vanilla Powder Extrait de Parfum",
+      "audience": "unisex",
+      "descriptionEn": "Creamy, powdery vanilla with a softly coconut-like impression. A comforting gourmand signature with a delicate, feminine-leaning character.",
+      "descriptionAr": "فانيليا كريمية وبودرية بإحساس ناعم يذكّر بجوز الهند؛ توقيع جورماند مريح للجميع يميل للرقة الأنثوية.",
+      "pricesEGP": {
+        "30": 380,
+        "50": 650
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 38000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 65000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 13,
+      "nameEn": "SIYAG 13",
+      "sourceFragrance": "Amouage Outlands",
+      "audience": "men",
+      "descriptionEn": "Cool aromatic freshness meets a vivid touch of spice and a deeper, dressed-up character. A distinctive choice for tailored looks and formal evenings.",
+      "descriptionAr": "انتعاش عطري بارد تبرزه لمسة توابل وعمق أنيق؛ اختيار مميز للإطلالات الرسمية والبدل.",
+      "pricesEGP": {
+        "30": 400,
+        "50": 720
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 40000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 72000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 14,
+      "nameEn": "SIYAG 14",
+      "sourceFragrance": "Laverne Musk Patchouli",
+      "audience": "women",
+      "descriptionEn": "A delicate veil of powdery rose and soft musk, grounded in elegant patchouli. Feminine and quietly captivating, with an intimate evening character.",
+      "descriptionAr": "ورد بودري ناعم يلتقي بالمسك ويستقر على أناقة الباتشولي؛ حضور أنثوي رقيق وجذّاب للمساء.",
+      "pricesEGP": {
+        "30": 380,
+        "50": 650
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 38000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 65000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 15,
+      "nameEn": "SIYAG 15",
+      "sourceFragrance": "BLEU DE CHANEL L’EXCLUSIF",
+      "audience": "men",
+      "descriptionEn": "Refined woods with a confident, dressed-up presence. A polished signature for formal moments and a quietly distinctive style.",
+      "descriptionAr": "أخشاب أنيقة بحضور واثق يناسب المناسبات الرسمية؛ توقيع راقٍ لمن يحب التميز بهدوء.",
+      "pricesEGP": {
+        "30": 400,
+        "50": 720
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 40000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 72000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 16,
+      "nameEn": "SIYAG 16",
+      "sourceFragrance": "Yves Saint Laurent Y Eau de Parfum",
+      "audience": "men",
+      "descriptionEn": "Fresh, clean and effortlessly put together. An easy modern signature for bright starts, busy days and everyday confidence.",
+      "descriptionAr": "منعش ونظيف بطابع عصري ومرتب؛ توقيع سهل لبداية يومك ومشاويرك اليومية بثقة.",
+      "pricesEGP": {
+        "30": 400,
+        "50": 720
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 40000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 72000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 17,
+      "nameEn": "SIYAG 17",
+      "sourceFragrance": "OMANLUXURY Caden",
+      "audience": "men",
+      "descriptionEn": "Soft leather with a smooth, refined character. An intimate yet distinctive signature for special occasions and carefully chosen moments.",
+      "descriptionAr": "جلد ناعم بطابع سلس وراقٍ؛ توقيع قريب ومميز للمناسبات الخاصة واللحظات اللي تختار لها تفاصيلك بعناية.",
+      "pricesEGP": {
+        "30": 420,
+        "50": 750
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 42000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 75000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 18,
+      "nameEn": "SIYAG 18",
+      "sourceFragrance": "Tom Ford Tobacco Vanille",
+      "audience": "unisex",
+      "descriptionEn": "Rich vanilla wrapped in the warmth of tobacco. Deep, comforting and full-bodied, made for winter days and atmospheric evenings.",
+      "descriptionAr": "فانيليا غنية يحيط بها دفء التبغ؛ طابع عميق ومريح وممتلئ، يناسب الشتاء والأمسيات الدافئة.",
+      "pricesEGP": {
+        "30": 450,
+        "50": 800
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 45000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 80000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 19,
+      "nameEn": "SIYAG 19",
+      "sourceFragrance": "Xerjoff Erba Pura",
+      "audience": "unisex",
+      "descriptionEn": "Vibrant freshness with a bright, carefree holiday mood. A lively daytime signature that brings a little sunshine to everyday plans.",
+      "descriptionAr": "انتعاش حيوي بروح مشرقة وخفيفة تشبه أجواء الإجازة؛ توقيع نهاري يضيف لمسة صيفية ليومك.",
+      "pricesEGP": {
+        "30": 420,
+        "50": 750
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 42000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 75000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    },
+    {
+      "number": 20,
+      "nameEn": "SIYAG 20 · Satsuma",
+      "sourceFragrance": "SIYAG Satsuma",
+      "audience": "men",
+      "descriptionEn": "A SIYAG creation opening with sparkling mandarin and citrus. Orange and white florals soften the heart before white musk and cashmere wood leave a clean, gentle trail.",
+      "descriptionAr": "إبداع من SIYAG يبدأ بإشراقة الماندرين والحمضيات، يليه قلب ناعم من البرتقال والزهور البيضاء، ويستقر على المسك الأبيض وخشب الكشمير بأثر نظيف وهادئ.",
+      "pricesEGP": {
+        "30": 380,
+        "50": 650
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 38000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 65000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true,
+      "topNotes": [
+        "Mandarin | ماندرين",
+        "Citrus Notes | نوتات حمضية"
+      ],
+      "heartNotes": [
+        "Orange | برتقال",
+        "White Flowers | زهور بيضاء"
+      ],
+      "baseNotes": [
+        "White Musk | مسك أبيض",
+        "Cashmere Wood | خشب الكشمير"
+      ]
+    },
+    {
+      "number": 21,
+      "nameEn": "SIYAG 21",
+      "sourceFragrance": "Arabian Oud Amiri",
+      "audience": "men",
+      "descriptionEn": "Fresh woods with a polished, formal character. Composed and confident, for a signature that feels as considered as your best-dressed look.",
+      "descriptionAr": "أخشاب منعشة بطابع رسمي ومرتب؛ حضور متزن وواثق يكمل إطلالة أنيقة بتفاصيل محسوبة.",
+      "pricesEGP": {
+        "30": 380,
+        "50": 650
+      },
+      "variants": [
+        {
+          "sizeMl": 30,
+          "priceMinor": 38000
+        },
+        {
+          "sizeMl": 50,
+          "priceMinor": 65000
+        }
+      ],
+      "notesStatus": "source_checked",
+      "artworkStatus": "completed",
+      "publish": true
+    }
+  ]
+}

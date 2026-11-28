@@ -1,3 +1,3 @@
-/** Public storefront controls. Keep operational prices and inventory in the back office. */
-export const commerce={showPrices:false,purchasingEnabled:false};
+/** Owner-approved public pricing and purchasing; backend inventory remains authoritative. */
+export const commerce={showPrices:true,purchasingEnabled:true};
 export function isPurchasePath(path:string){return /^store\/(?:carts|cart(?:\/.*)?|orders(?:\/payment\/paymob)?)$/.test(path)}

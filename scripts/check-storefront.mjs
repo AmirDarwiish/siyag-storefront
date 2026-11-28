@@ -90,38 +90,40 @@ assert.equal(storefrontProduct(makeProduct('sample-only',true,'woody','sample'))
 console.log('Public catalog visibility checks passed: discovery sizes hidden without mutating inventory.');
 
 const {publishedProducts,publishedProduct,publishedPage,publishedCollections}=await source('lib/published-catalog.ts');
-assert.deepEqual(publishedProducts.map(p=>p.slug),['siyag-1','siyag-3','siyag-6','siyag-7']);
-for(const p of publishedProducts){assert.deepEqual(p.variants.map(v=>v.sizeMl),[30,50]);assert(p.variants.every(v=>v.format==='fullBottle'&&v.compareAtMinor==null));assert(p.images.every(src=>!src.includes('preview')))}
-for(const slug of ['noir','musk','oud','siyag-9','amber-wood-preview'])assert.equal(publishedProduct(slug),null);
-assert.equal(publishedPage(new URLSearchParams('q=ناكسوس')).data[0].slug,'siyag-7');
-assert.equal(publishedPage(new URLSearchParams('q=ديسيشن')).data[0].slug,'siyag-6');
+assert.deepEqual(publishedProducts.map(p=>p.slug),Array.from({length:21},(_,i)=>'siyag-'+(i+1)));
+const pricePairs=[[450,800],[290,520],[380,650],[350,600],[460,820],[380,630],[650,1000],[350,600],[390,670],[420,750],[450,800],[380,650],[400,720],[380,650],[400,720],[400,720],[420,750],[450,800],[420,750],[380,650],[380,650]];
+for(const [i,p] of publishedProducts.entries()){
+ assert.deepEqual(p.variants.map(v=>v.sizeMl),[30,50]);
+ assert.deepEqual(p.variants.map(v=>v.priceMinor),pricePairs[i].map(price=>price*100));
+ assert(p.variants.every(v=>v.format==='fullBottle'&&v.compareAtMinor==null&&!v.inStock),'static catalogue cannot invent warehouse stock');
+ assert(p.images.every(src=>!src.includes('preview')));
+ assert(p.descriptionEn&&p.descriptionAr&&['men','women','unisex'].includes(p.audience));
+}
+assert.equal(new Set(publishedProducts.flatMap(p=>p.variants.map(v=>v.id))).size,42);
+for(const slug of ['noir','musk','oud','amber-wood-preview'])assert.equal(publishedProduct(slug),null);
+assert.equal(publishedPage(new URLSearchParams('q=ناكسوس')).data[0].slug,'siyag-8');
+assert.equal(publishedPage(new URLSearchParams('q=ديسيشن')).data[0].slug,'siyag-7');
+assert.equal(publishedPage(new URLSearchParams('q=Musk Patchouli')).data[0].slug,'siyag-14');
 assert.equal(publishedPage(new URLSearchParams('sizeMl=100')).totalCount,0);
-assert.equal(publishedPage(new URLSearchParams('sizeMl=30')).totalCount,4);
+assert.equal(publishedPage(new URLSearchParams('sizeMl=30')).totalCount,21);
+assert.equal(publishedPage(new URLSearchParams('inStock=true')).totalCount,0);
+assert.equal(publishedPage(new URLSearchParams('sort=price-asc')).data[0].slug,'siyag-2');
+assert.equal(publishedPage(new URLSearchParams('sort=price-desc')).data[0].slug,'siyag-7');
+assert.equal(publishedPage(new URLSearchParams('sizeMl=50&minPriceMinor=100000')).totalCount,1);
 assert.equal(publishedPage(new URLSearchParams('pageSize=2&pageNumber=2')).data.length,2);
 assert.equal(publishedPage(new URLSearchParams('collection=discovery')).totalCount,0);
-assert(publishedCollections.every(c=>c.slug!=='discovery'&&c.slug!=='oud'));
+assert.deepEqual(publishedCollections.map(c=>c.slug),['signature']);
 const {commerce,isPurchasePath}=await source('lib/commerce.ts');
-assert.equal(commerce.showPrices,false);assert.equal(commerce.purchasingEnabled,false);
+assert.equal(commerce.showPrices,true);assert.equal(commerce.purchasingEnabled,true);
 for(const path of ['store/carts','store/cart','store/cart/lines/abc','store/cart/quote','store/orders','store/orders/payment/paymob'])assert(isPurchasePath(path),path);
 for(const path of ['store/orders/track','store/events','store/reviews','store/products/siyag-7','store/collections'])assert(!isPurchasePath(path),path);
-console.log('Approved catalog checks passed: four numbered fragrances, 30/50 ml only, preview exclusion, pagination, search and purchase route guards.');
-
-for(const n of [1,3,6]){
- const p=publishedProduct('siyag-'+n);
- assert(p.images[0].endsWith('-notes-gold.webp'));
- assert.equal(p.notesImageUrl,p.images[0]);
- assert(p.inspiration.imageUrl.endsWith('-3d.webp'));
- assert(p.topNotes.length&&p.heartNotes.length&&p.baseNotes.length);
- assert(p.variants.every(v=>!v.imageUrl));
-}
 assert.equal(publishedProduct('siyag-3').inspiration.nameEn,'Nishane Ani');
-assert.equal(publishedProduct('siyag-6').inspiration.nameEn,'Amouage Decision');
-console.log('Fragrance media checks passed: photographic galleries, notes, confirmed inspirations and unchanged 30/50 ml options.');
-
-assert.deepEqual(publishedCollections.map(c=>c.slug),['signature']);
-assert(publishedProducts.every(p=>p.collections.length===1&&p.collections[0]==='signature'&&p.images.length===2));
-assert.equal(publishedProduct('siyag-7').images[0],'/brand/numbered/siyag-7-notes.webp');
-assert.equal(publishedProduct('siyag-7').images[1],'/brand/numbered/siyag-7-photo.webp');
+assert.equal(publishedProduct('siyag-7').inspiration.nameEn,'Amouage Decision');
+assert.equal(publishedProduct('siyag-8').inspiration.nameEn,'Xerjoff Naxos');
+assert.equal(publishedProduct('siyag-14').inspiration.nameEn,'Laverne Musk Patchouli');
+assert.equal(publishedProduct('siyag-20').inspiration,undefined,'Satsuma is a SIYAG creation');
+assert.equal(publishedProduct('siyag-8').variants[1].id,'8c97091c-5dd5-40fd-b84a-674ec8924d0c','retain the actual existing Naxos variant ID');
+console.log('Approved catalogue checks passed: all 21 sequential products, all 42 owner prices, gender, search, price sorting and purchasing enabled.');
 
 const {nextImageAttempt,imagePlaceholderSource}=await source('lib/store-images.ts');
 assert.deepEqual(storeImageSource('/media/'+'a'.repeat(64)+'.webp'),{src:'/api/siyag/media/'+'a'.repeat(64)+'.webp',optimize:true});
@@ -130,7 +132,7 @@ assert.equal(nextImageAttempt('original'),'fallback');
 assert.equal(nextImageAttempt('fallback'),'fallback','a failed fallback must never trigger a retry loop');
 assert(imagePlaceholderSource.startsWith('data:image/'),'fallback must not need a network request');
 for(const p of publishedProducts){
- for(const src of [...p.images,p.notesImageUrl]){
+ for(const src of [...p.images,...(p.notesImageUrl?[p.notesImageUrl]:[])]){
   assert(src.startsWith('/brand/'),'approved product photography must not depend on API media availability');
   readFileSync('public'+src);
  }
@@ -139,3 +141,15 @@ const {createHash}=await import('node:crypto');
 for(const [file,hash] of [['siyag-7-photo.webp','517524cece8f488357a363934d1d5317896ec5edd9a1bc0eda7db158b4a1e613'],['siyag-7-notes.webp','4b6562b46aa90174fb7cbeef21fe3c9467ccc3e20ff91f445defcd209feebfe1']])
  assert.equal(createHash('sha256').update(readFileSync('public/brand/numbered/'+file)).digest('hex'),hash,'SIYAG 7 artwork must remain byte-for-byte unchanged');
 console.log('Image resilience checks passed: legacy URLs, bounded retry, network-free fallback and unchanged bundled Naxos photography.');
+
+const {mergeCatalogInventory}=await source('lib/catalog-inventory.ts');
+const naxos=publishedProduct('siyag-8'),actualId='aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+const liveNaxos={...naxos,variants:[{...naxos.variants[1],id:actualId,priceMinor:61234,inStock:true}]};
+const hydrated=mergeCatalogInventory(publishedProducts,[liveNaxos]).find(p=>p.id===naxos.id);
+assert.equal(hydrated.variants[1].id,actualId,'use the actual warehouse variant ID, not a generated public ID');
+assert.equal(hydrated.variants[1].priceMinor,61234,'staff price updates must be honoured in the displayed price');
+assert.equal(hydrated.variants[1].inStock,true);
+assert.equal(hydrated.variants[0].inStock,false,'missing sizes cannot be purchased');
+assert(mergeCatalogInventory(publishedProducts,[]).every(p=>p.variants.every(v=>!v.inStock)),'API failure must fail closed');
+assert(mergeCatalogInventory(publishedProducts,[{...liveNaxos,slug:'siyag-7',nameEn:'SIYAG 7'}]).every(p=>p.variants.every(v=>!v.inStock)),'legacy Naxos cannot be sold under the new Decision number');
+console.log('Commerce inventory checks passed: actual IDs and prices, size-specific availability, missing API data and legacy renumbering protection.');

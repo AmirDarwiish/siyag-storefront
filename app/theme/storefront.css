@@ -3105,12 +3105,16 @@ body select:disabled {opacity:.55;cursor:not-allowed}
 .profile-notes {margin-block:var(--space-6);color:var(--ink)}
 .profile-notes h2 {font-size:var(--type-body);margin:0 0 var(--space-3)}
 .profile-notes dl {display:grid;gap:var(--space-3);margin:0}
-.profile-notes dt {font-size:var(--type-label);color:var(--moss);margin-block-end:var(--space-1)}
 .profile-notes dd {display:flex;flex-wrap:wrap;gap:var(--space-2);margin:0}
-.profile-notes dd span {padding:var(--space-1) var(--space-3);border:var(--commerce-border);border-radius:var(--radius-control);font-size:var(--type-label);overflow-wrap:anywhere}
-.profile-notes [data-layer="opening"] dd span {background:var(--profile-note-opening)}
-.profile-notes [data-layer="heart"] dd span {background:var(--profile-note-heart)}
-.profile-notes [data-layer="base"] dd span {background:var(--profile-note-base)}
+.profile-notes dt {display:flex;align-items:center;gap:var(--space-2);font-size:var(--type-label);color:var(--moss);margin-block-end:var(--space-1)}
+.profile-notes dt svg {width:var(--note-layer-icon);height:var(--note-layer-icon)}
+.profile-notes .note-chip {display:flex;align-items:center;gap:var(--space-2);padding:var(--space-2) var(--space-3);border:var(--commerce-border);border-radius:var(--radius-control);font-size:var(--type-label);overflow-wrap:anywhere;background:var(--note-surface);max-width:100%;min-width:0}
+.note-chip>svg {flex-shrink:0;width:var(--note-icon);height:var(--note-icon);color:var(--note-ink)}
+.note-chip>span {min-width:0}
+.note-chip[data-tone="citrus"], .note-chip[data-tone="sweet"] {--note-surface:var(--tone-amber);--note-ink:var(--note-gold)}
+.note-chip[data-tone="floral"], .note-chip[data-tone="fruit"] {--note-surface:var(--tone-floral);--note-ink:var(--audience-women)}
+.note-chip[data-tone="wood"], .note-chip[data-tone="spice"] {--note-surface:var(--profile-note-base);--note-ink:var(--note-wood)}
+.note-chip[data-tone="musk"] {--note-surface:var(--stone);--note-ink:var(--audience-men)}
 @media (hover:hover) {
   .product-visual:hover .product-hover {
   opacity:1}.home-edit:hover img,.home-family:hover img {transform:scale(var(--home-photo-hover-scale))}.home-care a:hover {background:var(--stone)}.home-cover .action:hover {background:var(--yellow);border-color:var(--yellow)}

@@ -24,6 +24,12 @@
   font-display: swap;
 }
 :root {
+  --note-icon: 22px;
+  --note-layer-icon: 16px;
+  --note-gold: #82611f;
+  --note-wood: #755237;
+  --note-surface: var(--tone-fresh);
+  --note-ink: var(--moss);
   --catalog-packshot-inset: 6%;
   --catalog-photo-ratio: 1 / 1;
   --profile-note-opening: var(--tone-fresh);
